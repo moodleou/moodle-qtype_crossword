@@ -1,0 +1,256 @@
+/**
+    CSS style for crossword question type.
+ */
+
+#page-question-type-crossword #fitem_id_defaultmark {
+    display: none;
+}
+
+#page-question-type-crossword .mform .form-group.has-danger .col-md-9[data-fieldtype="group"] {
+    border: none!important;
+}
+
+#page-question-type-crossword .crossword-contain {
+    max-width: fit-content;
+    margin: 20px auto;
+}
+
+#page-question-type-crossword .crossword-grid {
+    width: 100%;
+    max-width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse
+}
+
+#page-question-type-crossword .grid-row {
+    clear: left;
+}
+
+#page-question-type-crossword fieldset#id_wordhdr .d-flex .form-group {
+    margin-right: 1em;
+}
+
+#page-question-type-crossword fieldset#id_wordhdr .d-flex .form-group:last-child,
+.path-question-bank-previewquestion .contain-crossword .wrap-clue img.icon,
+.path-mod-quiz .contain-crossword .wrap-clue img.icon {
+    margin-right: 0;
+}
+
+#page-question-type-crossword fieldset#id_wordhdr .fcontainer input[name^="answer"],
+.path-question-bank-previewquestion .wrap-crossword #crossword form .crossword .formulation input[type="text"]{
+    text-transform: uppercase;
+}
+
+#page-question-type-crossword fieldset#id_wordhdr legend a{
+    margin-top: 15px;
+}
+
+#page-question-type-crossword #crossword {
+    overflow: auto;
+}
+
+#page-question-type-crossword .grid-square:not(.square-indicate-horizontal),
+#page-question-type-crossword .grid-square:not(.square-indicate-vertical) {
+    border: 1px solid #000000;
+}
+
+#page-question-type-crossword #crossword .crossword-grid .grid-square.background-white,
+#page-question-type-crossword #crossword .crossword-grid .cell-white,
+#page-question-type-crossword .grid-square.square-indicate-horizontal,
+#page-question-type-crossword .grid-square.square-indicate-vertical {
+    background: transparent;
+}
+
+#page-question-type-crossword #crossword .crossword-grid .cell-white,
+#page-question-type-crossword .grid-square.square-indicate-horizontal,
+#page-question-type-crossword .grid-square.square-indicate-vertical {
+    border: none;
+}
+
+#page-question-type-crossword .grid-square {
+    position: relative;
+    background-clip: padding-box;
+    padding: 20px 25px;
+    text-align: center;
+    background-color: #A6A6A6;
+}
+
+#page-question-type-crossword .grid-square .word-label {
+    position: absolute;
+    z-index: 1;
+    top: 2px;
+    left: 2px;
+    line-height: 1;
+    font-size: calc(10px + .25vw);
+    color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+#page-mod-quiz-reviewquestion section#region-main .contain-crossword div div {
+    margin: 0;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword,
+.path-question .wrap-crossword #crossword,
+.path-mod-quiz .wrap-crossword #crossword {
+    position: relative;
+    max-width: 700px;
+    background: #000000;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-cell,
+.path-question .wrap-crossword #crossword .crossword-cell,
+.path-mod-quiz .wrap-crossword #crossword .crossword-cell {
+    cursor: pointer;
+    fill: #ffffff;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-grid-background,
+.path-question .wrap-crossword #crossword .crossword-grid-background,
+.path-mod-quiz .wrap-crossword #crossword .crossword-grid-background {
+    fill: #000000;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-cell-highlighted,
+.path-question .wrap-crossword #crossword .crossword-cell-highlighted,
+.path-mod-quiz .wrap-crossword #crossword .crossword-cell-highlighted {
+    fill: #ffe500;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-cell-focussed,
+.crossword-grid-focussed .crossword-cell-focussed,
+.path-question .wrap-crossword #crossword .crossword-cell-focussed,
+.path-mod-quiz .wrap-crossword #crossword .crossword-cell-focussed {
+    fill: #fff7b2;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-cell-number,
+.path-question .wrap-crossword #crossword .crossword-cell-number,
+.path-mod-quiz .wrap-crossword #crossword .crossword-cell-number {
+    font-size: 0.625rem;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-hidden-input-wrapper,
+.path-question .wrap-crossword #crossword .crossword-hidden-input-wrapper,
+.path-mod-quiz .wrap-crossword #crossword .crossword-hidden-input-wrapper {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 6.6%;
+    height: 6.6%;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-cell-text,
+.path-question .wrap-crossword #crossword .crossword-cell-text,
+.path-mod-quiz .wrap-crossword #crossword .crossword-cell-text {
+    text-transform: uppercase;
+    font-size: 0.65rem;
+}
+
+.path-question-bank-previewquestion .wrap-crossword #crossword .crossword-hidden-input-wrapper input,
+.path-question .wrap-crossword #crossword .crossword-hidden-input-wrapper input,
+.path-mod-quiz .wrap-crossword #crossword .crossword-hidden-input-wrapper input {
+    border: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-color: transparent;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-anchor: middle;
+    caret-color: transparent;
+}
+
+.path-question-bank-previewquestion .contain-crossword .wrap-clue .clue-id,
+.path-question .contain-crossword .wrap-clue .clue-id,
+.path-mod-quiz .contain-crossword .wrap-clue .clue-id {
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 0.2em;
+    text-align: center;
+    width: 1.75em;
+    height: 1.75em;
+}
+
+.path-question-bank-previewquestion .contain-crossword .wrap-clue .clue-content,
+.path-question .contain-crossword .wrap-clue .clue-content,
+.path-mod-quiz .contain-crossword .wrap-clue .clue-content {
+    word-break: break-word;
+}
+
+.path-question-bank-previewquestion .contain-crossword .wrap-clue.focus .clue-id,
+.path-question .contain-crossword .wrap-clue.focus .clue-id,
+.path-mod-quiz .contain-crossword .wrap-clue.focus .clue-id {
+    background: #ffe500;
+}
+
+.path-question-bank-previewquestion .contain-crossword .wrap-clue input,
+.path-question .contain-crossword .wrap-clue input,
+.path-mod-quiz .contain-crossword .wrap-clue input {
+    width: calc(100% - 3em);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+
+.path-question-bank-previewquestion .wrap-crossword,
+.path-question .wrap-crossword,
+.path-mod-quiz .wrap-crossword {
+    position: relative;
+}
+
+.path-question-bank-previewquestion .wrap-crossword .sticky-clue,
+.path-question .wrap-crossword .sticky-clue,
+.path-mod-quiz .wrap-crossword .sticky-clue {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Small devices (landscape phones, less than 768px). */
+@media (max-width: 767.98px) {
+    .path-question-bank-previewquestion .contain-crossword .clue-id > span,
+    .path-question .contain-crossword .clue-id > span,
+    .path-mod-quiz .contain-crossword .clue-id > span {
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    .path-question-bank-previewquestion .wrap-crossword #crossword .orientation,
+    .path-question .wrap-crossword #crossword .orientation,
+    .path-mod-quiz .wrap-crossword #crossword .orientation {
+        margin-bottom: 0;
+    }
+
+    .path-question-bank-previewquestion .wrap-crossword,
+    .path-question .wrap-crossword,
+    .path-mod-quiz .wrap-crossword {
+        position: relative;
+        padding-top: 2.5rem;
+        padding-bottom: 1.25rem;
+    }
+}
+
+/* Large devices (desktops, less than 1200px). */
+@media (max-width: 1199.98px) {
+    #page-question-type-crossword .clue-label label {
+        margin-right: 1.9em;
+    }
+
+    #page-question-type-crossword .answer-clue {
+        margin-bottom: 15px;
+    }
+}
+
+@media print {
+    .path-question-bank-previewquestion .contain-crossword #crossword svg g rect,
+    .path-question .contain-crossword #crossword svg g rect,
+    .path-mod-quiz .contain-crossword #crossword svg g rect {
+        stroke: #000000;
+        stroke-width: 0.5px;
+    }
+}

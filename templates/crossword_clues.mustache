@@ -1,0 +1,126 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template qtype_crossword/crossword_clues
+
+    Data to generate crossword.
+
+    Example context (json):
+    {
+        "questiontext": "crossword",
+        "across": [
+            {
+              "number": 1,
+              "clue": "Lorem ipsum dolor",
+              "length": 3,
+              "attributes": "Lorem ipsum dolor",
+              "feedbackimage": "Image",
+              "title": "Title",
+              "id": "id"
+            }
+        ],
+        "down": [
+            {
+              "number": "",
+              "clue": "",
+              "length": "",
+              "attributes": "",
+              "feedbackimage": "",
+              "title": "Title",
+              "id": "id"
+            }
+        ]
+    }
+}}
+
+<div class="qtext"> {{{ questiontext }}}</div>
+<div class="contain-crossword">
+    <div class="row mx-auto my-3">
+        <div class="col-12 col-md-8 wrap-crossword">
+            <div class="sticky-clue px-3 d-block d-md-none">
+                <strong></strong>
+                <span></span>
+            </div>
+            <div>
+                <div class="mx-auto" id="crossword"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 px-md-0 px-3">
+            <div class="contain-clue">
+                <div class="row mx-auto">
+                    <h5 class="orientation w-100">{{#str}} across, qtype_crossword {{/str}}</h5>
+                    <div class="across-contain w-100">
+                    {{#across}}
+                        <div class="col-12 wrap-clue" question-id="{{number}}">
+                            <div class="d-flex my-2">
+                                <div class="clue-id"><span>{{number}}</span></div>
+                                <div class="clue-content">{{clue}} ({{length}})</div>
+                            </div>
+                            <label class="accesshide" for="{{id}}">{{#str}} wordno, qtype_crossword, {{number}} {{/str}}</label>
+                            <input
+                                type="text"
+                                class="control {{classes}}"
+                                {{attributes}}
+                                value="{{value}}"
+                                autocomplete="off"
+                                autocorrect="off"
+                                disabled
+                                aria-label="{{title}}"
+                                spellcheck="false">
+                            {{#feedbackimage}}
+                                {{{feedbackimage}}}
+                            {{/feedbackimage}}
+                        </div>
+                    {{/across}}
+                    </div>
+                </div>
+                <div class="row mx-auto mt-3">
+                    <h5 class="orientation w-100">{{#str}} down, qtype_crossword {{/str}}</h5>
+                    <div class="down-contain w-100">
+                        {{#down}}
+                            <div class="col-12 wrap-clue" question-id="{{number}}">
+                                <div class="d-flex my-2">
+                                    <div class="clue-id"><span>{{number}}</span></div>
+                                    <div class="clue-content">{{clue}} ({{length}})</div>
+                                </div>
+                                <label class="accesshide" for="{{id}}">{{#str}} wordno, qtype_crossword, {{number}} {{/str}}</label>
+                                <input
+                                    type="text"
+                                    class="control {{classes}}"
+                                    {{attributes}}
+                                    value="{{value}}"
+                                    aria-label="{{title}}"
+                                    disabled
+                                    autocomplete="off"
+                                    autocorrect ="off"
+                                    spellcheck="false">
+                                {{#feedbackimage}}
+                                    {{{feedbackimage}}}
+                                {{/feedbackimage}}
+                            </div>
+                        {{/down}}
+                    </div>
+                </div>
+            </div>
+            {{#invalidquestion}}
+                <div class="validationerror mt-3">
+                    {{invalidquestion}}
+                </div>
+            {{/invalidquestion}}
+        </div>
+    </div>
+</div>
