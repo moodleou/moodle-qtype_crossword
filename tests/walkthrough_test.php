@@ -39,6 +39,11 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  */
 class walkthrough_test extends \qbehaviour_walkthrough_test_base {
 
+    /**
+     * Test attempt question with mode deferredfeedback.
+     *
+     * @covers \start_attempt_at_question
+     */
     public function test_deferred_feedback(): void {
 
         // Create a normal crossword question.
@@ -78,6 +83,11 @@ class walkthrough_test extends \qbehaviour_walkthrough_test_base {
             $this->get_does_not_contain_validation_error_expectation());
     }
 
+    /**
+     * Test attempt question with mode interactive.
+     *
+     * @covers \start_attempt_at_question
+     */
     public function test_interactive(): void {
 
         // Create a normal crossword question.

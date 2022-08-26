@@ -22,8 +22,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Generates the output for crossword questions.
  *
@@ -44,35 +42,34 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         ];
         $selected = 0;
         $binddata = [
-            'colsNum' => $question->numcolumns + 3,
-            'rowsNum' => $question->numrows + 3,
+            'colsNum' => $question->answers->numcolumns + 3,
+            'rowsNum' => $question->answers->numrows + 3,
             'isPreview' => false,
             'title' => get_string('celltitle', 'qtype_crossword'),
             'orientation' => $orientationvalue,
             'words' => [],
             'readonly' => false
         ];
-        $renderer = $this->page->get_renderer('qtype_crossword');
         $data['questiontext'] = $question->questiontext;
-        for ($i = 0; $i < count($question->answer); $i++) {
+        for ($i = 0; $i < count($question->answers->answer); $i++) {
             $orientation = 'across';
             $fieldname = 'sub' . $i;
-            $length = mb_strlen($question->answer[$i]);
+            $length = mb_strlen($question->answers->answer[$i]);
             $inputname = $qa->get_qt_field_name($fieldname);
             $inputvalue = $qa->get_last_qt_var($fieldname);
             $number = $i + 1;
-            $clue = $question->clue[$i];
+            $clue = $question->answers->clue[$i];
             $title = get_string(
                 'inputtitle',
                 'qtype_crossword',
                 (object) [
                     'number' => $number,
-                    'orientation' => $orientationvalue[$question->orientation[$i]],
+                    'orientation' => $orientationvalue[$question->answers->orientation[$i]],
                     'clue' => $clue,
                     'length' => $length
                 ]
             );
-            if ($question->orientation[$i]) {
+            if ($question->answers->orientation[$i]) {
                 $orientation = 'down';
             }
 
@@ -92,10 +89,10 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $binddata['words'][] = [
                 'number' => $number,
                 'clue' => $clue,
-                'rowIndex' => (int) $question->rowindex[$i],
-                'columnIndex' => (int) $question->columnindex[$i],
-                'length' => mb_strlen($question->answer[$i]),
-                'orientation' => (int) $question->orientation[$i]
+                'startRow' => (int) $question->answers->startrow[$i],
+                'startColumn' => (int) $question->answers->startcolumn[$i],
+                'length' => mb_strlen($question->answers->answer[$i]),
+                'orientation' => (int) $question->answers->orientation[$i]
             ];
 
             if ($options->readonly) {
@@ -107,7 +104,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 $selected = $response[$fieldname];
             }
 
-            $fraction = (int) ($selected && $selected === $question->answer[$i]);
+            $fraction = (int) ($selected && $selected === $question->answers->answer[$i]);
             if ($options->correctness) {
                 $inputdata['classes'] = $this->feedback_class($fraction);
                 $inputdata['feedbackimage'] = $this->feedback_image($fraction);
@@ -120,9 +117,9 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $data['invalidquestion'] = $question->get_validation_error($qa->get_last_qt_data());
         }
 
-        $result = $renderer->render_from_template('qtype_crossword/crossword_clues', $data);
+        $result = $this->render_from_template('qtype_crossword/crossword_clues', $data);
 
-        $this->page->requires->js_call_amd('qtype_crossword/crossword', 'init', [$binddata]);
+        $this->page->requires->js_call_amd('qtype_crossword/crossword', 'attempt', [$binddata]);
         return $result;
     }
 
@@ -133,7 +130,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
     public function correct_response(question_attempt $qa): string {
         $question = $qa->get_question();
         $right = [];
-        foreach ($question->answer as $ansid => $ans) {
+        foreach ($question->answers->answer as $ansid => $ans) {
             $right[] = $question->make_html_inline($question->format_text($ans, 1,
                 $qa, 'question', 'answer', $ansid));
         }

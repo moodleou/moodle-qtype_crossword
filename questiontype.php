@@ -36,9 +36,7 @@ require_once($CFG->libdir.'/questionlib.php');
  */
 class qtype_crossword extends question_type {
 
-    // Override functions as necessary from the parent class located at /question/type/questiontype.php.
-
-    private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'rowindex', 'columnindex'];
+    private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'startrow', 'startcolumn'];
 
     public function get_question_options($question): bool {
         global $DB;
@@ -130,15 +128,15 @@ class qtype_crossword extends question_type {
                 $word->answer = '';
                 $word->clue = '';
                 $word->orientation = 0;
-                $word->rowindex = 0;
-                $word->columnindex = 0;
+                $word->startrow = 0;
+                $word->startcolumn = 0;
                 $word->id = $DB->insert_record('qtype_crossword_words', $word);
             }
             $word->answer = trim(mb_strtoupper($question->answer[$i]));
             $word->clue = $question->clue[$i];
             $word->orientation = $question->orientation[$i];
-            $word->rowindex = $question->rowindex[$i];
-            $word->columnindex = $question->columnindex[$i];
+            $word->startrow = $question->startrow[$i];
+            $word->startcolumn = $question->startcolumn[$i];
             $DB->update_record('qtype_crossword_words', $word);
         }
         // Remove remain words.
@@ -181,36 +179,25 @@ class qtype_crossword extends question_type {
 
     protected function initialise_question_instance($question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
+        $answerobject = new \qtype_crossword\answer();
         $this->initialise_combined_feedback($question, $questiondata, true);
-        $question->answer = [];
-        $question->clue = [];
-        $question->orientation = [];
-        $question->rowindex = [];
-        $question->columnindex = [];
-        $question->numrows = (int) $questiondata->options->numrows;
-        $question->numcolumns = (int) $questiondata->options->numcolumns;
-
-        foreach ($questiondata->options->words as $wordsub) {
-            $question->answer[] = $wordsub->answer;
-            $question->clue[] = $wordsub->clue;
-            $question->orientation[] = $wordsub->orientation;
-            $question->rowindex[] = $wordsub->rowindex;
-            $question->columnindex[] = $wordsub->columnindex;
-        }
+        $answerobject->numrows = (int) $questiondata->options->numrows;
+        $answerobject->numcolumns = (int) $questiondata->options->numcolumns;
+        $question->answers = $answerobject->create_from_data($questiondata->options->words);
     }
 
     public function export_to_xml($question, qformat_xml $format, $extra = null): string {
         $expout = parent::export_to_xml($question, $format, $extra);
-        $expout .= '<numrows>' . $format->xml_escape($question->options->numrows) . "</numrows>\n";
-        $expout .= '<numcolumns>' . $format->xml_escape($question->options->numcolumns) . "</numcolumns>\n";
+        $expout .= '    <numrows>' . $format->xml_escape($question->options->numrows) . "</numrows>\n";
+        $expout .= '    <numcolumns>' . $format->xml_escape($question->options->numcolumns) . "</numcolumns>\n";
         $words = $question->options->words;
         foreach ($words as $word => $value) {
-            $expout .= "<word>\n";
+            $expout .= "    <word>\n";
             foreach (self::WORD_FIELDS as $xmlfield) {
                 $exportedvalue = $format->xml_escape($value->{$xmlfield});
-                $expout .= "<$xmlfield>{$exportedvalue}</$xmlfield>\n";
+                $expout .= "        <$xmlfield>{$exportedvalue}</$xmlfield>\n";
             }
-            $expout .= "</word>\n";
+            $expout .= "    </word>\n";
         }
         $expout .= $format->write_combined_feedback($question->options, $question->id, $question->contextid);
         return $expout;

@@ -27,7 +27,7 @@ $string['addmorewordblanks'] = 'Blanks for {no} more words';
 $string['answer'] = 'Answer';
 $string['celltitle'] = 'Row {row}, Column {column}. {number} {orientation}. {clue}, letter {letter} of {count}';
 $string['clue'] = 'Clue';
-$string['columnindex'] = 'Column index';
+$string['startcolumn'] = 'Column index';
 $string['correctansweris'] = 'The correct answer is: {$a}';
 $string['correctanswersare'] = 'The correct answers are: {$a}';
 $string['down'] = 'Down';
@@ -48,16 +48,15 @@ $string['pluginnamesummary'] = 'A simple text-based crossword question. Currentl
 $string['preview'] = 'Preview';
 $string['privacy:metadata'] = 'The Crossword plugin does not store any personal data.';
 $string['refresh'] = 'Refresh preview';
-$string['rowindex'] = 'Row index';
+$string['startrow'] = 'Row index';
 $string['updateform'] = 'Update the form';
-$string['wordhdr'] = 'Words';
-$string['wordhdrhelper'] = 'Words';
 $string['wordhdrhelper_help'] = '<p>As the crossword is generated from the word list, you can either generate a single crossword layout for all users, or use the \'Shuffle crossword layout on new attempt\' option to generate a new layout for each new attempt per student (word combinations allowing).</p>
 <p>Add your words and clues using the text fields. If you want a specific word fixed on the grid, tick \'Fix word on grid\' and specify its orientation and placement.</p>
 <p>Most characters are supported in this question type, from A-Z, 0-9, diacritics and currency symbols etc. Any curly quotation marks or apostrophes will be converted or interpreted as \'straight\' versions for ease of input and auto-marking.</p>
 <p>Add more words by selecting the \'Blanks for 3 more words\' button. Any blank words will be removed when the question is saved.</p>';
 $string['wordno'] = 'Word {$a}';
 $string['words'] = 'Words';
+$string['words_help'] = 'Helping';
 $string['wrongintersection'] = 'The letter at the intersection of two words do not match. The word cannot be placed here.';
 $string['yougotnright'] = '{$a->num} of your answers are correct.';
 $string['yougot1right'] = '1 of your answers is correct.';

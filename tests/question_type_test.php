@@ -29,8 +29,6 @@ global $CFG;
 
 require_once($CFG->dirroot . '/question/format/xml/format.php');
 require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/combined/tests/helper.php');
-
 
 /**
  * Unit tests for the crossword question_type definition class
@@ -48,9 +46,9 @@ class question_type_test extends \question_testcase {
     }
 
     /**
-     * Test the export fuction
+     * Test the export fuction.
      *
-     * @covers qtype_crossword::export_to_xml
+     * @covers \qtype_crossword::export_to_xml
      */
     public function test_export_to_xml(): void {
         $qdata =
@@ -94,24 +92,24 @@ class question_type_test extends \question_testcase {
                                 'answer' => 'AAA',
                                 'clue' => 'Clue 1',
                                 'orientation' => 0,
-                                'rowindex' => 0,
-                                'columnindex' => 0,
+                                'startrow' => 0,
+                                'startcolumn' => 0,
                             ] ,
                             (object)[
                                 'questionid' => 8862,
                                 'answer' => 'BBB',
                                 'clue' => 'Clue 2',
                                 'orientation' => 0,
-                                'rowindex' => 1,
-                                'columnindex' => 0,
+                                'startrow' => 1,
+                                'startcolumn' => 0,
                             ] ,
                             (object)[
                                 'questionid' => 8862,
                                 'answer' => 'CCC',
                                 'clue' => 'Clue 3',
                                 'orientation' => 0,
-                                'rowindex' => 2,
-                                'columnindex' => 0,
+                                'startrow' => 2,
+                                'startcolumn' => 0,
                             ] ,
                         ]
                     ],
@@ -158,29 +156,29 @@ class question_type_test extends \question_testcase {
     <penalty>0.3333333</penalty>
     <hidden>0</hidden>
     <idnumber></idnumber>
-<numrows>0</numrows>
-<numcolumns>0</numcolumns>
-<word>
-<answer>AAA</answer>
-<clue>Clue 1</clue>
-<orientation>0</orientation>
-<rowindex>0</rowindex>
-<columnindex>0</columnindex>
-</word>
-<word>
-<answer>BBB</answer>
-<clue>Clue 2</clue>
-<orientation>0</orientation>
-<rowindex>1</rowindex>
-<columnindex>0</columnindex>
-</word>
-<word>
-<answer>CCC</answer>
-<clue>Clue 3</clue>
-<orientation>0</orientation>
-<rowindex>2</rowindex>
-<columnindex>0</columnindex>
-</word>
+    <numrows>0</numrows>
+    <numcolumns>0</numcolumns>
+    <word>
+        <answer>AAA</answer>
+        <clue>Clue 1</clue>
+        <orientation>0</orientation>
+        <startrow>0</startrow>
+        <startcolumn>0</startcolumn>
+    </word>
+    <word>
+        <answer>BBB</answer>
+        <clue>Clue 2</clue>
+        <orientation>0</orientation>
+        <startrow>1</startrow>
+        <startcolumn>0</startcolumn>
+    </word>
+    <word>
+        <answer>CCC</answer>
+        <clue>Clue 3</clue>
+        <orientation>0</orientation>
+        <startrow>2</startrow>
+        <startcolumn>0</startcolumn>
+    </word>
     <correctfeedback format="html">
       <text>Your answer is correct.</text>
     </correctfeedback>

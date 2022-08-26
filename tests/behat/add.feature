@@ -28,12 +28,12 @@ Feature: Test creating a Crossword question
       | id_answer_0                        | AAA                         |
       | id_answer_1                        | BBB                         |
       | id_answer_2                        | CCC                         |
-      | id_rowindex_0                      | 1                           |
-      | id_rowindex_1                      | 2                           |
-      | id_rowindex_2                      | 3                           |
-      | id_columnindex_0                   | 0                           |
-      | id_columnindex_1                   | 0                           |
-      | id_columnindex_2                   | 0                           |
+      | id_startrow_0                      | 1                           |
+      | id_startrow_1                      | 2                           |
+      | id_startrow_2                      | 3                           |
+      | id_startcolumn_0                   | 0                           |
+      | id_startcolumn_1                   | 0                           |
+      | id_startcolumn_2                   | 0                           |
       | For any correct response           | Correct feedback            |
       | For any partially correct response | Partially correct feedback. |
       | For any incorrect response         | Incorrect feedback.         |

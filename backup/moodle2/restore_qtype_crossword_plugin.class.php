@@ -20,8 +20,6 @@
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Restore plugin class that provides the necessary information needed to restore one crossword qtype plugin.
