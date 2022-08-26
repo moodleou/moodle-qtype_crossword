@@ -53,18 +53,39 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->penalty = 1;
         $cw->defaultmark = 1;
         $cw->qtype = question_bank::get_qtype('crossword');
-        $cw->numrows = 5;
-        $cw->numcolumns = 7;
-        $cw->answer = ['BRAZIL', 'PARIS', 'ITALY'];
-        $cw->clue = [
-            'where is the Christ the Redeemer statue located in?',
-            'Eiffel Tower is located in?',
-            'Where is the Leaning Tower of Pisa?'
+        $answerobject = new \qtype_crossword\answer();
+        $answerobject->numrows = 5;
+        $answerobject->numcolumns = 7;
+        $answers = [
+            (object) [
+                'id' => 1,
+                'questionid' => 1,
+                'clue' => 'where is the Christ the Redeemer statue located in?',
+                'answer' => 'BRAZIL',
+                'startcolumn' => 0,
+                'startrow' => 1,
+                'orientation' => 0,
+            ],
+            (object) [
+                'id' => 2,
+                'questionid' => 1,
+                'clue' => 'Eiffel Tower is located in?',
+                'answer' => 'PARIS',
+                'startcolumn' => 2,
+                'startrow' => 0,
+                'orientation' => 1,
+            ],
+            (object) [
+                'id' => 3,
+                'questionid' => 1,
+                'clue' => 'Where is the Leaning Tower of Pisa?',
+                'answer' => 'ITALY',
+                'startcolumn' => 2,
+                'startrow' => 3,
+                'orientation' => 0,
+            ],
         ];
-        $cw->orientation = [0, 1, 0];
-        $cw->rowindex = [1, 0, 3];
-        $cw->columnindex = [0, 2, 2];
-
+        $cw->answers = $answerobject->create_from_data($answers);
         return $cw;
     }
 
@@ -87,8 +108,8 @@ class qtype_crossword_test_helper extends question_test_helper {
             'Where is the Leaning Tower of Pisa?'
         ];
         $fromform->orientation = [0, 1, 0];
-        $fromform->rowindex = [1, 0, 3];
-        $fromform->columnindex = [0, 2, 2];
+        $fromform->startrow = [1, 0, 3];
+        $fromform->startcolumn = [0, 2, 2];
         $fromform->numrows = 5;
         $fromform->numcolumns = 7;
         return $fromform;

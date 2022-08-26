@@ -31,7 +31,9 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
 class question_test extends \advanced_testcase {
 
     /**
-     * @covers qtype_crossword_question::is_complete_response
+     * Test is_complete_response function.
+     *
+     * @covers \qtype_crossword_question::is_complete_response
      */
     public function test_is_complete_response() {
         $question = \test_question_maker::make_question('crossword');
@@ -42,7 +44,9 @@ class question_test extends \advanced_testcase {
     }
 
     /**
-     * @covers qtype_crossword_question::is_gradable_response
+     * Test function is_gradable_response.
+     *
+     * @covers \qtype_crossword_question::is_gradable_response
      */
     public function test_is_gradable_response() {
         $question = \test_question_maker::make_question('crossword');
@@ -53,7 +57,9 @@ class question_test extends \advanced_testcase {
     }
 
     /**
-     * @covers qtype_crossword_question::grade_response
+     * Test function grading.
+     *
+     * @covers \qtype_crossword_question::grade_response
      */
     public function test_grading() {
         $question = \test_question_maker::make_question('crossword');
@@ -66,7 +72,9 @@ class question_test extends \advanced_testcase {
     }
 
     /**
-     * @covers qtype_crossword_question::get_correct_response
+     * Test function get correct response.
+     *
+     * @covers \qtype_crossword_question::get_correct_response
      */
     public function test_get_correct_response() {
         $question = \test_question_maker::make_question('crossword');
@@ -74,7 +82,9 @@ class question_test extends \advanced_testcase {
     }
 
     /**
-     * @covers qtype_crossword_question::filter_answers
+     * Test function filter_answer.
+     *
+     * @covers \qtype_crossword_question::filter_answers
      * @dataProvider filter_answers_provider
      */
     public function test_filter_answers(array $answer, int $expected) {
@@ -88,6 +98,8 @@ class question_test extends \advanced_testcase {
 
     /**
      * Data provider for {@link test_filter_answers()}.
+     *
+     * @coversNothing
      * @return array
      */
     public function filter_answers_provider(): array {

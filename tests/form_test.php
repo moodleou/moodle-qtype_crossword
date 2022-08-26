@@ -23,7 +23,6 @@
  */
 
 namespace qtype_crossword;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Unit tests for qtype_crossword editing form.
@@ -37,6 +36,7 @@ class form_test extends \advanced_testcase {
     /**
      * Data provider for test_form_validation() test cases.
      *
+     * @coversNothing
      * @return array List of data sets (test cases)
      */
     public function test_form_validation_provider(): array {
@@ -55,10 +55,10 @@ class form_test extends \advanced_testcase {
                     'orientation' => [
                         0, 1, 0
                     ],
-                    'rowindex' => [
+                    'startrow' => [
                         1, 0, 3
                     ],
-                    'columnindex' => [
+                    'startcolumn' => [
                         0, 2, 2
                     ],
                 ], []
@@ -75,10 +75,10 @@ class form_test extends \advanced_testcase {
                     'orientation' => [
                         0, 0, 0
                     ],
-                    'rowindex' => [
+                    'startrow' => [
                         0, 0, 0
                     ],
-                    'columnindex' => [
+                    'startcolumn' => [
                         0, 0, 0
                     ],
                 ],
@@ -99,10 +99,10 @@ class form_test extends \advanced_testcase {
                   'orientation' => [
                       0, 0, 0
                   ],
-                  'rowindex' => [
+                  'startrow' => [
                       0, 0, 0
                   ],
-                  'columnindex' => [
+                  'startcolumn' => [
                       0, 0, 0
                   ],
               ], ['answeroptions[0]' => get_string('notenoughwords', 'qtype_crossword', 1)]
@@ -119,10 +119,10 @@ class form_test extends \advanced_testcase {
                   'orientation' => [
                       0, 0, 0
                   ],
-                  'rowindex' => [
+                  'startrow' => [
                       0, 1, 2
                   ],
-                  'columnindex' => [
+                  'startcolumn' => [
                       0, 0, 0
                   ],
               ], ['answeroptions[0]' => get_string('overflowposition', 'qtype_crossword')]
@@ -139,10 +139,10 @@ class form_test extends \advanced_testcase {
                   'orientation' => [
                       0, 0, 0
                   ],
-                  'rowindex' => [
+                  'startrow' => [
                       0, 1, 2
                   ],
-                  'columnindex' => [
+                  'startcolumn' => [
                       0, 0, 0
                   ],
               ], ['answeroptions[0]' => get_string('mustbealphanumeric', 'qtype_crossword')]
@@ -159,10 +159,10 @@ class form_test extends \advanced_testcase {
                     'orientation' => [
                         0, 0, 0
                     ],
-                    'rowindex' => [
+                    'startrow' => [
                         0, 1, 2
                     ],
-                    'columnindex' => [
+                    'startcolumn' => [
                         0, 0, 0
                     ],
                 ],
@@ -178,6 +178,7 @@ class form_test extends \advanced_testcase {
      * Test editing form validation.
      *
      * @dataProvider test_form_validation_provider
+     * @covers \validation
      * @param array $sampledata
      * @param array $expectederror
      */

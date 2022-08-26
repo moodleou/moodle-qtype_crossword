@@ -41,12 +41,12 @@ Feature: Test duplicating a quiz containing a Crossword question
       | id_answer_0                        | BRAZIL                                              |
       | id_answer_1                        | PARIS                                               |
       | id_answer_2                        | ITALY                                               |
-      | id_rowindex_0                      | 1                                                   |
-      | id_rowindex_1                      | 0                                                   |
-      | id_rowindex_2                      | 3                                                   |
-      | id_columnindex_0                   | 0                                                   |
-      | id_columnindex_1                   | 2                                                   |
-      | id_columnindex_2                   | 2                                                   |
+      | id_startrow_0                      | 1                                                   |
+      | id_startrow_1                      | 0                                                   |
+      | id_startrow_2                      | 3                                                   |
+      | id_startcolumn_0                   | 0                                                   |
+      | id_startcolumn_1                   | 2                                                   |
+      | id_startcolumn_2                   | 2                                                   |
       | For any correct response           | Correct feedback                                    |
       | For any partially correct response | Partially correct feedback.                         |
       | For any incorrect response         | Incorrect feedback.                                 |

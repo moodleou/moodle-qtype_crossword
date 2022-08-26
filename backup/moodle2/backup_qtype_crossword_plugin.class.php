@@ -20,8 +20,6 @@
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Provides the information to backup crossword questions.
@@ -54,7 +52,7 @@ class backup_qtype_crossword_plugin extends backup_qtype_plugin {
 
         // Define the elements.
         $words = new backup_nested_element('words');
-        $word = new backup_nested_element('word', ['id'], ['answer', 'clue', 'orientation', 'rowindex', 'columnindex']);
+        $word = new backup_nested_element('word', ['id'], ['answer', 'clue', 'orientation', 'startrow', 'startcolumn']);
         $words->add_child($word);
         $pluginwrapper->add_child($crossword);
         $pluginwrapper->add_child($words);

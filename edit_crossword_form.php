@@ -22,8 +22,6 @@
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Crossword question editing form definition.
  *
@@ -39,11 +37,6 @@ class qtype_crossword_edit_form extends question_edit_form {
     /** @var array The grid options. */
     protected $gridoptions;
 
-    /**
-     * Add question-type specific form fields.
-     *
-     * @param object $mform the form being built.
-     */
     protected function definition_inner($mform): void {
         // Set grid options.
         $this->gridoptions = range(3, 15);
@@ -69,16 +62,6 @@ class qtype_crossword_edit_form extends question_edit_form {
         $this->add_interactive_settings(true, true);
     }
 
-    /**
-     * Get the list of form elements to repeat, one for each answer.
-     * @param object $mform the form being built.
-     * @param $label the label to use for each option.
-     * @param $gradeoptions the possible grades for each answer.
-     * @param $repeatedoptions reference to array of repeated options to fill
-     * @param $wordsoptions reference to return the name of $question->options
-     *      field holding an array of answers
-     * @return array of form fields.
-     */
     protected function get_per_answer_fields($mform, $label, $gradeoptions,
             &$repeatedoptions, &$wordsoptions): array {
         $repeated = [];
@@ -127,21 +110,11 @@ class qtype_crossword_edit_form extends question_edit_form {
         return $repeated;
     }
 
-    /**
-     * Add a set of form fields, obtained from get_per_answer_fields, to the form,
-     * one for each existing answer, with some blanks for some new ones.
-     * @param object $mform the form being built.
-     * @param $label the label to use for each option.
-     * @param $gradeoptions the possible grades for each answer.
-     * @param $minoptions the minimum number of answer blanks to display.
-     *      Default QUESTION_NUMANS_START.
-     * @param $addoptions the number of answer blanks to add. Default QUESTION_NUMANS_ADD.
-     */
     protected function add_per_answer_fields(&$mform, $label, $gradeoptions,
         $minoptions = QUESTION_NUMANS_START, $addoptions = QUESTION_NUMANS_ADD) {
-        $mform->addElement('header', 'wordhdr',
+        $mform->addElement('header', 'words',
             get_string('words', 'qtype_crossword'), '');
-        $mform->setExpanded('wordhdr', 1);
+        $mform->setExpanded('words', 1);
         $answersoption = '';
         $repeatedoptions = [];
         $repeated = $this->get_per_answer_fields($mform, $label, $gradeoptions,
@@ -158,9 +131,6 @@ class qtype_crossword_edit_form extends question_edit_form {
             $this->get_more_choices_string(), true);
     }
 
-    /**
-     * Language string to use for 'Add {no} more {whatever we call answers}'.
-     */
     protected function get_more_choices_string() {
         return get_string('addmorewordblanks', 'qtype_crossword');
     }
@@ -212,10 +182,10 @@ class qtype_crossword_edit_form extends question_edit_form {
         $options->element = '#id_refresh';
         $options->target = '#crossword';
         $options->isPreview = true;
-        $PAGE->requires->js_call_amd('qtype_crossword/crossword', 'addEventHandlersReloadQuestion', [$options]);
+        $PAGE->requires->js_call_amd('qtype_crossword/crossword', 'preview', [$options]);
 
         $this->add_per_answer_fields($mform, get_string('wordno', 'qtype_crossword', '{no}'), question_bank::fraction_options());
-        $mform->addHelpButton('wordhdr', 'wordhdrhelper', 'qtype_crossword');
+        $mform->addHelpButton('words', 'words', 'qtype_crossword');
     }
 
     /**
@@ -233,22 +203,16 @@ class qtype_crossword_edit_form extends question_edit_form {
         $rowoptions = array_slice($numberrange, 0, $this->numrows);
 
         // Add row index field.
-        $repeated[] = $mform->createElement('select', 'rowindex', get_string('rowindex', 'qtype_crossword'), $rowoptions);
-        $mform->setType('rowindex', PARAM_INT);
+        $repeated[] = $mform->createElement('select', 'startrow', get_string('startrow', 'qtype_crossword'), $rowoptions);
+        $mform->setType('startrow', PARAM_INT);
 
         // Add column index field.
-        $repeated[] = $mform->createElement('select', 'columnindex', get_string('columnindex', 'qtype_crossword'), $columnoptions);
-        $mform->setType('columnindex', PARAM_INT);
+        $repeated[] = $mform->createElement('select', 'startcolumn', get_string('startcolumn', 'qtype_crossword'), $columnoptions);
+        $mform->setType('startcolumn', PARAM_INT);
 
         return $repeated;
     }
 
-    /**
-     * Overwrite the data before sending out to form.
-     *
-     * @param object $question The question object.
-     * @return object The custom question object.
-     */
     protected function data_preprocessing($question): object {
         $question = parent::data_preprocessing($question);
         $question = $this->data_preprocessing_combined_feedback($question, true);
@@ -268,8 +232,8 @@ class qtype_crossword_edit_form extends question_edit_form {
         $answer = [];
         $clue = [];
         $orientation = [];
-        $rowindex = [];
-        $columnindex = [];
+        $startrow = [];
+        $startcolumn = [];
         $answers = [];
         if (isset($question->id)) {
             $answers = $DB->get_records('qtype_crossword_words', ['questionid' => $question->id], 'id ASC');
@@ -279,8 +243,8 @@ class qtype_crossword_edit_form extends question_edit_form {
                 $answer[] = $answerdata->answer;
                 $clue[] = $answerdata->clue;
                 $orientation[] = $answerdata->orientation;
-                $rowindex[] = $answerdata->rowindex;
-                $columnindex[] = $answerdata->columnindex;
+                $startrow[] = $answerdata->startrow;
+                $startcolumn[] = $answerdata->startcolumn;
             }
         }
 
@@ -292,19 +256,11 @@ class qtype_crossword_edit_form extends question_edit_form {
         $question->answer = $answer;
         $question->clue = $clue;
         $question->orientation = $orientation;
-        $question->rowindex = $rowindex;
-        $question->columnindex = $columnindex;
+        $question->startrow = $startrow;
+        $question->startcolumn = $startcolumn;
         return $question;
     }
 
-    /**
-     * Custom validation.
-     *
-     * @param array $data The question data.
-     * @param array $files The array of uploaded files "element_name"=>tmp_file_path.
-     *
-     * @return array The error list.
-     */
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
         $answercount = 0;
@@ -364,20 +320,20 @@ class qtype_crossword_edit_form extends question_edit_form {
         $answerlength = mb_strlen(trim($data['answer'][$iteral]));
         $orientation = (int) $data['orientation'][$iteral];
         $griddata = range(3, 15);
-        $rowindex = $data['rowindex'][$iteral] ?? null;
-        $columnindex = $data['columnindex'][$iteral] ?? null;
+        $startrow = $data['startrow'][$iteral] ?? null;
+        $startcolumn = $data['startcolumn'][$iteral] ?? null;
 
-        if (is_null($rowindex) || is_null($columnindex)) {
+        if (is_null($startrow) || is_null($startcolumn)) {
             return false;
         }
 
         // Set default real length.
-        $reallength = $answerlength + (int) $columnindex;
+        $reallength = $answerlength + (int) $startcolumn;
         // Allow length is the number of columns or rows.
         $allowlength = $griddata[$data['numcolumns']];
         // Based on the orientation, we will calculate the real word length.
         if ($orientation) {
-            $reallength = $answerlength + (int) $rowindex;
+            $reallength = $answerlength + (int) $startrow;
             $allowlength = $griddata[$data['numrows']];
         }
         return ($reallength <= $allowlength);
@@ -395,17 +351,17 @@ class qtype_crossword_edit_form extends question_edit_form {
     private function get_word_conflict(array $data, int $iteral, array &$except): array {
         $answer1 = trim(strtolower($data['answer'][$iteral]));
         $positions = [];
-        $rowindex = $data['rowindex'][$iteral] ?? null;
-        $columnindex = $data['columnindex'][$iteral] ?? null;
+        $startrow = $data['startrow'][$iteral] ?? null;
+        $startcolumn = $data['startcolumn'][$iteral] ?? null;
 
-        if (is_null($rowindex) || is_null($columnindex)) {
+        if (is_null($startrow) || is_null($startcolumn)) {
             return $positions;
         }
 
         // Get the coordinates of the first word.
         $line1 = $this->detect_word_coordinate(
-            $rowindex,
-            $columnindex,
+            $startrow,
+            $startcolumn,
             $answer1,
             $data['orientation'][$iteral]
         );
@@ -419,13 +375,13 @@ class qtype_crossword_edit_form extends question_edit_form {
                 continue;
             }
             // Ignore checked words and invalid word.
-            if (in_array($i, $except) || is_null($data['rowindex'][$i]) || is_null($data['columnindex'][$i])) {
+            if (in_array($i, $except) || is_null($data['startrow'][$i]) || is_null($data['startcolumn'][$i])) {
                 continue;
             }
             // Get the word's coordinates .
             $line2 = $this->detect_word_coordinate(
-                $data['rowindex'][$i],
-                $data['columnindex'][$i],
+                $data['startrow'][$i],
+                $data['startcolumn'][$i],
                 $answer2,
                 $data['orientation'][$i]
             );
@@ -434,15 +390,15 @@ class qtype_crossword_edit_form extends question_edit_form {
             if ($intersects = $this->get_intersect_points($lines, $data['orientation'][$iteral])) {
                 foreach ($intersects as $intersect) {
                     if ($data['orientation'][$iteral]) {
-                        $character1 = $answer1[$intersect[1] - $data['rowindex'][$iteral]] ?? '';
+                        $character1 = $answer1[$intersect[1] - $data['startrow'][$iteral]] ?? '';
                     } else {
-                        $character1 = $answer1[$intersect[0] - $data['columnindex'][$iteral]] ?? '';
+                        $character1 = $answer1[$intersect[0] - $data['startcolumn'][$iteral]] ?? '';
                     }
 
                     if ($data['orientation'][$i]) {
-                        $character2 = $answer2[$intersect[1] - $data['rowindex'][$i]] ?? '';
+                        $character2 = $answer2[$intersect[1] - $data['startrow'][$i]] ?? '';
                     } else {
-                        $character2 = $answer2[$intersect[0] - $data['columnindex'][$i]] ?? '';
+                        $character2 = $answer2[$intersect[0] - $data['startcolumn'][$i]] ?? '';
                     }
                     // Compare letters.
                     if ($character1 !== $character2) {
@@ -462,16 +418,16 @@ class qtype_crossword_edit_form extends question_edit_form {
      * Retrieve the coordinate of word.
      * It's an array contains the coordinates of this word.
      *
-     * @param string $rowindex The row index data.
-     * @param string $columnindex The column index data.
+     * @param string $startrow The row index data.
+     * @param string $startcolumn The column index data.
      * @param string $anwser The answer data.
      * @param string $orientation The orientation.
      *
      * @return array The coordinate data [x1, y1, x2, y2].
      */
-    private function detect_word_coordinate(string $rowindex, string $columnindex, string $anwser, string $orientation): array {
-        $x1 = (int) $columnindex;
-        $y1 = (int) $rowindex;
+    private function detect_word_coordinate(string $startrow, string $startcolumn, string $anwser, string $orientation): array {
+        $x1 = (int) $startcolumn;
+        $y1 = (int) $startrow;
         // Retrieve the answer length.
         $anwserlength = mb_strlen(trim($anwser)) - 1;
         // Set the default coordinate for the second point.

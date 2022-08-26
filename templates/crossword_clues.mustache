@@ -48,12 +48,10 @@
 }}
 
 <div class="qtext"> {{{ questiontext }}}</div>
-<div class="contain-crossword">
+<div class="qtype_crossword-grid-wrapper">
     <div class="row mx-auto my-3">
-        <div class="col-12 col-md-8 wrap-crossword">
-            <div class="sticky-clue px-3 d-block d-md-none">
-                <strong></strong>
-                <span></span>
+        <div class="col-12 col-md-8 wrap-crossword position-relative">
+            <div class="sticky-clue d-block d-md-none pb-3 pb-md-0">
             </div>
             <div>
                 <div class="mx-auto" id="crossword"></div>
@@ -64,54 +62,16 @@
                 <div class="row mx-auto">
                     <h5 class="orientation w-100">{{#str}} across, qtype_crossword {{/str}}</h5>
                     <div class="across-contain w-100">
-                    {{#across}}
-                        <div class="col-12 wrap-clue" question-id="{{number}}">
-                            <div class="d-flex my-2">
-                                <div class="clue-id"><span>{{number}}</span></div>
-                                <div class="clue-content">{{clue}} ({{length}})</div>
-                            </div>
-                            <label class="accesshide" for="{{id}}">{{#str}} wordno, qtype_crossword, {{number}} {{/str}}</label>
-                            <input
-                                type="text"
-                                class="control {{classes}}"
-                                {{attributes}}
-                                value="{{value}}"
-                                autocomplete="off"
-                                autocorrect="off"
-                                disabled
-                                aria-label="{{title}}"
-                                spellcheck="false">
-                            {{#feedbackimage}}
-                                {{{feedbackimage}}}
-                            {{/feedbackimage}}
-                        </div>
-                    {{/across}}
+                        {{#across}}
+                            {{> qtype_crossword/clue }}
+                        {{/across}}
                     </div>
                 </div>
                 <div class="row mx-auto mt-3">
                     <h5 class="orientation w-100">{{#str}} down, qtype_crossword {{/str}}</h5>
                     <div class="down-contain w-100">
                         {{#down}}
-                            <div class="col-12 wrap-clue" question-id="{{number}}">
-                                <div class="d-flex my-2">
-                                    <div class="clue-id"><span>{{number}}</span></div>
-                                    <div class="clue-content">{{clue}} ({{length}})</div>
-                                </div>
-                                <label class="accesshide" for="{{id}}">{{#str}} wordno, qtype_crossword, {{number}} {{/str}}</label>
-                                <input
-                                    type="text"
-                                    class="control {{classes}}"
-                                    {{attributes}}
-                                    value="{{value}}"
-                                    aria-label="{{title}}"
-                                    disabled
-                                    autocomplete="off"
-                                    autocorrect ="off"
-                                    spellcheck="false">
-                                {{#feedbackimage}}
-                                    {{{feedbackimage}}}
-                                {{/feedbackimage}}
-                            </div>
+                            {{> qtype_crossword/clue }}
                         {{/down}}
                     </div>
                 </div>
