@@ -36,6 +36,7 @@ require_once($CFG->libdir.'/questionlib.php');
  */
 class qtype_crossword extends question_type {
 
+    /** @const array The word fields list */
     private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'startrow', 'startcolumn'];
 
     public function get_question_options($question): bool {
@@ -179,11 +180,18 @@ class qtype_crossword extends question_type {
 
     protected function initialise_question_instance($question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
-        $answerobject = new \qtype_crossword\answer();
         $this->initialise_combined_feedback($question, $questiondata, true);
-        $answerobject->numrows = (int) $questiondata->options->numrows;
-        $answerobject->numcolumns = (int) $questiondata->options->numcolumns;
-        $question->answers = $answerobject->create_from_data($questiondata->options->words);
+        foreach ($questiondata->options->words as $answer) {
+            $question->answers[] = new \qtype_crossword\answer(
+                $answer->answer,
+                $answer->clue,
+                $answer->orientation,
+                $answer->startrow,
+                $answer->startcolumn,
+            );
+        }
+        $question->numrows = (int) $questiondata->options->numrows;
+        $question->numcolumns = (int) $questiondata->options->numcolumns;
     }
 
     public function export_to_xml($question, qformat_xml $format, $extra = null): string {

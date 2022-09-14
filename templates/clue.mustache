@@ -21,32 +21,17 @@
 
     Example context (json):
     {
-        "questiontext": "crossword",
-        "across": [
-            {
-              "number": 1,
-              "clue": "Lorem ipsum dolor",
-              "length": 3,
-              "attributes": "Lorem ipsum dolor",
-              "feedbackimage": "Image",
-              "title": "Title",
-              "id": "id"
-            }
-        ],
-        "down": [
-            {
-              "number": "",
-              "clue": "",
-              "length": "",
-              "attributes": "",
-              "feedbackimage": "",
-              "title": "Title",
-              "id": "id"
-            }
-        ]
+      "number": "",
+      "clue": "",
+      "length": "",
+      "value": "",
+      "attributes": "id=q38:1_sub1",
+      "feedbackimage": "",
+      "title": "Title",
+      "id": "q38:1_sub1"
     }
 }}
-<div class="col-12 wrap-clue" question-id="{{number}}">
+<div class="col-12 wrap-clue" data-questionid="{{number}}">
     <div class="d-flex my-2">
         <div class="clue-id"><span>{{number}}</span></div>
         <div class="clue-content">{{clue}} ({{length}})</div>
@@ -60,7 +45,6 @@
         aria-label="{{title}}"
         disabled
         autocomplete="off"
-        autocorrect ="off"
         spellcheck="false">
     {{#feedbackimage}}
         {{{feedbackimage}}}

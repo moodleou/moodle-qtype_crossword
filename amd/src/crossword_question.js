@@ -106,7 +106,7 @@ export class CrosswordQuestion {
      * @return {Boolean} The value data.
      */
     isInvalidAnswer = function(answer) {
-        return /[-@!$%^&*()_+|~=`\\#{}\[\]:";'<>?,.\/]/gi.test(answer);
+        return /[-@!$%^&*()_+|~=`\\#{}[\]:";'<>?,./]/gi.test(answer);
     };
 
     /**
@@ -154,7 +154,7 @@ export class CrosswordQuestion {
     focusClue() {
         const {wordNumber} = this.options;
         const containCrosswordEl = this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper');
-        const clueEl = containCrosswordEl.querySelector(`.wrap-clue[question-id='${wordNumber}']`);
+        const clueEl = containCrosswordEl.querySelector(`.wrap-clue[data-questionid='${wordNumber}']`);
         const clueFocusEl = containCrosswordEl.querySelector(`.wrap-clue.focus`);
         // Remove the current focus cell.
         if (clueFocusEl) {
@@ -198,7 +198,7 @@ export class CrosswordQuestion {
      * @return {String} The value data.
      */
     replaceText(value) {
-        return value.replace(/[-@!$%^&*()_+|~=`\\#{}\[\]:";'<>?,.\/]/gi, '');
+        return value.replace(/[-@!$%^&*()_+|~=`\\#{}[\]:";'<>?,./]/gi, '');
     }
 
     /**
@@ -226,7 +226,7 @@ export class CrosswordQuestion {
                     }
                     const clueInputEl = this.options.crosswordEl
                         .closest('.qtype_crossword-grid-wrapper')
-                        .querySelector(`.wrap-clue[question-id='${wordId}'] input`);
+                        .querySelector(`.wrap-clue[data-questionid='${wordId}'] input`);
                     value = this.replaceAt(clueInputEl.value, letterIndex, key);
                     clueInputEl.value = value.toUpperCase();
                 }
@@ -368,7 +368,7 @@ export class CrosswordQuestion {
         this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper').querySelectorAll('.wrap-clue input')
             .forEach(element => {
                 // Tricky, update word number.
-                this.options.wordNumber = parseInt(element.closest('.wrap-clue').getAttribute('question-id'));
+                this.options.wordNumber = parseInt(element.closest('.wrap-clue').getAttribute('data-questionid'));
                 const word = words.find(o => o.number === this.options.wordNumber);
                 if (!word) {
                     return;

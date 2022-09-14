@@ -349,15 +349,16 @@ export class CrosswordGrid extends CrosswordQuestion {
                     let currentWord = existingRectElement.closest('g').getAttribute('word');
                     let g;
                     existingRectElement.closest('g').setAttributeNS(null, 'word', currentWord + '(' + word.number + ')');
-                    if (parseInt(key) === 0) {
-                        if (existingNumberElement) {
-                            // Append word number, if this cell is existed another one.
-                            existingNumberElement.append(', ' + word.number);
-                        } else {
-                            // Create new word number.
-                            g = existingRectElement.closest('g');
-                            this.appendCellNumber(g, position, word.number);
-                        }
+                    if (parseInt(key) !== 0) {
+                        continue;
+                    }
+                    if (existingNumberElement) {
+                        // Append word number, if this cell is existed another one.
+                        existingNumberElement.append(', ' + word.number);
+                    } else {
+                        // Create new word number.
+                        g = existingRectElement.closest('g');
+                        this.appendCellNumber(g, position, word.number);
                     }
                 }
             }
@@ -531,6 +532,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                     nextCellEl.dispatchEvent(new Event('click'));
                 }
             }
+            return true;
         });
 
         inputEl.addEventListener('keyup', (event) => {

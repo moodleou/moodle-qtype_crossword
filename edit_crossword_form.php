@@ -266,6 +266,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         $answercount = 0;
         $answers = $data['answer'];
         $clues = $data['clue'];
+        // phpcs:ignore
         $regex = '/[-@!$%^&*()_+|~=`\\#{}\[\]:";\'<>?,.\/]/';
         $except = [];
         for ($i = 0; $i < count($answers); $i++) {

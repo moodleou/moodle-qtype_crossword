@@ -42,8 +42,8 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         ];
         $selected = 0;
         $binddata = [
-            'colsNum' => $question->answers->numcolumns + 3,
-            'rowsNum' => $question->answers->numrows + 3,
+            'colsNum' => $question->numcolumns + 3,
+            'rowsNum' => $question->numrows + 3,
             'isPreview' => false,
             'title' => get_string('celltitle', 'qtype_crossword'),
             'orientation' => $orientationvalue,
@@ -51,32 +51,32 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             'readonly' => false
         ];
         $data['questiontext'] = $question->questiontext;
-        for ($i = 0; $i < count($question->answers->answer); $i++) {
+        foreach ($question->answers as $key => $answer) {
             $orientation = 'across';
-            $fieldname = 'sub' . $i;
-            $length = mb_strlen($question->answers->answer[$i]);
+            $fieldname = 'sub' . $key;
+            $length = mb_strlen($answer->answer);
             $inputname = $qa->get_qt_field_name($fieldname);
             $inputvalue = $qa->get_last_qt_var($fieldname);
-            $number = $i + 1;
-            $clue = $question->answers->clue[$i];
+            $number = $key + 1;
+            $clue = $answer->clue;
             $title = get_string(
                 'inputtitle',
                 'qtype_crossword',
                 (object) [
                     'number' => $number,
-                    'orientation' => $orientationvalue[$question->answers->orientation[$i]],
+                    'orientation' => $orientationvalue[$answer->orientation],
                     'clue' => $clue,
                     'length' => $length
                 ]
             );
-            if ($question->answers->orientation[$i]) {
+
+            if ($answer->orientation) {
                 $orientation = 'down';
             }
 
             $attributes = "name=$inputname id=$inputname maxlength=$length";
 
             $inputdata = [
-                'attribute' => '',
                 'number' => $number,
                 'clue' => $clue,
                 'length' => $length,
@@ -89,10 +89,10 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $binddata['words'][] = [
                 'number' => $number,
                 'clue' => $clue,
-                'startRow' => (int) $question->answers->startrow[$i],
-                'startColumn' => (int) $question->answers->startcolumn[$i],
-                'length' => mb_strlen($question->answers->answer[$i]),
-                'orientation' => (int) $question->answers->orientation[$i]
+                'startRow' => (int) $answer->startrow,
+                'startColumn' => (int) $answer->startcolumn,
+                'length' => $length,
+                'orientation' => (int) $answer->orientation,
             ];
 
             if ($options->readonly) {
@@ -104,7 +104,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 $selected = $response[$fieldname];
             }
 
-            $fraction = (int) ($selected && $selected === $question->answers->answer[$i]);
+            $fraction = (int) ($selected && $selected === $answer->answer);
             if ($options->correctness) {
                 $inputdata['classes'] = $this->feedback_class($fraction);
                 $inputdata['feedbackimage'] = $this->feedback_image($fraction);
@@ -130,8 +130,8 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
     public function correct_response(question_attempt $qa): string {
         $question = $qa->get_question();
         $right = [];
-        foreach ($question->answers->answer as $ansid => $ans) {
-            $right[] = $question->make_html_inline($question->format_text($ans, 1,
+        foreach ($question->answers as $ansid => $ans) {
+            $right[] = $question->make_html_inline($question->format_text($ans->answer, 1,
                 $qa, 'question', 'answer', $ansid));
         }
         return $this->correct_choices($right);

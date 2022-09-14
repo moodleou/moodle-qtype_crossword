@@ -15,13 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package qtype_crossword
- * @copyright 2022 The Open University
- * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-
-/**
  * Restore plugin class that provides the necessary information needed to restore one crossword qtype plugin.
  *
  * @package qtype_crossword
@@ -72,6 +65,8 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
     }
 
     /**
+     * Process the qtype crossword data with the table name.
+     *
      * @param array $data XML data.
      * @param string $tablename Table name
      */

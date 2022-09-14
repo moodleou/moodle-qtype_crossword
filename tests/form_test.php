@@ -23,6 +23,12 @@
  */
 
 namespace qtype_crossword;
+use qtype_crossword_test_helper;
+
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+
+require_once($CFG->dirroot . '/question/type/crossword/tests/helper.php');
 
 /**
  * Unit tests for qtype_crossword editing form.
@@ -188,7 +194,8 @@ class form_test extends \advanced_testcase {
         $gen = $this->getDataGenerator();
         $course = $gen->create_course();
         $context = \context_course::instance($course->id);
-        $contexts = new \core_question\local\bank\question_edit_contexts($context);
+
+        $contexts = qtype_crossword_test_helper::question_edit_contexts($context);
         $category = question_make_default_categories($contexts->all());
 
         $question = new \stdClass();

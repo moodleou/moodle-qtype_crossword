@@ -84,6 +84,9 @@ class question_test extends \advanced_testcase {
     /**
      * Test function filter_answer.
      *
+     * @param array $answer Answerq list.
+     * @param int $expected Expected data.
+     *
      * @covers \qtype_crossword_question::filter_answers
      * @dataProvider filter_answers_provider
      */
@@ -97,7 +100,7 @@ class question_test extends \advanced_testcase {
     }
 
     /**
-     * Data provider for {@link test_filter_answers()}.
+     * Data provider for the test_filter_answers test.
      *
      * @coversNothing
      * @return array

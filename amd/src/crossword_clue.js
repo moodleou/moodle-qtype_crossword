@@ -43,7 +43,7 @@ export class CrosswordClue extends CrosswordQuestion {
             .closest('.qtype_crossword-grid-wrapper')
             .querySelectorAll('.contain-clue .wrap-clue');
         clueEls.forEach(el => {
-            const questionId = el.getAttribute('question-id');
+            const questionId = el.getAttribute('data-questionid');
             let word = words.find(o => o.number === parseInt(questionId));
             if (word) {
                 const inputEl = el.querySelector('input');
