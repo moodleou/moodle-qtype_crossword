@@ -100,7 +100,6 @@ jobs:
         run: moodle-plugin-ci savepoints
 
       - name: Mustache Lint
-        continue-on-error: true # We are getting a false positive due to MDLSITE-6744 so ignore.
         if: ${{ always() }}
         run: moodle-plugin-ci mustache
 

@@ -15,13 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package qtype_crossword
- * @copyright 2022 The Open University
- * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-
-/**
  * Provides the information to backup crossword questions.
  *
  * @package qtype_crossword

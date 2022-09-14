@@ -26,62 +26,35 @@ namespace qtype_crossword;
 class answer {
 
     // Class properties.
-    /** @var array The answers list. */
+    /** @var string The answers value. */
     public $answer;
 
-    /** @var array The clues list. */
+    /** @var string The clues value. */
     public $clue;
 
-    /** @var array The orientations list. */
+    /** @var string The orientations value. */
     public $orientation;
 
-    /** @var array The startrow list. */
+    /** @var string The startrow value. */
     public $startrow;
 
-    /** @var array The startcolumn list. */
+    /** @var string The startcolumn value. */
     public $startcolumn;
-
-    /** @var int The numrows list. */
-    public $numrows;
-
-    /** @var int The numcolumns list. */
-    public $numcolumns;
 
     /**
      * Answer constructor.
-     * @param array $answer
-     * @param array $clue
-     * @param array $orientation
-     * @param array $startrow
-     * @param array $startcolumn
-     * @param int $numrows
-     * @param int $numcolumns
+     * @param string $answer
+     * @param string $clue
+     * @param string $orientation
+     * @param string $startrow
+     * @param string $startcolumn
      */
-    public function __construct(array $answer = [], array $clue = [], array $orientation = [],
-            array $startrow = [], array $startcolumn = [], int $numrows = 7, int $numcolumns = 7) {
+    public function __construct(string $answer, string $clue, string $orientation,
+        string $startrow, string $startcolumn) {
         $this->answer = $answer;
         $this->clue = $clue;
         $this->orientation = $orientation;
         $this->startrow = $startrow;
         $this->startcolumn = $startcolumn;
-        $this->numrows = $numrows;
-        $this->numcolumns = $numcolumns;
-    }
-
-    /**
-     * Create list answers from input data.
-     *
-     * @param array $answers Answer list data input.
-     * @return object Answer list object.
-     */
-    public function create_from_data(array $answers): object {
-        foreach ($answers as $answer) {
-            $this->answer[] = $answer->answer;
-            $this->clue[] = $answer->clue;
-            $this->orientation[] = $answer->orientation;
-            $this->startrow[] = $answer->startrow;
-            $this->startcolumn[] = $answer->startcolumn;
-        }
-        return $this;
     }
 }

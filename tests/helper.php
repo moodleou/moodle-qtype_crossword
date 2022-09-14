@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
+require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
 
 /**
  * Test helper class for the crossword question type.
@@ -34,12 +35,19 @@ global $CFG;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_crossword_test_helper extends question_test_helper {
-    public function get_test_questions() {
+
+    /**
+     * Get test question function.
+     *
+     * @return array The test question array.
+     */
+    public function get_test_questions(): array {
         return ['normal'];
     }
 
     /**
      * Makes a normal crossword question.
+     *
      * @return qtype_crossword_question
      */
     public function make_crossword_question_normal() {
@@ -52,11 +60,10 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->correctfeedbackformat = FORMAT_HTML;
         $cw->penalty = 1;
         $cw->defaultmark = 1;
+        $cw->numrows = 5;
+        $cw->numcolumns = 7;
         $cw->qtype = question_bank::get_qtype('crossword');
-        $answerobject = new \qtype_crossword\answer();
-        $answerobject->numrows = 5;
-        $answerobject->numcolumns = 7;
-        $answers = [
+        $answerslist = [
             (object) [
                 'id' => 1,
                 'questionid' => 1,
@@ -85,7 +92,16 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 0,
             ],
         ];
-        $cw->answers = $answerobject->create_from_data($answers);
+
+        foreach ($answerslist as $answer) {
+            $cw->answers[] = new \qtype_crossword\answer(
+                $answer->answer,
+                $answer->clue,
+                $answer->orientation,
+                $answer->startrow,
+                $answer->startcolumn,
+            );
+        }
         return $cw;
     }
 
@@ -115,4 +131,18 @@ class qtype_crossword_test_helper extends question_test_helper {
         return $fromform;
     }
 
+    /**
+     * Retrieve the context object.
+     * @param \context $context the current context.
+     *
+     * @return object The context object.
+     */
+    public static function question_edit_contexts(\context $context): object {
+        if (class_exists('\core_question\local\bank\question_edit_contexts')) {
+            $contexts = new \core_question\local\bank\question_edit_contexts($context);
+        } else {
+            $contexts = new \question_edit_contexts($context);
+        }
+        return $contexts;
+    }
 }

@@ -7,7 +7,7 @@
 }
 
 #page-question-type-crossword .mform .form-group.has-danger .col-md-9[data-fieldtype="group"] {
-    border: none !important;
+    border: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 #page-question-type-crossword .crossword-contain {
@@ -19,7 +19,7 @@
     width: 100%;
     max-width: 100%;
     border-spacing: 0;
-    border-collapse: collapse
+    border-collapse: collapse;
 }
 
 #page-question-type-crossword .grid-row {
@@ -36,11 +36,11 @@
 }
 
 #page-question-type-crossword fieldset#id_words .fcontainer input[name^="answer"],
-.qtype_crossword-grid-wrapper .wrap-crossword #crossword form .crossword .formulation input[type="text"]{
+.qtype_crossword-grid-wrapper .wrap-crossword #crossword form .crossword .formulation input[type="text"] {
     text-transform: uppercase;
 }
 
-#page-question-type-crossword fieldset#id_wordhdr legend a{
+#page-question-type-crossword fieldset#id_wordhdr legend a {
     margin-top: 15px;
 }
 
@@ -50,7 +50,7 @@
 
 #page-question-type-crossword .grid-square:not(.square-indicate-horizontal),
 #page-question-type-crossword .grid-square:not(.square-indicate-vertical) {
-    border: 1px solid #000000;
+    border: 1px solid #000;
 }
 
 #page-question-type-crossword #crossword .crossword-grid .grid-square.background-white,
@@ -71,7 +71,7 @@
     background-clip: padding-box;
     padding: 20px 25px;
     text-align: center;
-    background-color: #A6A6A6;
+    background-color: #a6a6a6;
 }
 
 #page-question-type-crossword .grid-square .word-label {
@@ -91,16 +91,16 @@
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword {
     position: relative;
     max-width: 700px;
-    background: #000000;
+    background: #000;
 }
 
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-cell {
     cursor: pointer;
-    fill: #ffffff;
+    fill: #fff;
 }
 
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-grid-background {
-    fill: #000000;
+    fill: #000;
 }
 
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-cell-highlighted {
@@ -201,8 +201,8 @@
 }
 
 @media print {
-     .qtype_crossword-grid-wrapper #crossword svg g rect {
-        stroke: #000000;
+    .qtype_crossword-grid-wrapper #crossword svg g rect {
+        stroke: #000;
         stroke-width: 0.5px;
     }
 }

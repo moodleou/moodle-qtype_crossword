@@ -32,8 +32,14 @@
  */
 class qtype_crossword_question extends question_graded_automatically {
 
-    /** @var object The answers object list. */
+    /** @var object The answers object. */
     public $answers;
+
+    /** @var int The row number. */
+    public $numrows;
+
+    /** @var int The column number. */
+    public $numcolumns;
 
     /**
      * Answer field name.
@@ -47,7 +53,7 @@ class qtype_crossword_question extends question_graded_automatically {
 
     public function get_expected_data(): array {
         $response = [];
-        for ($i = 0; $i < count($this->answers->answer); $i++) {
+        for ($i = 0; $i < count($this->answers); $i++) {
             $response[$this->field($i)] = PARAM_RAW_TRIMMED;
         }
         return $response;
@@ -55,9 +61,9 @@ class qtype_crossword_question extends question_graded_automatically {
 
     public function get_correct_response(): ?array {
         $response = [];
-        $answers = $this->answers->answer;
+        $answers = $this->answers;
         for ($i = 0; $i < count($answers); $i++) {
-            $response[$this->field($i)] = $this->answers->answer[$i];
+            $response[$this->field($i)] = $this->answers[$i]->answer;
         }
         return $response;
     }
@@ -75,7 +81,7 @@ class qtype_crossword_question extends question_graded_automatically {
 
     public function is_complete_response(array $response): bool {
         $filteredresponse = $this->filter_answers($response);
-        return count($this->answers->answer) === count($filteredresponse);
+        return count($this->answers) === count($filteredresponse);
     }
 
     public function is_gradable_response(array $response): bool {
@@ -91,7 +97,7 @@ class qtype_crossword_question extends question_graded_automatically {
     }
 
     public function is_same_response(array $prevresponse, array $newresponse): bool {
-        foreach ($this->answers->answer as $key => $notused) {
+        foreach ($this->answers as $key => $notused) {
             $fieldname = $this->field($key);
             if (!question_utils::arrays_same_at_key(
                 $prevresponse, $newresponse, $fieldname)) {
@@ -108,7 +114,10 @@ class qtype_crossword_question extends question_graded_automatically {
     }
 
     public function get_num_parts_right(array $response): array {
-        $answers = $this->answers->answer;
+        $answers = array_map(function($answer) {
+            return $answer->answer;
+        }, $this->answers);
+
         $numright = count($answers) - count(array_diff($answers, $response));
         return [$numright, count($answers)];
     }
@@ -116,7 +125,7 @@ class qtype_crossword_question extends question_graded_automatically {
     public function clear_wrong_from_response(array $response): array {
         $key = 0;
         foreach ($response as $answer) {
-            if ($this->answers->answer[$key] !== $answer) {
+            if ($this->answers[$key]->answer !== $answer) {
                 $response[$this->field($key)] = '';
             }
             $key++;
