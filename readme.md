@@ -1,14 +1,15 @@
 # Crossword question type
 
-Warning, this is still work in progress, and not finished yet.
+A first working version of a crossword question type, currently in beta.
 
 
 ## Installation and set-up
 
 ### Install from the plugins database
 
-Eventually, we hope this question type will be published at
-* https://moodle.org/plugins/qtype_crossword
+We hope this question type will be published at https://moodle.org/plugins/qtype_crossword
+once it has been approved.
+
 
 ### Install using git
 

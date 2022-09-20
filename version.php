@@ -25,8 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qtype_crossword';
-$plugin->release = '0.1.0';
-$plugin->version = 2022072900;
-$plugin->requires = 2021051700;
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->version   = 2022092000;
+$plugin->requires  = 2021051700;
+$plugin->release   = 'v0.9.0 for Moodle 3.11+';
+$plugin->maturity  = MATURITY_BETA;
+
 $plugin->outestssufficient = true;
