@@ -47,7 +47,6 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             'isPreview' => false,
             'title' => get_string('celltitle', 'qtype_crossword'),
             'orientation' => $orientationvalue,
-            'words' => [],
             'readonly' => false
         ];
         $data['questiontext'] = $question->questiontext;
@@ -83,16 +82,10 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 'value' => $inputvalue,
                 'attributes' => $attributes,
                 'title' => $title,
-                'id' => $inputname
-            ];
-
-            $binddata['words'][] = [
-                'number' => $number,
-                'clue' => $clue,
+                'id' => $inputname,
+                'orientation' => (int) $answer->orientation,
                 'startRow' => (int) $answer->startrow,
                 'startColumn' => (int) $answer->startcolumn,
-                'length' => $length,
-                'orientation' => (int) $answer->orientation,
             ];
 
             if ($options->readonly) {

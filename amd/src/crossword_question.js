@@ -84,9 +84,35 @@ export class CrosswordQuestion {
             if (!targetEls[i].querySelector('svg')) {
                 this.crosswordEl = targetEls[i];
                 this.options.crosswordEl = targetEls[i];
+                if (!this.options.isPreview) {
+                    this.options.words = this.retrieveWordData();
+                }
                 break;
             }
         }
+    }
+
+    /**
+     * Get word data.
+     *
+     * @return {Array} Word data list.
+     */
+    retrieveWordData() {
+        const clueEls = this.options.crosswordEl
+            .closest('.qtype_crossword-grid-wrapper')
+            .querySelectorAll('.contain-clue .wrap-clue');
+        if (clueEls.length === 0) {
+            return [];
+        }
+        return [...clueEls].map(el => {
+            const number = parseInt(el.getAttribute('data-questionid'));
+            const startRow = parseInt(el.getAttribute('data-startrow'));
+            const startColumn = parseInt(el.getAttribute('data-startcolumn'));
+            const length = parseInt(el.getAttribute('data-length'));
+            const orientation = parseInt(el.getAttribute('data-orientation'));
+            const clue = el.getAttribute('data-clue');
+            return {number, startRow, startColumn, length, orientation, clue};
+        }).sort((clueA, clueB) => clueA.number - clueB.number);
     }
 
     /**
