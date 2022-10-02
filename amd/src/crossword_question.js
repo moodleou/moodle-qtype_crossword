@@ -122,7 +122,29 @@ export class CrosswordQuestion {
      * @return {String} Alphabet character.
      */
     getColumnLabel(i) {
-        return String.fromCharCode("A".charCodeAt(0) + i - 1);
+        let text = '';
+        let first = Math.ceil(i / 26) - 1;
+        let last = i % 26;
+
+        if (last === 0) {
+            last = 26;
+        }
+
+        if (first > 0) {
+            text = this.retrieveCharacterByIndex(first);
+        }
+        text += this.retrieveCharacterByIndex(last);
+        return text;
+    }
+
+    /**
+     * Get alphabet character by index.
+     *
+     * @param {Number} index Position character number.
+     * @return {String} Alphabet character.
+     */
+    retrieveCharacterByIndex(index) {
+        return String.fromCharCode("A".charCodeAt(0) + index - 1);
     }
 
     /**

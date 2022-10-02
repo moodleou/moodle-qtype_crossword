@@ -181,14 +181,12 @@ class form_test extends \advanced_testcase {
     }
 
     /**
-     * Test editing form validation.
+     * Prepare test data.
      *
-     * @dataProvider test_form_validation_provider
-     * @covers \validation
-     * @param array $sampledata
-     * @param array $expectederror
+     * @coversNothing
+     * @return array List data $mform and $course.
      */
-    public function test_form_validation(array $sampledata, array $expectederror): void {
+    public function prepare_test_data(): array {
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $gen = $this->getDataGenerator();
@@ -214,7 +212,20 @@ class form_test extends \advanced_testcase {
         $qtypeobj = \question_bank::get_qtype($question->qtype);
 
         $mform = $qtypeobj->create_editing_form('question.php', $question, $category, $contexts, true);
+        return [$mform, $course];
+    }
 
+    /**
+     * Test editing form validation.
+     *
+     * @dataProvider test_form_validation_provider
+     * @covers \validation
+     * @param array $sampledata
+     * @param array $expectederror
+     */
+    public function test_form_validation(array $sampledata, array $expectederror): void {
+
+        list ($mform, $course) = $this->prepare_test_data();
         $fromform = [
             'category' => 1,
             'name' => 'Test combined with varnumeric',
@@ -256,5 +267,46 @@ class form_test extends \advanced_testcase {
         $fromform = array_merge($fromform, $sampledata);
         $errors = $mform->validation($fromform, []);
         $this->assertEquals($expectederror, $errors);
+    }
+
+    /**
+     * Test function generate_alphabet_list.
+     *
+     * @param array $option Option list.
+     * @param array $expected Expected data.
+     *
+     * @covers ::generate_alphabet_list
+     * @dataProvider generate_alphabet_list_provider
+     */
+    public function test_generate_alphabet_list(array $option, array $expected) {
+        list ($mform) = $this->prepare_test_data();
+        list ($start, $end) = $option;
+        $method = new \ReflectionMethod(\qtype_crossword_edit_form::class,
+            'generate_alphabet_list');
+        $method->setAccessible(true);
+        $result = $method->invoke($mform, $start, $end);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for the generate_alphabet_list test.
+     *
+     * @coversNothing
+     * @return array
+     */
+    public function generate_alphabet_list_provider(): array {
+
+        return [
+            'Alphabet list from 1 to 26' => [
+                [0, 26],
+                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+                    'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+            ],
+            'Alphabet list from 1 to 30' => [
+                [0, 30],
+                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+                    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD']
+            ],
+        ];
     }
 }
