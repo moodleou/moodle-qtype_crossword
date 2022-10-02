@@ -543,6 +543,49 @@ export class CrosswordGrid extends CrosswordQuestion {
             return true;
         });
 
+        inputEl.addEventListener('compositionend', (evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+            const {wordNumber} = this.options;
+            let key = evt.data.toUpperCase();
+            const code = evt.target.getAttributeNS(null, 'code');
+            if (this.replaceText(key) === '') {
+                return false;
+            }
+            if (code) {
+                let chars = key.split('');
+                const gEl = this.options.crosswordEl.querySelector(`g[code='${code}']`);
+                if (!gEl) {
+                    return false;
+                }
+                const letterIndex = parseInt(gEl.getAttributeNS(null, 'letterIndex'));
+                let index = 0;
+                for (let char of chars) {
+                    if (this.replaceText(char) === '') {
+                        continue;
+                    }
+                    const cellEl = this.options.crosswordEl.querySelector(
+                        `g[word*='(${wordNumber})'][letterIndex='${letterIndex + index}']`
+                    );
+                    // Interact with clue.
+                    if (cellEl) {
+                        cellEl.querySelector('text.crossword-cell-text').innerHTML = char;
+                        this.bindDataToClueInput(cellEl, char);
+                        cellEl.dispatchEvent(new Event('click'));
+                        index++;
+                    }
+                }
+
+                const nextCellEl = this.options.crosswordEl.querySelector(
+                    `g[word*='(${wordNumber})'][letterIndex='${letterIndex + chars.length}']`
+                );
+                if (nextCellEl) {
+                    nextCellEl.dispatchEvent(new Event('click'));
+                }
+            }
+            return true;
+        });
+
         inputEl.addEventListener('keyup', (event) => {
             event.preventDefault();
             const {wordNumber, cellWidth, cellHeight} = this.options;

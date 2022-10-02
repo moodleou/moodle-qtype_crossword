@@ -65,6 +65,7 @@ export class CrosswordClue extends CrosswordQuestion {
      */
     addEventForClueInput(el, word) {
         const {readonly} = this.options;
+        let startSelection = 0;
         if (readonly) {
             return;
         }
@@ -92,20 +93,28 @@ export class CrosswordClue extends CrosswordQuestion {
             if (key === '') {
                 return;
             }
-            const gEl = this.options.crosswordEl
-                    .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
-            if (gEl) {
-                gEl.querySelector('text.crossword-cell-text').innerHTML = key.toUpperCase();
-                this.bindDataToClueInput(gEl, key.toUpperCase());
-            }
-            // Go to next letter.
-            startIndex++;
-            const nexEl = this.options.crosswordEl
-                    .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
-            if (nexEl) {
-                this.toggleHighlight(word, nexEl);
-                target.setSelectionRange(startIndex, startIndex);
-            }
+            this.handleTypingData(e, wordNumber, word, startIndex, key);
+        });
+
+        el.addEventListener('compositionstart', (evt) => {
+            const selection = evt.target.selectionStart;
+            startSelection = selection;
+        });
+
+        el.addEventListener('compositionend', (evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+            const {wordNumber} = this.options;
+            const selection = evt.target.selectionStart;
+            let key = evt.data;
+            let currentSelection = startSelection;
+            evt.target.setSelectionRange(selection, selection);
+            key.split('').forEach(char => {
+                const result = this.handleTypingData(evt, wordNumber, word, currentSelection, char);
+                if (result) {
+                    currentSelection++;
+                }
+            });
         });
 
         el.addEventListener('keyup', (event) => {
@@ -113,7 +122,10 @@ export class CrosswordClue extends CrosswordQuestion {
             const {words, wordNumber} = this.options;
             const {key, target} = event;
             let {value} = target;
+            let isValidKey = false;
+            let maxLength = parseInt(target.getAttribute('maxlength'));
             if ([this.ARROW_LEFT, this.ARROW_RIGHT].includes(key)) {
+                isValidKey = true;
                 const startIndex = target.selectionStart;
                 const gEl = this.options.crosswordEl
                         .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
@@ -122,6 +134,7 @@ export class CrosswordClue extends CrosswordQuestion {
                 }
             }
             if (key === this.DELETE || key === this.BACKSPACE) {
+                isValidKey = true;
                 const word = words.find(o => o.number === parseInt(wordNumber));
                 let startIndex = target.selectionStart;
                 if (!word) {
@@ -136,6 +149,7 @@ export class CrosswordClue extends CrosswordQuestion {
             }
 
             if (key === this.END || key === this.HOME) {
+                isValidKey = true;
                 let startIndex = 0;
                 const word = words.find(o => o.number === parseInt(wordNumber));
                 if (!word) {
@@ -146,13 +160,28 @@ export class CrosswordClue extends CrosswordQuestion {
                 }
                 this.syncFocusCellAndInput(target, startIndex);
             }
+
+            if (!isValidKey && startSelection >= maxLength) {
+                event.target.value = value.slice(0, maxLength);
+            }
         });
 
         el.addEventListener('paste', (event) => {
             event.preventDefault();
+            const {words, wordNumber} = this.options;
+            const word = words.find(o => o.number === parseInt(wordNumber));
+            let selection = event.target.selectionStart;
             let value = (event.clipboardData || window.clipboardData).getData('text');
             value = this.replaceText(value);
-            this.syncLettersByText(value);
+            if (value === "") {
+                return;
+            }
+            value.split('').forEach(char => {
+                const result = this.handleTypingData(event, wordNumber, word, selection, char);
+                if (result) {
+                    selection++;
+                }
+            });
         });
 
         el.addEventListener('keydown', (e) => {
@@ -177,6 +206,37 @@ export class CrosswordClue extends CrosswordQuestion {
             event.target.setSelectionRange(startIndex, startIndex);
             this.syncLettersByText(value);
         });
+    }
+
+    /**
+     * Handle typing data.
+     *
+     * @param {Object} evt Event data.
+     * @param {Number} wordNumber The word number.
+     * @param {Object} word The word object.
+     * @param {Number} selectionIndex The position of cursor selection.
+     * @param {String} char The character.
+     *
+     * @return {Boolean} True if the data is valid.
+     */
+    handleTypingData(evt, wordNumber, word, selectionIndex, char) {
+        const gelEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${selectionIndex}']`);
+        if (this.replaceText(char) === '') {
+            return false;
+        }
+        if (gelEl) {
+            gelEl.querySelector('text.crossword-cell-text').innerHTML = char.toUpperCase();
+            this.bindDataToClueInput(gelEl, char.toUpperCase());
+        }
+        selectionIndex++;
+
+        // Go to next letter.
+        const nexEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${selectionIndex}']`);
+        if (nexEl) {
+            this.toggleHighlight(word, nexEl);
+            evt.target.setSelectionRange(selectionIndex, selectionIndex);
+        }
+        return true;
     }
 
     /**
