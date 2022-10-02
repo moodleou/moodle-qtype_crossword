@@ -281,7 +281,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             $answercount++;
 
             // Check alphanumeric letter.
-            if (!isset($errors["answeroptions[$i]"]) && preg_match($regex, strtolower($answers[$i]))) {
+            if (!isset($errors["answeroptions[$i]"]) && preg_match($regex, core_text::strtolower($answers[$i]))) {
                 $errors["answeroptions[$i]"] = get_string('mustbealphanumeric', 'qtype_crossword');
             }
 
@@ -321,7 +321,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @return bool
      */
     private function check_word_length(array $data, int $iteral): bool {
-        $answerlength = mb_strlen(trim($data['answer'][$iteral]));
+        $answerlength = core_text::strlen(trim($data['answer'][$iteral]));
         $orientation = (int) $data['orientation'][$iteral];
         $griddata = range(3, 30);
         $startrow = $data['startrow'][$iteral] ?? null;
@@ -353,7 +353,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @return array The conflict positions.
      */
     private function get_word_conflict(array $data, int $iteral, array &$except): array {
-        $answer1 = trim(strtolower($data['answer'][$iteral]));
+        $answer1 = trim(core_text::strtolower($data['answer'][$iteral]));
         $positions = [];
         $startrow = $data['startrow'][$iteral] ?? null;
         $startcolumn = $data['startcolumn'][$iteral] ?? null;
@@ -371,15 +371,15 @@ class qtype_crossword_edit_form extends question_edit_form {
         );
         // Compare the first word with another word.
         for ($i = count($data['answer']) - 1; $i >= 0; $i--) {
-            $answer2 = trim(strtolower($data['answer'][$i]));
-            $clues = trim(strtolower($data['clue'][$i]));
+            $answer2 = trim(core_text::strtolower($data['answer'][$i]));
+            $clues = trim(core_text::strtolower($data['clue'][$i]));
             // Skip invalid word.
             if ($answer2 === "" || $clues === "") {
                 $except[] = $i;
                 continue;
             }
             // Ignore checked words and invalid word.
-            if (in_array($i, $except) || is_null($data['startrow'][$i]) || is_null($data['startcolumn'][$i])) {
+            if (in_array($i, $except) || !isset($data['startrow'][$i]) || !isset($data['startcolumn'][$i])) {
                 continue;
             }
             // Get the word's coordinates .
@@ -394,15 +394,15 @@ class qtype_crossword_edit_form extends question_edit_form {
             if ($intersects = $this->get_intersect_points($lines, $data['orientation'][$iteral])) {
                 foreach ($intersects as $intersect) {
                     if ($data['orientation'][$iteral]) {
-                        $character1 = $answer1[$intersect[1] - $data['startrow'][$iteral]] ?? '';
+                        $character1 = core_text::substr($answer1, $intersect[1] - $data['startrow'][$iteral], 1) ?? '';
                     } else {
-                        $character1 = $answer1[$intersect[0] - $data['startcolumn'][$iteral]] ?? '';
+                        $character1 = core_text::substr($answer1, $intersect[0] - $data['startcolumn'][$iteral], 1) ?? '';
                     }
 
                     if ($data['orientation'][$i]) {
-                        $character2 = $answer2[$intersect[1] - $data['startrow'][$i]] ?? '';
+                        $character2 = core_text::substr($answer2, $intersect[1] - $data['startrow'][$i], 1) ?? '';
                     } else {
-                        $character2 = $answer2[$intersect[0] - $data['startcolumn'][$i]] ?? '';
+                        $character2 = core_text::substr($answer2, $intersect[0] - $data['startcolumn'][$i], 1) ?? '';
                     }
                     // Compare letters.
                     if ($character1 !== $character2) {
@@ -433,7 +433,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         $x1 = (int) $startcolumn;
         $y1 = (int) $startrow;
         // Retrieve the answer length.
-        $anwserlength = mb_strlen(trim($anwser)) - 1;
+        $anwserlength = core_text::strlen(trim($anwser)) - 1;
         // Set the default coordinate for the second point.
         $x2 = $anwserlength + $x1;
         $y2 = $y1;

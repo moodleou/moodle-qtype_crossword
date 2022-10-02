@@ -53,7 +53,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         foreach ($question->answers as $key => $answer) {
             $orientation = 'across';
             $fieldname = 'sub' . $key;
-            $length = mb_strlen($answer->answer);
+            $length = core_text::strlen($answer->answer);
             $inputname = $qa->get_qt_field_name($fieldname);
             $inputvalue = $qa->get_last_qt_var($fieldname);
             $number = $key + 1;

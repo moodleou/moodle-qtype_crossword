@@ -141,7 +141,7 @@ class qtype_crossword_question extends question_graded_automatically {
      */
     private function filter_answers(array $answers): array {
         $response = array_filter($answers, function(string $answer) {
-            return mb_strlen(trim(str_replace('_', '', $answer))) > 0;
+            return core_text::strlen(trim(str_replace('_', '', $answer))) > 0;
         });
         return $response;
     }

@@ -284,7 +284,7 @@ export class CrosswordQuestion {
                         .closest('.qtype_crossword-grid-wrapper')
                         .querySelector(`.wrap-clue[data-questionid='${wordId}'] input`);
                     value = this.replaceAt(clueInputEl.value, letterIndex, key);
-                    clueInputEl.value = value.toUpperCase();
+                    clueInputEl.value = value.toUpperCase() + this.makeUnderscore(word.length - value.length);
                 }
             });
         }
