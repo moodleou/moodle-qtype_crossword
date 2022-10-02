@@ -69,7 +69,7 @@ export class CrosswordGrid extends CrosswordQuestion {
 
                 // Adding alphanumeric.
                 if (i === 0 && j !== 0) {
-                    squareEl.innerText = this.getColumnLabel(j);
+                    squareEl.innerText = this.getColumnLabel(j - 1);
                     squareEl.classList.add('square-indicate-horizontal');
                 }
                 if (i !== 0 && j === 0) {
@@ -251,6 +251,14 @@ export class CrosswordGrid extends CrosswordQuestion {
         // Add event for word input.
         this.addEventForWordInput(inputEl);
         inputContainEl.append(inputEl);
+
+        if (options.colsNum >= 15) {
+            svg.classList.add('adjust-small-crossword');
+        }
+
+        if (options.colsNum >= 20) {
+            svg.classList.add('adjust-crossword');
+        }
         crosswordEl.append(svg, inputContainEl);
     }
 

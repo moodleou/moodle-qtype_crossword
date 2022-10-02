@@ -94,6 +94,10 @@
     background: #000;
 }
 
+.qtype_crossword-grid-wrapper .wrap-crossword #crossword svg.adjust-crossword {
+    min-width: 800px;
+}
+
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-cell {
     cursor: pointer;
     fill: #fff;
@@ -186,6 +190,10 @@
     .qtype_crossword-grid-wrapper .wrap-crossword {
         position: relative;
         padding-bottom: 1.25rem;
+    }
+
+    .qtype_crossword-grid-wrapper .wrap-crossword #crossword svg.adjust-small-crossword {
+        min-width: 800px;
     }
 }
 
