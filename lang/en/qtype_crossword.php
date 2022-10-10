@@ -27,7 +27,6 @@ $string['addmorewordblanks'] = 'Blanks for {no} more words';
 $string['answer'] = 'Answer';
 $string['celltitle'] = 'Row {row}, Column {column}. {number} {orientation}. {clue}, letter {letter} of {count}';
 $string['clue'] = 'Clue';
-$string['cluetoolong'] = 'The clue must be less than 200 characters.';
 $string['correctansweris'] = 'The correct answer is: {$a}';
 $string['correctanswersare'] = 'The correct answers are: {$a}';
 $string['down'] = 'Down';

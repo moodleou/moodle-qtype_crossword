@@ -299,11 +299,11 @@ export class CrosswordGrid extends CrosswordQuestion {
             for (let key = 0; key < word.length; key++) {
                 // Prepare attributes for g.
                 const customAttribute = {
-                    startRow: word.startRow,
-                    startColumn: word.startColumn,
-                    letterIndex: key,
-                    word: '(' + word.number + ')',
-                    code: 'A' + count
+                    'data-startrow': word.startRow,
+                    'data-startcolumn': word.startColumn,
+                    'data-letterindex': key,
+                    'data-word': '(' + word.number + ')',
+                    'data-code': 'A' + count
                 };
                 // Calculate the letter position.
                 const position = this.calculatePosition(word, parseInt(key));
@@ -346,9 +346,9 @@ export class CrosswordGrid extends CrosswordQuestion {
                     svg.append(g);
                 } else {
                     let existingNumberElement = existingRectElement.closest('g').querySelector('text.crossword-cell-number');
-                    let currentWord = existingRectElement.closest('g').getAttribute('word');
+                    let currentWord = existingRectElement.closest('g').dataset.word;
                     let g;
-                    existingRectElement.closest('g').setAttributeNS(null, 'word', currentWord + '(' + word.number + ')');
+                    existingRectElement.closest('g').dataset.word = currentWord + '(' + word.number + ')';
                     if (parseInt(key) !== 0) {
                         continue;
                     }
@@ -412,7 +412,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                 element = element.closest('g');
             }
             this.handleWordSelect(element);
-            inputEl.setAttributeNS(null, 'code', element.getAttributeNS(null, 'code'));
+            inputEl.dataset.code = element.dataset.code;
             inputEl.value = '';
             this.updatePositionForCellInput(element.querySelector('rect'));
             inputEl.focus();
@@ -425,8 +425,8 @@ export class CrosswordGrid extends CrosswordQuestion {
      * @param {Element} gEl The g element.
      */
     handleWordSelect(gEl) {
-        const currentCell = gEl.getAttributeNS(null, 'code');
-        let words = gEl.getAttributeNS(null, 'word');
+        const currentCell = gEl.dataset.code;
+        let words = gEl.dataset.word;
         let focus = -1;
         let {coordinates, wordNumber} = this.options;
 
@@ -510,21 +510,21 @@ export class CrosswordGrid extends CrosswordQuestion {
             e.preventDefault();
             const {wordNumber} = this.options;
             const inputEl = e.target;
-            const code = inputEl.getAttributeNS(null, 'code');
+            const code = inputEl.dataset.code;
             let value = e.key.toUpperCase();
             if (this.replaceText(e.key) === '') {
                 return false;
             }
             // Filter value.
             if (code) {
-                const textEl = this.options.crosswordEl.querySelector(`g[code='${code}'] text.crossword-cell-text`);
+                const textEl = this.options.crosswordEl.querySelector(`g[data-code='${code}'] text.crossword-cell-text`);
                 if (!textEl) {
                     return false;
                 }
                 textEl.innerHTML = value;
-                const letterIndex = parseInt(textEl.closest('g').getAttributeNS(null, 'letterIndex'));
+                const letterIndex = parseInt(textEl.closest('g').dataset.letterindex);
                 const nextCellEl = this.options.crosswordEl.querySelector(
-                    `g[word*='(${wordNumber})'][letterIndex='${letterIndex + 1}']`
+                    `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex + 1}']`
                 );
                 // Interact with clue.
                 this.bindDataToClueInput(textEl.closest('g'), e.key);
@@ -539,11 +539,11 @@ export class CrosswordGrid extends CrosswordQuestion {
             event.preventDefault();
             const {wordNumber, cellWidth, cellHeight} = this.options;
             const {key, target} = event;
-            const code = target.getAttributeNS(null, 'code');
-            const gEl = this.options.crosswordEl.querySelector(`g[code='${code}']`);
-            const letterIndex = parseInt(gEl.getAttributeNS(null, 'letterIndex'));
+            const code = target.dataset.code;
+            const gEl = this.options.crosswordEl.querySelector(`g[data-code='${code}']`);
+            const letterIndex = parseInt(gEl.dataset.letterindex);
             const previousCell = this.options.crosswordEl.querySelector(
-                `g[word*='(${wordNumber})'][letterIndex='${letterIndex - 1}']`
+                `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex - 1}']`
             );
             const textEl = gEl.querySelector('text.crossword-cell-text');
             let x = parseInt(gEl.querySelector('rect').getAttributeNS(null, 'x'));
@@ -580,8 +580,8 @@ export class CrosswordGrid extends CrosswordQuestion {
 
         inputEl.addEventListener('click', (e) => {
             const inputEl = e.target;
-            const code = inputEl.getAttributeNS(null, 'code');
-            const gEl = this.options.crosswordEl.querySelector(`g[code='${code}']`);
+            const code = inputEl.dataset.code;
+            const gEl = this.options.crosswordEl.querySelector(`g[data-code='${code}']`);
             this.handleWordSelect(gEl);
         });
 

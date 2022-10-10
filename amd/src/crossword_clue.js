@@ -43,7 +43,7 @@ export class CrosswordClue extends CrosswordQuestion {
             .closest('.qtype_crossword-grid-wrapper')
             .querySelectorAll('.contain-clue .wrap-clue');
         clueEls.forEach(el => {
-            const questionId = el.getAttribute('data-questionid');
+            const questionId = el.dataset.questionid;
             let word = words.find(o => o.number === parseInt(questionId));
             if (word) {
                 const inputEl = el.querySelector('input');
@@ -92,14 +92,16 @@ export class CrosswordClue extends CrosswordQuestion {
             if (key === '') {
                 return;
             }
-            const gelEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${startIndex}']`);
-            if (gelEl) {
-                gelEl.querySelector('text.crossword-cell-text').innerHTML = key.toUpperCase();
-                this.bindDataToClueInput(gelEl, key.toUpperCase());
+            const gEl = this.options.crosswordEl
+                    .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
+            if (gEl) {
+                gEl.querySelector('text.crossword-cell-text').innerHTML = key.toUpperCase();
+                this.bindDataToClueInput(gEl, key.toUpperCase());
             }
             // Go to next letter.
             startIndex++;
-            const nexEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${startIndex}']`);
+            const nexEl = this.options.crosswordEl
+                    .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
             if (nexEl) {
                 this.toggleHighlight(word, nexEl);
                 target.setSelectionRange(startIndex, startIndex);
@@ -113,7 +115,8 @@ export class CrosswordClue extends CrosswordQuestion {
             let {value} = target;
             if ([this.ARROW_LEFT, this.ARROW_RIGHT].includes(key)) {
                 const startIndex = target.selectionStart;
-                const gEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${startIndex}']`);
+                const gEl = this.options.crosswordEl
+                        .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
                 if (gEl) {
                     this.toggleHighlight(word, gEl);
                 }
@@ -198,7 +201,7 @@ export class CrosswordClue extends CrosswordQuestion {
      */
     syncFocusCellAndInput(target, startIndex) {
         const {wordNumber} = this.options;
-        const gEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${startIndex}']`);
+        const gEl = this.options.crosswordEl.querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
         target.setSelectionRange(startIndex, startIndex);
         if (gEl) {
             this.toggleFocus(gEl);

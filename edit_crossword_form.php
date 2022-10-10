@@ -291,8 +291,8 @@ class qtype_crossword_edit_form extends question_edit_form {
                 $errors["answeroptions[$i]"] = get_string('overflowposition', 'qtype_crossword');
             }
             // Check clue length.
-            if (!isset($errors["answeroptions[$i]"]) && mb_strlen($clue) > 200) {
-                $errors["answeroptions[$i]"] = get_string('cluetoolong', 'qtype_crossword');
+            if (!isset($errors["answeroptions[$i]"]) && core_text::strlen($clue) > 1333) {
+                $errors["answeroptions[$i]"] = get_string('maximumchars', '', 1333);
             }
             if (!isset($errors["answeroptions[$i]"])) {
                 $except[] = $i;
