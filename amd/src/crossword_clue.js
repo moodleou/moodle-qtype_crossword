@@ -127,7 +127,9 @@ export class CrosswordClue extends CrosswordQuestion {
                 if (!word) {
                     return;
                 }
-                value = value + this.makeUnderscore(word.length - value.length);
+                const selectionLength = word.length - value.length;
+                const underScore = this.makeUnderscore(selectionLength);
+                value = [value.slice(0, startIndex), underScore, value.slice(startIndex)].join('');
                 target.value = value;
                 this.syncLettersByText(value);
                 this.syncFocusCellAndInput(target, startIndex);

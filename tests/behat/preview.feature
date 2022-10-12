@@ -59,3 +59,17 @@ Feature: Preview a Crossword question
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
+
+  @javascript @_switch_window
+  Scenario: Deleting characters from input clue area.
+    When I am on the "crossword-001" "core_question > preview" page logged in as teacher
+    And I set the field "Word 1" to "BRAZIL"
+    And I set the field "Word 2" to "PARIS"
+    And I set the field "Word 3" to "ITALY"
+    And I select "2" characters from position "1" in the "Word 1"
+    And I press the delete key
+    And I select "3" characters from position "3" in the "Word 3"
+    And I press the delete key
+    Then the field "Word 1" matches value "__AZIL"
+    And the field "Word 2" matches value "PARIS"
+    And the field "Word 3" matches value "IT___"
