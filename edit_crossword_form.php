@@ -290,6 +290,10 @@ class qtype_crossword_edit_form extends question_edit_form {
             if (!(isset($errors["answeroptions[$i]"]) || $this->check_word_length($data, $i))) {
                 $errors["answeroptions[$i]"] = get_string('overflowposition', 'qtype_crossword');
             }
+            // Check clue length.
+            if (!isset($errors["answeroptions[$i]"]) && core_text::strlen($clue) > 1333) {
+                $errors["answeroptions[$i]"] = get_string('maximumchars', '', 1333);
+            }
             if (!isset($errors["answeroptions[$i]"])) {
                 $except[] = $i;
                 // Find conflicting words.

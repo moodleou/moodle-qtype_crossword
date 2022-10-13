@@ -84,9 +84,35 @@ export class CrosswordQuestion {
             if (!targetEls[i].querySelector('svg')) {
                 this.crosswordEl = targetEls[i];
                 this.options.crosswordEl = targetEls[i];
+                if (!this.options.isPreview) {
+                    this.options.words = this.retrieveWordData();
+                }
                 break;
             }
         }
+    }
+
+    /**
+     * Get word data.
+     *
+     * @return {Array} Word data list.
+     */
+    retrieveWordData() {
+        const clueEls = this.options.crosswordEl
+            .closest('.qtype_crossword-grid-wrapper')
+            .querySelectorAll('.contain-clue .wrap-clue');
+        if (clueEls.length === 0) {
+            return [];
+        }
+        return [...clueEls].map(el => {
+            const number = parseInt(el.dataset.questionid);
+            const startRow = parseInt(el.dataset.startrow);
+            const startColumn = parseInt(el.dataset.startcolumn);
+            const length = parseInt(el.dataset.length);
+            const orientation = parseInt(el.dataset.orientation);
+            const clue = el.dataset.clue;
+            return {number, startRow, startColumn, length, orientation, clue};
+        }).sort((clueA, clueB) => clueA.number - clueB.number);
     }
 
     /**
@@ -128,7 +154,7 @@ export class CrosswordQuestion {
      */
     updateLetterIndexForCells(word) {
         const {wordNumber} = this.options;
-        const letterList = this.options.crosswordEl.querySelectorAll(`g[word*='(${wordNumber})']`);
+        const letterList = this.options.crosswordEl.querySelectorAll(`g[data-word*='(${wordNumber})']`);
         // Convert letterList to array to use sort function.
         const letterListArray = Array.prototype.slice.call(letterList, 0);
         let letterIndex = 0;
@@ -143,7 +169,7 @@ export class CrosswordQuestion {
             return aValue - bValue;
         }).forEach(el => {
             // Update letter index.
-            el.setAttributeNS(null, 'letterIndex', letterIndex);
+            el.dataset.letterindex = letterIndex;
             letterIndex++;
         });
     }
@@ -214,7 +240,7 @@ export class CrosswordQuestion {
         const conflictPointY = rectEl.getAttributeNS(null, 'y');
         let letterIndex, value;
         if (gEl) {
-            let wordIds = gEl.getAttributeNS(null, 'word').match(/\d+/g);
+            let wordIds = gEl.dataset.word.match(/\d+/g);
             wordIds.forEach(wordId => {
                 const word = words.find(o => o.number === parseInt(wordId));
                 if (word) {
@@ -280,7 +306,7 @@ export class CrosswordQuestion {
     syncLettersByText(text, bindClue = true) {
         const {wordNumber} = this.options;
         for (let i in text) {
-            const gEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${i}']`);
+            const gEl = this.options.crosswordEl.querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${i}']`);
             if (gEl) {
                 const letter = text[i].toUpperCase();
                 const textEl = gEl.querySelector('text.crossword-cell-text');
@@ -313,13 +339,13 @@ export class CrosswordQuestion {
         this.options.crosswordEl.querySelectorAll('.crossword-cell-highlighted')
             .forEach(el => el.classList.remove('crossword-cell-highlighted'));
         // Set highlight cells.
-        this.options.crosswordEl.querySelectorAll(`g[word*='(${focus})'] rect`)
+        this.options.crosswordEl.querySelectorAll(`g[data-word*='(${focus})'] rect`)
             .forEach(el => {
                     let titleData = '';
-                    if (el.closest('g').getAttributeNS(null, 'code') === gEl.getAttributeNS(null, 'code')) {
+                    if (el.closest('g').dataset.code === gEl.dataset.code) {
                         el.classList.add('crossword-cell-focussed');
                         // Update aria label.
-                        let letterIndex = parseInt(el.closest('g').getAttributeNS(null, 'letterIndex'));
+                        let letterIndex = parseInt(el.closest('g').dataset.letterindex);
                         const data = {
                             row: word.startRow + 1,
                             column: word.startColumn + letterIndex + 1,
@@ -368,7 +394,7 @@ export class CrosswordQuestion {
         this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper').querySelectorAll('.wrap-clue input')
             .forEach(element => {
                 // Tricky, update word number.
-                this.options.wordNumber = parseInt(element.closest('.wrap-clue').getAttribute('data-questionid'));
+                this.options.wordNumber = parseInt(element.closest('.wrap-clue').dataset.questionid);
                 const word = words.find(o => o.number === this.options.wordNumber);
                 if (!word) {
                     return;
