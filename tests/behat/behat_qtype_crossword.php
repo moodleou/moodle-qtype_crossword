@@ -57,5 +57,27 @@ class behat_qtype_crossword extends behat_base {
 EOF;
         $this->getSession()->getDriver()->executeScript($script);
     }
-}
 
+    /**
+     * Enter unicode characters from input.
+     *
+     * @When I enter unicode character :characters in the crossword clue :input
+     */
+    public function i_enter_unicode_characters_in_the_crossword_clue(string $characters, string $input): void {
+        if (!$this->running_javascript()) {
+            throw new ErrorException('Enter unicode character requires JavaScript');
+        }
+
+        // Enter unicode characters.
+        $script = <<<EOF
+                const id = [...document.querySelectorAll('.contain-clue .wrap-clue label.accesshide')]
+                .find(el => el.innerText === '$input')?.getAttribute('for');
+                const input = document.getElementById(id);
+                input.click();
+                input.setSelectionRange(0,0);
+                const event = new CompositionEvent('compositionend', {data: '$characters'});
+                input.dispatchEvent(event)
+EOF;
+        $this->getSession()->getDriver()->executeScript($script);
+    }
+}

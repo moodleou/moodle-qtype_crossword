@@ -114,12 +114,14 @@ class qtype_crossword_question extends question_graded_automatically {
     }
 
     public function get_num_parts_right(array $response): array {
-        $answers = array_map(function($answer) {
-            return $answer->answer;
-        }, $this->answers);
-
-        $numright = count($answers) - count(array_diff($answers, $response));
-        return [$numright, count($answers)];
+        $numright = 0;
+        foreach ($this->answers as $key => $answer) {
+            $answercompare = $response[$this->field($key)];
+            if ($answer->answer === $answercompare) {
+                $numright++;
+            }
+        }
+        return [$numright, count($this->answers)];
     }
 
     public function clear_wrong_from_response(array $response): array {

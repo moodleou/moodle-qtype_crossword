@@ -15,11 +15,11 @@
     margin: 20px auto;
 }
 
-#page-question-type-crossword .crossword-grid {
+#page-question-type-crossword table.crossword-grid {
     width: 100%;
     max-width: 100%;
     border-spacing: 0;
-    border-collapse: collapse;
+    border-collapse: separate;
 }
 
 #page-question-type-crossword .grid-row {
@@ -48,11 +48,6 @@
     overflow: auto;
 }
 
-#page-question-type-crossword .grid-square:not(.square-indicate-horizontal),
-#page-question-type-crossword .grid-square:not(.square-indicate-vertical) {
-    border: 1px solid #000;
-}
-
 #page-question-type-crossword #crossword .crossword-grid .grid-square.background-white,
 #page-question-type-crossword #crossword .crossword-grid .cell-white,
 #page-question-type-crossword .grid-square.square-indicate-horizontal,
@@ -66,12 +61,22 @@
     border: none;
 }
 
+#page-question-type-crossword .grid-square.square-indicate-horizontal {
+    border-bottom: 1px solid #000;
+}
+
+#page-question-type-crossword .grid-square.square-indicate-vertical {
+    border-right: 1px solid #000;
+}
+
 #page-question-type-crossword .grid-square {
     position: relative;
     background-clip: padding-box;
     padding: 20px 25px;
     text-align: center;
     background-color: #a6a6a6;
+    border-left: 0;
+    border-top: 0;
 }
 
 #page-question-type-crossword .grid-square .word-label {

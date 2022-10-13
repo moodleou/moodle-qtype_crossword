@@ -271,7 +271,8 @@ class qtype_crossword_edit_form extends question_edit_form {
         for ($i = 0; $i < count($answers); $i++) {
             // Skip the invalid word.
             $clue = trim($clues[$i]);
-            $answer = trim($answers[$i]);
+            // Normalize answer.
+            $answer = \qtype_crossword\util::safe_normalize(trim($answers[$i]));
             if ($clue === '' || $answer === '') {
                 if ($clue === $answer) {
                     continue;
@@ -281,7 +282,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             $answercount++;
 
             // Check alphanumeric letter.
-            if (!isset($errors["answeroptions[$i]"]) && preg_match($regex, core_text::strtolower($answers[$i]))) {
+            if (!isset($errors["answeroptions[$i]"]) && preg_match($regex, core_text::strtolower($answer))) {
                 $errors["answeroptions[$i]"] = get_string('mustbealphanumeric', 'qtype_crossword');
             }
 
@@ -321,7 +322,9 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @return bool
      */
     private function check_word_length(array $data, int $iteral): bool {
-        $answerlength = core_text::strlen(trim($data['answer'][$iteral]));
+        // Normalize answer.
+        $answer = \qtype_crossword\util::safe_normalize(trim($data['answer'][$iteral]));
+        $answerlength = core_text::strlen($answer);
         $orientation = (int) $data['orientation'][$iteral];
         $griddata = range(3, 30);
         $startrow = $data['startrow'][$iteral] ?? null;
@@ -353,7 +356,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @return array The conflict positions.
      */
     private function get_word_conflict(array $data, int $iteral, array &$except): array {
-        $answer1 = trim(core_text::strtolower($data['answer'][$iteral]));
+        $answer1 = \qtype_crossword\util::safe_normalize(trim(core_text::strtolower($data['answer'][$iteral])));
         $positions = [];
         $startrow = $data['startrow'][$iteral] ?? null;
         $startcolumn = $data['startcolumn'][$iteral] ?? null;
@@ -371,7 +374,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         );
         // Compare the first word with another word.
         for ($i = count($data['answer']) - 1; $i >= 0; $i--) {
-            $answer2 = trim(core_text::strtolower($data['answer'][$i]));
+            $answer2 = \qtype_crossword\util::safe_normalize(trim(core_text::strtolower($data['answer'][$i])));
             $clues = trim(core_text::strtolower($data['clue'][$i]));
             // Skip invalid word.
             if ($answer2 === "" || $clues === "") {
@@ -433,7 +436,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         $x1 = (int) $startcolumn;
         $y1 = (int) $startrow;
         // Retrieve the answer length.
-        $anwserlength = core_text::strlen(trim($anwser)) - 1;
+        $anwserlength = core_text::strlen(trim(\qtype_crossword\util::safe_normalize($anwser))) - 1;
         // Set the default coordinate for the second point.
         $x2 = $anwserlength + $x1;
         $y2 = $y1;

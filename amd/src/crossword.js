@@ -46,7 +46,7 @@ const getWordsFromTable = function() {
         if (inputEl.length > 0) {
             inputEl.forEach(inputEl => {
                 const name = inputEl.name.match(alphaRegex)?.pop();
-                word[name] = inputEl.value.trim();
+                word[name] = inputEl.value.trim().normalize('NFKC');
             });
         }
 

@@ -51,7 +51,7 @@ class answer {
      */
     public function __construct(string $answer, string $clue, string $orientation,
         string $startrow, string $startcolumn) {
-        $this->answer = $answer;
+        $this->answer = \qtype_crossword\util::safe_normalize($answer);
         $this->clue = $clue;
         $this->orientation = $orientation;
         $this->startrow = $startrow;
