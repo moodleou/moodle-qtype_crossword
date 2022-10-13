@@ -548,24 +548,24 @@ export class CrosswordGrid extends CrosswordQuestion {
             evt.stopPropagation();
             const {wordNumber} = this.options;
             let key = evt.data.toUpperCase();
-            const code = evt.target.getAttributeNS(null, 'code');
+            const code = evt.target.dataset.code;
             if (this.replaceText(key) === '') {
                 return false;
             }
             if (code) {
                 let chars = key.split('');
-                const gEl = this.options.crosswordEl.querySelector(`g[code='${code}']`);
+                const gEl = this.options.crosswordEl.querySelector(`g[data-code='${code}']`);
                 if (!gEl) {
                     return false;
                 }
-                const letterIndex = parseInt(gEl.getAttributeNS(null, 'letterIndex'));
+                const letterIndex = parseInt(gEl.dataset.letterindex);
                 let index = 0;
                 for (let char of chars) {
                     if (this.replaceText(char) === '') {
                         continue;
                     }
                     const cellEl = this.options.crosswordEl.querySelector(
-                        `g[word*='(${wordNumber})'][letterIndex='${letterIndex + index}']`
+                        `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex + index}']`
                     );
                     // Interact with clue.
                     if (cellEl) {
@@ -577,7 +577,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                 }
 
                 const nextCellEl = this.options.crosswordEl.querySelector(
-                    `g[word*='(${wordNumber})'][letterIndex='${letterIndex + chars.length}']`
+                    `g[data-word*='(${wordNumber})'][data-letteindex='${letterIndex + chars.length}']`
                 );
                 if (nextCellEl) {
                     nextCellEl.dispatchEvent(new Event('click'));

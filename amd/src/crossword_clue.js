@@ -89,7 +89,7 @@ export class CrosswordClue extends CrosswordQuestion {
             const word = words.find(o => o.number === parseInt(wordNumber));
             let {key, target} = e;
             let startIndex = target.selectionStart;
-            key = this.replaceText(key);
+            key = this.replaceText(key).normalize('NFKC');
             if (key === '') {
                 return;
             }
@@ -106,7 +106,7 @@ export class CrosswordClue extends CrosswordQuestion {
             evt.stopPropagation();
             const {wordNumber} = this.options;
             const selection = evt.target.selectionStart;
-            let key = evt.data;
+            let key = evt.data.normalize('NFKC');
             let currentSelection = startSelection;
             evt.target.setSelectionRange(selection, selection);
             key.split('').forEach(char => {
@@ -172,7 +172,7 @@ export class CrosswordClue extends CrosswordQuestion {
             const word = words.find(o => o.number === parseInt(wordNumber));
             let selection = event.target.selectionStart;
             let value = (event.clipboardData || window.clipboardData).getData('text');
-            value = this.replaceText(value);
+            value = this.replaceText(value).normalize('NFKC');
             if (value === "") {
                 return;
             }
@@ -220,7 +220,8 @@ export class CrosswordClue extends CrosswordQuestion {
      * @return {Boolean} True if the data is valid.
      */
     handleTypingData(evt, wordNumber, word, selectionIndex, char) {
-        const gelEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${selectionIndex}']`);
+        const gelEl = this.options.crosswordEl
+            .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${selectionIndex}']`);
         if (this.replaceText(char) === '') {
             return false;
         }
@@ -231,7 +232,8 @@ export class CrosswordClue extends CrosswordQuestion {
         selectionIndex++;
 
         // Go to next letter.
-        const nexEl = this.options.crosswordEl.querySelector(`g[word*='(${wordNumber})'][letterIndex='${selectionIndex}']`);
+        const nexEl = this.options.crosswordEl
+            .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${selectionIndex}']`);
         if (nexEl) {
             this.toggleHighlight(word, nexEl);
             evt.target.setSelectionRange(selectionIndex, selectionIndex);

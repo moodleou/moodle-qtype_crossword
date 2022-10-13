@@ -18,8 +18,10 @@ Feature: Preview a Crossword question
       | contextlevel | reference | name           |
       | Course       | C1        | Test questions |
     And the following "questions" exist:
-      | questioncategory | qtype     | name          | template |
-      | Test questions   | crossword | crossword-001 | normal   |
+      | questioncategory | qtype     | name          | template            |
+      | Test questions   | crossword | crossword-001 | normal              |
+      | Test questions   | crossword | crossword-002 | unicode             |
+      | Test questions   | crossword | crossword-003 | different_codepoint |
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response.
@@ -85,3 +87,78 @@ Feature: Preview a Crossword question
     Then the field "Word 1" matches value "BR_ZIL"
     And the field "Word 2" matches value "P___S"
     And the field "Word 3" matches value "_TALY"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question with unicode UTF-8 correct answer.
+    When I am on the "crossword-002" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I enter unicode character "回答一" in the crossword clue "Word 1"
+    And I enter unicode character "回答两个" in the crossword clue "Word 2"
+    And I enter unicode character "回答三" in the crossword clue "Word 3"
+    And I press "Submit and finish"
+    Then I should see "Correct feedback"
+    And I should see "Answer 1: 回答一, Answer 2: 回答两个, Answer 3: 回答三"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question with unicode UTF-8 answer and submit a partially correct response.
+    When I am on the "crossword-002" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I enter unicode character "回答一" in the crossword clue "Word 1"
+    And I enter unicode character "回答二" in the crossword clue "Word 2"
+    And I enter unicode character "回答三" in the crossword clue "Word 3"
+    And I press "Submit and finish"
+    Then I should see "Partially correct feedback."
+    And I should see "Answer 1: 回答一, Answer 2: 回答两个, Answer 3: 回答三"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question with unicode UTF-8 answer and submit an incorrect response.
+    When I am on the "crossword-002" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I enter unicode character "回答四" in the crossword clue "Word 1"
+    And I enter unicode character "回答五" in the crossword clue "Word 2"
+    And I enter unicode character "回答六" in the crossword clue "Word 3"
+    And I press "Submit and finish"
+    Then I should see "Incorrect feedback."
+    And I should see "Answer 1: 回答一, Answer 2: 回答两个, Answer 3: 回答三"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question has two same answers but different code point and submit a correct response.
+    When I am on the "crossword-003" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I enter unicode character "Amélie" in the crossword clue "Word 1"
+    And I enter unicode character "Amélie" in the crossword clue "Word 2"
+    And I press "Submit and finish"
+    Then I should see "Correct feedback"
+    And I should see "Answer 1: AMÉLIE, Answer 2: AMÉLIE"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question has two same answers but different code point and submit a partially correct response.
+    When I am on the "crossword-003" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I enter unicode character "Amélie" in the crossword clue "Word 1"
+    And I enter unicode character "Améliz" in the crossword clue "Word 2"
+    And I press "Submit and finish"
+    Then I should see "Partially correct feedback."
+    And I should see "Answer 1: AMÉLIE, Answer 2: AMÉLIE"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question has two same answers but different code point and submit an incorrect response.
+    When I am on the "crossword-003" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I enter unicode character "Amelie" in the crossword clue "Word 1"
+    And I enter unicode character "Amelie" in the crossword clue "Word 2"
+    And I press "Submit and finish"
+    Then I should see "Incorrect feedback."
+    And I should see "Answer 1: AMÉLIE, Answer 2: AMÉLIE"
