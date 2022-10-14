@@ -536,16 +536,18 @@ class qtype_crossword_edit_form extends question_edit_form {
      * Generate the alphabet list in the range.
      *
      * @param int $start The start number.
-     * @param int $end The end number.
+     * @param int $length The range length.
      *
-     * @return array The alphabet list.
+     * @return array The alphabet list,
+     * In case index number higher than 25,
+     * we will add one letter before the current one like Excel: AA, AB, AC, AD, AE etc.
      */
-    private function generate_alphabet_list(int $start, int $end): array {
+    private function generate_alphabet_list(int $start, int $length): array {
         $range = range('A', 'Z');
-        if ($end <= 26) {
-            return array_slice($range, $start, $end);
+        if ($length <= 26) {
+            return array_slice($range, $start, $length);
         }
-        $remain = $end - 26;
+        $remain = $length - 26;
         $addition = [];
         $j = 0;
         for ($i = 1; $i <= $remain; $i++) {

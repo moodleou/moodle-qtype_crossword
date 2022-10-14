@@ -69,7 +69,7 @@ export class CrosswordGrid extends CrosswordQuestion {
 
                 // Adding alphanumeric.
                 if (i === 0 && j !== 0) {
-                    squareEl.innerText = this.getColumnLabel(j);
+                    squareEl.innerText = this.getColumnLabel(j - 1);
                     squareEl.classList.add('square-indicate-horizontal');
                 }
                 if (i !== 0 && j === 0) {

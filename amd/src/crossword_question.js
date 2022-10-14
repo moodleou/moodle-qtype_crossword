@@ -116,24 +116,32 @@ export class CrosswordQuestion {
     }
 
     /**
-     * Get alphabet character from position number.
+     * Get alphabet character from the index.
      *
-     * @param {Number} i Position character number.
-     * @return {String} Alphabet character.
+     * @param {Number} index The character index number start from 0.
+     *
+     * @return {String} Alphabet character, In case index number higher than 25,
+     *  we will add one letter before the current one like Excel: AA, AB, AC, AD, AE etc.
      */
-    getColumnLabel(i) {
+    getColumnLabel(index) {
         let text = '';
-        let first = Math.ceil(i / 26) - 1;
-        let last = i % 26;
 
-        if (last === 0) {
-            last = 26;
-        }
+        // Get the integer of division and subtraction by 1,
+        // The firstLetterIndex will start from -1
+        // and increments every index adding more 26.
+        const firstLetterIndex = Math.trunc(index / 26) - 1;
 
-        if (first > 0) {
-            text = this.retrieveCharacterByIndex(first);
+        // Get remainder from division result.
+        // The lastLetterIndex value is the index of the second letter.
+        let lastLetterIndex = index % 26;
+
+        // In case firstLetterIndex < -1 we will not show the first letter.
+        if (firstLetterIndex > -1) {
+            text = this.retrieveCharacterByIndex(firstLetterIndex);
         }
-        text += this.retrieveCharacterByIndex(last);
+        // Adding the last letter.
+        text += this.retrieveCharacterByIndex(lastLetterIndex);
+
         return text;
     }
 
@@ -144,7 +152,7 @@ export class CrosswordQuestion {
      * @return {String} Alphabet character.
      */
     retrieveCharacterByIndex(index) {
-        return String.fromCharCode("A".charCodeAt(0) + index - 1);
+        return String.fromCharCode("A".charCodeAt(0) + index);
     }
 
     /**
