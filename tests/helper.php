@@ -48,6 +48,14 @@ class qtype_crossword_test_helper extends question_test_helper {
     /**
      * Makes a normal crossword question.
      *
+     * The crossword layout is:
+     *
+     *     P
+     * B R A Z I L
+     *     R
+     *     I T A L Y
+     *     S
+     *
      * @return qtype_crossword_question
      */
     public function make_crossword_question_normal() {
