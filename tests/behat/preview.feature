@@ -73,3 +73,15 @@ Feature: Preview a Crossword question
     Then the field "Word 1" matches value "__AZIL"
     And the field "Word 2" matches value "PARIS"
     And the field "Word 3" matches value "IT___"
+
+  @javascript @_switch_window
+  Scenario: Deleting intersect characters from input clue area.
+    When I am on the "crossword-001" "core_question > preview" page logged in as teacher
+    And I set the field "Word 1" to "BRAZIL"
+    And I set the field "Word 2" to "PARIS"
+    And I set the field "Word 3" to "ITALY"
+    And I select "3" characters from position "2" in the "Word 2"
+    And I press the delete key
+    Then the field "Word 1" matches value "BR_ZIL"
+    And the field "Word 2" matches value "P___S"
+    And the field "Word 3" matches value "_TALY"
