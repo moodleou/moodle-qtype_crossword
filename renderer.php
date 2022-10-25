@@ -49,7 +49,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             'orientation' => $orientationvalue,
             'readonly' => false
         ];
-        $data['questiontext'] = $question->questiontext;
+        $data['questiontext'] = $question->format_questiontext($qa);
         foreach ($question->answers as $key => $answer) {
             $orientation = 'across';
             $fieldname = 'sub' . $key;
