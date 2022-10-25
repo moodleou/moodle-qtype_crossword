@@ -42,7 +42,7 @@ class qtype_crossword_test_helper extends question_test_helper {
      * @return array The test question array.
      */
     public function get_test_questions(): array {
-        return ['normal', 'unicode', 'different_codepoint'];
+        return ['normal', 'unicode', 'different_codepoint', 'sampleimage'];
     }
 
     /**
@@ -136,6 +136,18 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->startcolumn = [0, 2, 2];
         $fromform->numrows = 5;
         $fromform->numcolumns = 7;
+        return $fromform;
+    }
+
+    /**
+     * Makes a normal crossword question with a sample image in question text.
+     *
+     * @return qtype_crossword_question
+     */
+    public function get_crossword_question_form_data_sampleimage() {
+        $fromform = $this->get_crossword_question_form_data_normal();
+        $fromform->questiontext = ['text' => 'Cross word question text with sample image <img src="@@PLUGINFILE@@/test.jpg" />',
+            'format' => FORMAT_HTML];
         return $fromform;
     }
 

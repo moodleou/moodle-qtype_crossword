@@ -22,6 +22,7 @@ Feature: Preview a Crossword question
       | Test questions   | crossword | crossword-001 | normal              |
       | Test questions   | crossword | crossword-002 | unicode             |
       | Test questions   | crossword | crossword-003 | different_codepoint |
+      | Test questions   | crossword | crossword-004 | sampleimage         |
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response.
@@ -35,6 +36,12 @@ Feature: Preview a Crossword question
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question with sample image.
+    When I am on the "crossword-004" "core_question > preview" page logged in as teacher
+    Then "//img[@src='@@PLUGINFILE@@/test.jpg']" "xpath_element" should not exist
+    And "//img[contains(@src,'question/questiontext')]" "xpath_element" should exist
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit an partially correct response.
