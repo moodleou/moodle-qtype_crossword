@@ -125,12 +125,10 @@ class qtype_crossword_question extends question_graded_automatically {
     }
 
     public function clear_wrong_from_response(array $response): array {
-        $key = 0;
-        foreach ($response as $answer) {
-            if ($this->answers[$key]->answer !== $answer) {
+        foreach ($this->answers as $key => $answer) {
+            if (isset($response[$this->field($key)]) && $response[$this->field($key)] !== $answer->answer) {
                 $response[$this->field($key)] = '';
             }
-            $key++;
         }
         return $response;
     }

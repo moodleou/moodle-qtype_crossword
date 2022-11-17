@@ -44,6 +44,55 @@ class question_test extends \advanced_testcase {
     }
 
     /**
+     * Test is_complete_response function.
+     *
+     * @dataProvider clear_wrong_from_response_provider
+     * @covers \qtype_crossword_question::clear_wrong_from_response
+     * @param array $responses submitted responses.
+     * @param array $expected Expected result.
+     */
+    public function test_clear_wrong_from_response(array $responses, array $expected): void {
+        $question = \test_question_maker::make_question('crossword');
+        $this->assertEquals($expected, $question->clear_wrong_from_response($responses));
+    }
+
+    /**
+     * Data provider for the test_clear_wrong_from_response.
+     *
+     * @coversNothing
+     * @return array
+     */
+    public function clear_wrong_from_response_provider(): array {
+
+        return [
+            'Empty answer' => [
+                [],
+                []
+            ],
+            'Partial correct answers' => [
+                ['sub0' => 'BRZIL', 'sub1' => 'PARI', 'sub2' => 'ITALY'],
+                ['sub2' => 'ITALY', 'sub0' => '', 'sub1' => '']
+            ],
+            'Correct answers is not in ordered' => [
+                ['sub1' => 'PARIS', 'sub0' => 'BRAZIL', 'sub2' => 'ITALY'],
+                ['sub1' => 'PARIS', 'sub0' => 'BRAZIL', 'sub2' => 'ITALY']
+            ],
+            'Correct answers is in ordered' => [
+                ['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY'],
+                ['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY']
+            ],
+            'Not completed answers' => [
+                ['sub1' => 'PARIS', 'sub2' => 'ITALY'],
+                ['sub1' => 'PARIS', 'sub2' => 'ITALY']
+            ],
+            'Not completed and incorrect answer' => [
+                ['sub1' => 'PARIS', 'sub2' => 'ITALI'],
+                ['sub1' => 'PARIS', 'sub2' => '']
+            ]
+        ];
+    }
+
+    /**
      * Test function is_gradable_response.
      *
      * @covers \qtype_crossword_question::is_gradable_response
