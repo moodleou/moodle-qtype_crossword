@@ -42,7 +42,7 @@ class qtype_crossword_test_helper extends question_test_helper {
      * @return array The test question array.
      */
     public function get_test_questions(): array {
-        return ['normal', 'unicode', 'different_codepoint', 'sampleimage'];
+        return ['normal', 'unicode', 'different_codepoint', 'sampleimage', 'clear_incorrect_response'];
     }
 
     /**
@@ -310,6 +310,44 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->startcolumn = [0, 2];
         $fromform->numrows = 6;
         $fromform->numcolumns = 6;
+        return $fromform;
+    }
+
+    /**
+     * Makes a crossword question with clear incorrect responses option.
+     *
+     * @return qtype_crossword_question
+     */
+    public function make_crossword_question_clear_incorrect_response() {
+        $cw = $this->make_crossword_question_normal();
+        $cw->hints = [
+            new question_hint_with_parts(1, 'Hint 1.', FORMAT_HTML, true, true),
+            new question_hint_with_parts(2, 'Hint 2.', FORMAT_HTML, true, true),
+        ];
+        return $cw;
+    }
+
+    /**
+     * Get a crossword with the clear incorrect response options.
+     *
+     * @return qtype_crossword_question
+     */
+    public function get_crossword_question_form_data_clear_incorrect_response() {
+        $fromform = $this->get_crossword_question_form_data_normal();
+        $fromform->penalty = '0.3333333';
+        $fromform->hint = [
+            [
+                'text' => 'You are wrong.',
+                'format' => FORMAT_HTML,
+            ],
+            [
+                'text' => 'You are wrong.',
+                'format' => FORMAT_HTML,
+            ],
+        ];
+        $fromform->hintshownumcorrect = [1, 1];
+        $fromform->hintclearwrong = [1, 1];
+        $fromform->hintoptions = [1, 1];
         return $fromform;
     }
 

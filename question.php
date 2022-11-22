@@ -54,7 +54,7 @@ class qtype_crossword_question extends question_graded_automatically {
     public function get_expected_data(): array {
         $response = [];
         for ($i = 0; $i < count($this->answers); $i++) {
-            $response[$this->field($i)] = PARAM_RAW_TRIMMED;
+            $response[$this->field($i)] = PARAM_RAW;
         }
         return $response;
     }

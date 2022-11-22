@@ -330,11 +330,17 @@ export class CrosswordQuestion {
     /**
      * Sync data to crossword cell from text.
      *
-     * @param {Element} text The text data.
-     * @param {Boolean} [bindClue=false] Check if bind data into clue.
+     * @param {String} text The text data.
+     * @param {Boolean} skipEmptyData Skip empty data flag.
+     *
+     * @return {Boolean} Is valid text string.
      */
-    syncLettersByText(text, bindClue = true) {
+    syncLettersByText(text, skipEmptyData = true) {
         const {wordNumber} = this.options;
+        // Skip empty string.
+        if (text.replace(/_/g, '').length === 0 && skipEmptyData) {
+            return false;
+        }
         for (let i in text) {
             const gEl = this.options.crosswordEl.querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${i}']`);
             if (gEl) {
@@ -345,11 +351,10 @@ export class CrosswordQuestion {
                 } else {
                     textEl.innerHTML = '';
                 }
-                if (bindClue) {
-                    this.bindDataToClueInput(gEl, letter);
-                }
+                this.bindDataToClueInput(gEl, letter);
             }
         }
+        return true;
     }
 
     /**
@@ -432,7 +437,7 @@ export class CrosswordQuestion {
                 // Sorting and Updating letter index.
                 this.updateLetterIndexForCells(word);
                 // The value will be filled into the valid cell.
-                this.syncLettersByText(element.value, false);
+                this.syncLettersByText(element.value);
             });
         // Set wordNumber by default value.
         this.options.wordNumber = -1;
