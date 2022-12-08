@@ -24,6 +24,7 @@ Feature: Preview a Crossword question
       | Test questions   | crossword | crossword-003 | different_codepoint      |
       | Test questions   | crossword | crossword-004 | sampleimage              |
       | Test questions   | crossword | crossword-005 | clear_incorrect_response |
+      | Test questions   | crossword | crossword-006 | normal_with_space        |
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response.
@@ -197,6 +198,19 @@ Feature: Preview a Crossword question
     And I set the field "Word 3" to "ITALY"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
-    And the field "Word 1" matches value "BR ZIL"
-    And the field "Word 2" matches value "  RIS"
+    And the field "Word 1" matches value "BR_ZIL"
+    And the field "Word 2" matches value "__RIS"
     And the field "Word 3" matches value "ITALY"
+
+  @javascript @_switch_window
+  Scenario: When the user enters a space, the system will replace it with an underscore.
+    When I am on the "crossword-006" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Interactive with multiple tries"
+    And I press "Start again with these options"
+    And I set the field "Word 1" to "SANTA CLAUS"
+    And I set the field "Word 2" to "DECEMBER 25"
+    And I set the field "Word 3" to "GRINCH"
+    Then the field "Word 1" matches value "SANTA_CLAUS"
+    And the field "Word 2" matches value "DECEMBER_25"
+    And the field "Word 3" matches value "GRINCH"

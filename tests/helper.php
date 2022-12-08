@@ -42,7 +42,7 @@ class qtype_crossword_test_helper extends question_test_helper {
      * @return array The test question array.
      */
     public function get_test_questions(): array {
-        return ['normal', 'unicode', 'different_codepoint', 'sampleimage', 'clear_incorrect_response'];
+        return ['normal', 'unicode', 'different_codepoint', 'sampleimage', 'clear_incorrect_response', 'normal_with_space'];
     }
 
     /**
@@ -364,5 +364,105 @@ class qtype_crossword_test_helper extends question_test_helper {
             $contexts = new \question_edit_contexts($context);
         }
         return $contexts;
+    }
+
+    /**
+     * Makes a normal crossword question with answer contain spaces.
+     *
+     * The crossword layout is:
+     *
+     *        S
+     *        A
+     *  G R I N C H
+     *        T
+     *        A
+     *
+     *    D E C E M B E R
+     *        L
+     *        A
+     *        U
+     *        S
+     *
+     * @return qtype_crossword_question
+     */
+    public function make_crossword_question_normal_with_space() {
+        question_bank::load_question_definition_classes('crossword');
+        $cw = new qtype_crossword_question();
+        test_question_maker::initialise_a_question($cw);
+        $cw->name = 'Cross word question';
+        $cw->questiontext = 'Cross word question text.';
+        $cw->correctfeedback = 'Cross word feedback.';
+        $cw->correctfeedbackformat = FORMAT_HTML;
+        $cw->penalty = 1;
+        $cw->defaultmark = 1;
+        $cw->numrows = 11;
+        $cw->numcolumns = 12;
+        $cw->qtype = question_bank::get_qtype('crossword');
+        $answerslist = [
+            (object) [
+                'id' => 1,
+                'questionid' => 1,
+                'clue' => 'Name a man who gave presents to children on Christmas Day?',
+                'answer' => 'SANTA CLAUS',
+                'startcolumn' => 3,
+                'startrow' => 0,
+                'orientation' => 1,
+            ],
+            (object) [
+                'id' => 2,
+                'questionid' => 1,
+                'clue' => 'What day is Christmas?',
+                'answer' => 'DECEMBER 25',
+                'startcolumn' => 1,
+                'startrow' => 6,
+                'orientation' => 1,
+            ],
+            (object) [
+                'id' => 3,
+                'questionid' => 1,
+                'clue' => 'Name a fictional character who has green fur and hates Christmas?',
+                'answer' => 'GRINCH',
+                'startcolumn' => 0,
+                'startrow' => 2,
+                'orientation' => 0,
+            ],
+        ];
+
+        foreach ($answerslist as $answer) {
+            $cw->answers[] = new \qtype_crossword\answer(
+                $answer->answer,
+                $answer->clue,
+                $answer->orientation,
+                $answer->startrow,
+                $answer->startcolumn,
+            );
+        }
+        return $cw;
+    }
+
+    /**
+     * Makes a normal crossword question with answer contains space.
+     */
+    public function get_crossword_question_form_data_normal_with_space() {
+        $fromform = new stdClass();
+        $fromform->name = 'Cross word question';
+        $fromform->questiontext = ['text' => 'Crossword question text', 'format' => FORMAT_HTML];
+        $fromform->correctfeedback = ['text' => 'Correct feedback', 'format' => FORMAT_HTML];
+        $fromform->partiallycorrectfeedback = ['text' => 'Partially correct feedback.', 'format' => FORMAT_HTML];
+        $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
+        $fromform->penalty = 1;
+        $fromform->defaultmark = 1;
+        $fromform->answer = ['SANTA CLAUS', 'DECEMBER 25', 'GRINCH'];
+        $fromform->clue = [
+            'Name a man who gave presents to children on Christmas Day?',
+            'What day is Christmas?',
+            'Name a fictional character who has green fur and hates Christmas?'
+        ];
+        $fromform->orientation = [1, 0, 0];
+        $fromform->startrow = [0, 6, 2];
+        $fromform->startcolumn = [3, 1, 0];
+        $fromform->numrows = 11;
+        $fromform->numcolumns = 12;
+        return $fromform;
     }
 }

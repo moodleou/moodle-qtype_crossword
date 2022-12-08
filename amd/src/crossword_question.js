@@ -283,6 +283,10 @@ export class CrosswordQuestion {
                     const clueInputEl = this.options.crosswordEl
                         .closest('.qtype_crossword-grid-wrapper')
                         .querySelector(`.wrap-clue[data-questionid='${wordId}'] input`);
+                    // Replace spaces with an underscore character before binding to the answer input.
+                    if (key === ' ') {
+                        key = '_';
+                    }
                     value = this.replaceAt(clueInputEl.value, letterIndex, key);
                     clueInputEl.value = value.toUpperCase() + this.makeUnderscore(word.length - value.length);
                 }
@@ -331,8 +335,8 @@ export class CrosswordQuestion {
      * Sync data to crossword cell from text.
      *
      * @param {String} text The text data.
-     * @param {Boolean} skipEmptyData Skip empty data flag.
-     *
+     * @param {Boolean} skipEmptyData Allow skip rendering blank answers,
+     *      if false, we will update the crossword grid even if the answer input is blank.
      * @return {Boolean} Is valid text string.
      */
     syncLettersByText(text, skipEmptyData = true) {

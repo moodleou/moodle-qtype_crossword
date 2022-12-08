@@ -57,4 +57,15 @@ class answer {
         $this->startrow = $startrow;
         $this->startcolumn = $startcolumn;
     }
+
+    /**
+     * Check the correctness of the answer,
+     * Remove the underscore character with a space before comparing it.
+     *
+     * @param string $answer The answer need to be checked, maybe contain underscore characters.
+     * @return bool The result after check, True if correct.
+     */
+    public function is_correct(string $answer): bool {
+        return $this->answer === str_replace('_', ' ', $answer);
+    }
 }
