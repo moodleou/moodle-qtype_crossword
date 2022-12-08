@@ -97,7 +97,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 $selected = $response[$fieldname];
             }
 
-            $fraction = (int) ($selected && $selected === $answer->answer);
+            $fraction = (int) ($selected && $answer->is_correct($selected));
             if ($options->correctness) {
                 $inputdata['classes'] = $this->feedback_class($fraction);
                 $inputdata['feedbackimage'] = $this->feedback_image($fraction);
@@ -161,8 +161,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
 
     protected function num_parts_correct(question_attempt $qa): ?string {
         $a = new stdClass();
-        list($a->num, $a->outof) = $qa->get_question()->get_num_parts_right(
-            $qa->get_last_qt_data());
+        [$a->num, $a->outof] = $qa->get_question()->get_num_parts_right($qa->get_last_qt_data());
         if (is_null($a->outof)) {
             return '';
         } else if ($a->num === 1) {

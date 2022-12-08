@@ -54,7 +54,7 @@ class qtype_crossword_question extends question_graded_automatically {
     public function get_expected_data(): array {
         $response = [];
         for ($i = 0; $i < count($this->answers); $i++) {
-            $response[$this->field($i)] = PARAM_RAW;
+            $response[$this->field($i)] = PARAM_RAW_TRIMMED;
         }
         return $response;
     }
@@ -116,8 +116,7 @@ class qtype_crossword_question extends question_graded_automatically {
     public function get_num_parts_right(array $response): array {
         $numright = 0;
         foreach ($this->answers as $key => $answer) {
-            $answercompare = $response[$this->field($key)];
-            if ($answer->answer === $answercompare) {
+            if ($answer->is_correct($response[$this->field($key)])) {
                 $numright++;
             }
         }
@@ -126,7 +125,7 @@ class qtype_crossword_question extends question_graded_automatically {
 
     public function clear_wrong_from_response(array $response): array {
         foreach ($this->answers as $key => $answer) {
-            if (isset($response[$this->field($key)]) && $response[$this->field($key)] !== $answer->answer) {
+            if (isset($response[$this->field($key)]) && !$answer->is_correct($response[$this->field($key)])) {
                 $response[$this->field($key)] = '';
             }
         }

@@ -144,6 +144,7 @@ export class CrosswordClue extends CrosswordQuestion {
                 const underScore = this.makeUnderscore(selectionLength);
                 value = [value.slice(0, startIndex), underScore, value.slice(startIndex)].join('');
                 target.value = value;
+                // In case the user deletes the entire answer we need to update the crossword grid.
                 this.syncLettersByText(value, false);
                 this.syncFocusCellAndInput(target, startIndex);
             }
@@ -204,6 +205,7 @@ export class CrosswordClue extends CrosswordQuestion {
             event.clipboardData.setData('text/plain', selectString);
             event.preventDefault();
             event.target.setSelectionRange(startIndex, startIndex);
+            // In case the user cuts off the entire answer, we need to update the crossword grid.
             this.syncLettersByText(value, false);
         });
     }
