@@ -69,15 +69,16 @@ export class CrosswordQuestion {
             target: '#crossword',
             isPreview: false,
             previewSetting: {backgroundColor: '#ffffff', borderColor: '#000000', textColor: '#ffffff', conflictColor: '#f4cece'},
-            cellWidth: 31,
-            cellHeight: 31,
+            cellWidth: 60,
+            cellHeight: 60,
             wordNumber: -1,
-            coordinates: ''
+            coordinates: '',
+            cellSize: [60, 40],
         };
         // Merge options.
         defaultOption = {...defaultOption, ...options};
-        // Set options.
-        this.options = defaultOption;
+        // Set options and calculate cell size.
+        this.options = this.calculateCellSize(defaultOption);
         // Get target element.
         const targetEls = document.querySelectorAll(defaultOption.target);
         for (let i = 0; i < targetEls.length; i++) {
@@ -445,5 +446,28 @@ export class CrosswordQuestion {
             });
         // Set wordNumber by default value.
         this.options.wordNumber = -1;
+    }
+
+    /**
+     * Calculate cell size based on the number of columns and rows,
+     * If rows or columns more than 15, we will set size 40px (default).
+     *
+     * @param {Array} option The crossword option.
+     * @return {Array} The crossword option after change the cell size.
+     */
+    calculateCellSize(option) {
+        let size = option.cellSize[0];
+        option.isSmall = 0;
+        if (option.colsNum > 15 || option.rowsNum > 15) {
+            size = option.cellSize[1];
+            option.isSmall = 1;
+        }
+        // Calculate the size of the crossword: we need to add space between the cells.
+        // The size of the crossword is calculated by the formula:
+        // number of cells multiplied by (1 cell length + 1) and then 1.
+        option.width = option.colsNum * (size + 1) + 1;
+        option.height = option.rowsNum * (size + 1) + 1;
+        option.cellWidth = option.cellHeight = size;
+        return option;
     }
 }
