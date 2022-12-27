@@ -198,25 +198,10 @@ export class CrosswordGrid extends CrosswordQuestion {
         const options = this.options;
         const crosswordEl = this.options.crosswordEl;
         let className = 'crossword-grid';
-        let isSetHeight = true;
         let cssText = `width: ${options.width}px;`;
 
         if (!crosswordEl) {
             return;
-        }
-
-        // When the crossword is large,
-        // we need to adjust the crossword to be smaller in the small device.
-        if (!options.isSmall) {
-            className += ' adjust-crossword';
-            // In case we start the crossword at the small screen (less than 768px),
-            // we will not set the crossword height to avoid creating spaces at the top
-            // and the bottom of the crossword.
-            isSetHeight = !(window.screen.width < 768);
-        }
-
-        if (isSetHeight) {
-            cssText += `height: ${options.height}px`;
         }
 
         // Create background.
@@ -348,7 +333,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                     {
                         x: position.x + cellWidth / 2,
                         y: position.y + cellHeight / 2 + 7,
-                        "class": className,
+                        'class': className,
                         'text-anchor': 'middle',
                     }
                 );
@@ -677,19 +662,19 @@ export class CrosswordGrid extends CrosswordQuestion {
      */
     addEventResizeScreen() {
         window.addEventListener('resize', () => {
+            const options = this.options;
+            const crossword = options.crosswordEl.querySelector('svg');
+            let width = options.colsNum * (options.cellWidth ?? 60 + 1) + 1;
+            if (window.innerWidth < 768 && !options.isSmall) {
+                width = options.colsNum * (options.cellSize[1] ?? 40 + 1) + 1;
+            }
+
+            if (window.innerWidth > 768 && options.isSmall) {
+                width = options.colsNum * (options.cellSize[0] ?? 60 + 1) + 1;
+            }
+            crossword.style.cssText = `width: ${width}px;`;
             // Update cell input position whenever we resize the screen.
             this.updatePositionForCellInput();
-            const options = this.options;
-            const crosswordEl = options.crosswordEl.querySelector('svg.crossword-grid.adjust-crossword');
-            if (crosswordEl) {
-                // Every time we change the screen size from small screen to large screen (or vice versa),
-                // we need to align the height of the crossword to avoid creating gaps at the top and bottom of the crossword.
-                if (window.screen.width < 768) {
-                    crosswordEl.style.height = 'unset';
-                } else {
-                    crosswordEl.style.height = `${options.height}px`;
-                }
-            }
         });
     }
 }

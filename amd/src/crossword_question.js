@@ -458,7 +458,7 @@ export class CrosswordQuestion {
     calculateCellSize(option) {
         let size = option.cellSize[0];
         option.isSmall = 0;
-        if (option.colsNum > 15 || option.rowsNum > 15) {
+        if (option.colsNum > 15 || option.rowsNum > 15 || window.innerWidth < 768) {
             size = option.cellSize[1];
             option.isSmall = 1;
         }

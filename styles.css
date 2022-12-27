@@ -188,10 +188,6 @@
         position: relative;
         padding-bottom: 1.25rem;
     }
-
-    .qtype_crossword-grid-wrapper #crossword svg.adjust-crossword {
-        max-width: 620px;
-    }
 }
 
 /* Large devices (desktops, less than 1200px). */
