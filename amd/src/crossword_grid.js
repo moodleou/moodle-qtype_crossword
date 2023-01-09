@@ -180,9 +180,6 @@ export class CrosswordGrid extends CrosswordQuestion {
      * Build crossword for attempt.
      */
     buildCrossword() {
-        const options = this.options;
-        // Setup size of crossword.
-        this.options = {...options, width: options.colsNum * 32 + 1, height: options.rowsNum * 32 + 1};
         // Set up for clue input: maxlength, aria-label.
         const crosswordClue = new CrosswordClue(this.options);
         crosswordClue.setUpClue();
@@ -200,6 +197,8 @@ export class CrosswordGrid extends CrosswordQuestion {
     drawCrosswordSVG() {
         const options = this.options;
         const crosswordEl = this.options.crosswordEl;
+        let className = 'crossword-grid';
+        let cssText = `width: ${options.width}px;`;
 
         if (!crosswordEl) {
             return;
@@ -209,7 +208,7 @@ export class CrosswordGrid extends CrosswordQuestion {
         let svg = this.createElementNSFrom(
             'svg',
             {
-                'class': 'crossword-grid',
+                'class': className,
                 viewBox: `0 0 ${options.width} ${options.height}`
             }
         );
@@ -229,6 +228,9 @@ export class CrosswordGrid extends CrosswordQuestion {
 
         // Create svg body.
         svg = this.createCrosswordBody(svg);
+
+        // Set the crossword with and height by CSS to keep original size.
+        svg.style.cssText = cssText;
 
         // Create an input, by default, it will be hidden.
         const inputContainEl = this.createElementFrom(
@@ -251,14 +253,6 @@ export class CrosswordGrid extends CrosswordQuestion {
         // Add event for word input.
         this.addEventForWordInput(inputEl);
         inputContainEl.append(inputEl);
-
-        if (options.colsNum >= 15) {
-            svg.classList.add('adjust-small-crossword');
-        }
-
-        if (options.colsNum >= 20) {
-            svg.classList.add('adjust-crossword');
-        }
         crosswordEl.append(svg, inputContainEl);
     }
 
@@ -300,7 +294,7 @@ export class CrosswordGrid extends CrosswordQuestion {
      * @return {Element} The svg element.
      */
     createCrosswordBody(svg) {
-        const {words, cellWidth, cellHeight} = this.options;
+        const {words, cellWidth, cellHeight, isSmall} = this.options;
         let count = 0;
         for (let i in words) {
             const word = words[i];
@@ -330,12 +324,17 @@ export class CrosswordGrid extends CrosswordQuestion {
                 // Get exist ting rect element.
                 const existingRectElement = svg.querySelector(`rect.crossword-cell[x='${position.x}'][y='${position.y}']`);
                 // Create text element to hold the letter.
+                let className = 'crossword-cell-text';
+                if (isSmall) {
+                    className += ' font-size-small';
+                }
                 const textEl = this.createElementNSFrom(
                     'text',
                     {
-                        x: position.x + 11,
-                        y: position.y + 21,
-                        'class': 'crossword-cell-text'
+                        x: position.x + cellWidth / 2,
+                        y: position.y + cellHeight / 2 + 7,
+                        'class': className,
+                        'text-anchor': 'middle',
                     }
                 );
                 // Check if cell is not drawn.
@@ -384,9 +383,9 @@ export class CrosswordGrid extends CrosswordQuestion {
      * @return {Element} The g element.
      */
     appendCellNumber(g, position, wordNumber) {
-        // Update position.
-        const x = position.x + 1;
-        const y = position.y + 9;
+        // Update position for word number.
+        const x = position.x + 2;
+        const y = position.y + 13;
         let textNumber = this.createElementNSFrom(
             'text',
             {
@@ -663,6 +662,18 @@ export class CrosswordGrid extends CrosswordQuestion {
      */
     addEventResizeScreen() {
         window.addEventListener('resize', () => {
+            const options = this.options;
+            const crossword = options.crosswordEl.querySelector('svg');
+            let width = options.colsNum * (options.cellWidth ?? 60 + 1) + 1;
+            if (window.innerWidth < 768 && !options.isSmall) {
+                width = options.colsNum * (options.cellSize[1] ?? 40 + 1) + 1;
+            }
+
+            if (window.innerWidth > 768 && options.isSmall) {
+                width = options.colsNum * (options.cellSize[0] ?? 60 + 1) + 1;
+            }
+            crossword.style.cssText = `width: ${width}px;`;
+            // Update cell input position whenever we resize the screen.
             this.updatePositionForCellInput();
         });
     }

@@ -47,7 +47,8 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             'isPreview' => false,
             'title' => get_string('celltitle', 'qtype_crossword'),
             'orientation' => $orientationvalue,
-            'readonly' => false
+            'readonly' => false,
+            'cellSize' => [60, 40]
         ];
         $data['questiontext'] = $question->format_questiontext($qa);
         foreach ($question->answers as $key => $answer) {
