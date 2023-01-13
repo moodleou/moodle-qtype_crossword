@@ -96,7 +96,6 @@
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword {
     position: relative;
     max-width: 700px;
-    background: #000;
 }
 
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword svg.adjust-crossword {

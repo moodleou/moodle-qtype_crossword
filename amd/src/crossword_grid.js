@@ -230,6 +230,8 @@ export class CrosswordGrid extends CrosswordQuestion {
         // Create svg body.
         svg = this.createCrosswordBody(svg);
 
+        // Set size for crossword.
+        svg = this.setSizeForCrossword(svg);
         // Create an input, by default, it will be hidden.
         const inputContainEl = this.createElementFrom(
             'div',
@@ -333,9 +335,11 @@ export class CrosswordGrid extends CrosswordQuestion {
                 const textEl = this.createElementNSFrom(
                     'text',
                     {
-                        x: position.x + 11,
-                        y: position.y + 21,
-                        'class': 'crossword-cell-text'
+                        'class': 'crossword-cell-text',
+                        x: position.x + cellWidth / 2,
+                        y: position.y + cellHeight / 2 + 1,
+                        'text-anchor': 'middle',
+                        'alignment-baseline': 'middle',
                     }
                 );
                 // Check if cell is not drawn.

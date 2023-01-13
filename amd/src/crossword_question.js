@@ -56,6 +56,9 @@ export class CrosswordQuestion {
     // Enter key.
     ENTER = 'Enter';
 
+    // Maximum row of crossword.
+    MAX_ROW = 30;
+
     /**
      * Constructor for crossword question.
      *
@@ -72,7 +75,9 @@ export class CrosswordQuestion {
             cellWidth: 31,
             cellHeight: 31,
             wordNumber: -1,
-            coordinates: ''
+            coordinates: '',
+            maxSizeCell: 50,
+            minSizeCell: 30,
         };
         // Merge options.
         defaultOption = {...defaultOption, ...options};
@@ -445,5 +450,25 @@ export class CrosswordQuestion {
             });
         // Set wordNumber by default value.
         this.options.wordNumber = -1;
+    }
+
+    /**
+     * Set size for crossword.
+     *
+     * @param {Element} svg The svg element.
+     * @return {Element} The svg element after set size.
+     */
+    setSizeForCrossword(svg) {
+        const {colsNum, maxSizeCell, minSizeCell} = this.options;
+        // Get max width and min width for crossword with current max cell size and min cell size.
+        const maxWidth = colsNum * (maxSizeCell + 1) + 1;
+        const minWidth = colsNum * (minSizeCell + 1) + 1;
+        // To avoid the case that the crossword has too high a height when we have many rows (eg 30) and too few columns (eg 3).
+        // We will limit the maximum height of the crossword.
+        // This reduces the size of the crossword but still ensures that the size of each cell keep in the range min and max sizes.
+        const maxHeight = this.MAX_ROW * (minSizeCell + 1) + 1;
+        svg.style.cssText = `max-width: ${maxWidth}px; min-width: ${minWidth}px;
+            max-height: ${maxHeight}px;`;
+        return svg;
     }
 }
