@@ -65,26 +65,10 @@ class qtype_crossword_edit_form extends question_edit_form {
     protected function get_per_answer_fields($mform, $label, $gradeoptions,
             &$repeatedoptions, &$wordsoptions): array {
         $repeated = [];
-        $wordoptions = [];
-
-        // Add answer field.
-        $wordoptions[] = $mform->createElement('text', 'answer',
-            get_string('answer', 'qtype_crossword'), ['size' => 20, 'maxlength' => 99, 'class' => 'answer-clue']);
-        $mform->setType('answer', PARAM_RAW);
-
-        // Add clue field.
-        $wordoptions[] = $mform->createElement('text', 'clue',
-            get_string('clue', 'qtype_crossword'), ['size' => 40, 'class' => 'clue-label']);
-        $mform->setType('clue', PARAM_RAW);
-
-        // Add group.
-        $repeated[] = $mform->createElement('group', 'answeroptions',
-            $label, $wordoptions, null, false);
-
-        $wordoptions = [];
+        $coordinatesoptions = [];
 
         // Add Orientation selection.
-        $wordoptions[] = $mform->createElement(
+        $coordinatesoptions[] = $mform->createElement(
             'select',
             'orientation',
             get_string('orientation', 'qtype_crossword'),
@@ -94,18 +78,27 @@ class qtype_crossword_edit_form extends question_edit_form {
             ],
             null
         );
+        $coordinatesoptions = array_merge($coordinatesoptions, $this->add_coordinates_input($mform));
         $mform->setType('orientation', PARAM_INT);
 
-        // Add coordinates form.
-        $coodinatesform = $this->add_coordinates_input($mform);
-
-        $wordoptions = array_merge($wordoptions, $coodinatesform);
-
         $repeated[] = $mform->createElement('group', 'coodinateoptions',
-            '', $wordoptions, null, false);
+            $label, $coordinatesoptions, null, false);
 
-        $repeatedoptions['answer']['type'] = PARAM_RAW;
-        $repeatedoptions['clue']['type'] = PARAM_RAW;
+        // Add answer field.
+        $repeated[] = $mform->createElement('text', 'answer',
+            get_string('answer', 'qtype_crossword'), ['size' => 20, 'maxlength' => 99, 'class' => 'answer-clue']);
+        $mform->setType('answer', PARAM_RAW);
+
+        // Add clue field.
+        $repeated[] = $mform->createElement('editor', 'clue',
+            get_string('clue', 'qtype_crossword'), ['rows' => 1], $this->editoroptions);
+        $mform->setType('clue', PARAM_RAW);
+
+        // Add feedback field.
+        $repeated[] = $mform->createElement('editor', 'feedback',
+            get_string('feedback', 'question'), ['rows' => 1], $this->editoroptions);
+        $mform->setType('feedback', PARAM_RAW);
+
         $wordsoptions = 'words';
         return $repeated;
     }
@@ -114,7 +107,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         $minoptions = QUESTION_NUMANS_START, $addoptions = QUESTION_NUMANS_ADD) {
         $mform->addElement('header', 'words',
             get_string('words', 'qtype_crossword'), '');
-        $mform->setExpanded('words', 1);
+
         $answersoption = '';
         $repeatedoptions = [];
         $repeated = $this->get_per_answer_fields($mform, $label, $gradeoptions,
@@ -227,33 +220,62 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @return object The custom question object.
      */
     private function data_preprocessing_words(object $question): object {
-        global $DB;
         $answer = [];
         $clue = [];
         $orientation = [];
         $startrow = [];
         $startcolumn = [];
-        $answers = [];
-        if (isset($question->id)) {
-            $answers = $DB->get_records('qtype_crossword_words', ['questionid' => $question->id], 'id ASC');
-        }
-        if (!empty($answers)) {
-            foreach ($answers as $answerdata) {
+        $feedback = [];
+        if (!empty($question->options->words)) {
+            $key = 0;
+            foreach ($question->options->words as $index => $answerdata) {
+                // Prepare the clue editor to display files in draft area.
                 $answer[] = $answerdata->answer;
-                $clue[] = $answerdata->clue;
+                $cluedraftitemid = file_get_submitted_draft_itemid('clue['.$key.']');
+                $itemid = (int)$answerdata->id ?? null;
+                $clue[$key]['text'] = file_prepare_draft_area(
+                    $cluedraftitemid,
+                    $this->context->id,
+                    'question',
+                    'clue',
+                    $itemid,
+                    $this->fileoptions,
+                    $answerdata->clue
+                );
+                $clue[$key]['itemid'] = $cluedraftitemid;
+                $clue[$key]['format'] = $answerdata->clueformat ?? FORMAT_HTML;
+                $question->options->words[$index]->clueformat = $clue[$key]['format'];
+                $question->options->words[$index]->clue = $clue[$key]['text'];
+
+                // Prepare the feedback editor to display files in draft area.
+                $feedbackdraftitemid = file_get_submitted_draft_itemid('feedback['.$key.']');
+                $feedback[$key]['text'] = file_prepare_draft_area(
+                    $feedbackdraftitemid,
+                    $this->context->id,
+                    'question',
+                    'feedback',
+                    $itemid,
+                    $this->fileoptions,
+                    $answerdata->feedback
+                );
+                $feedback[$key]['itemid'] = $feedbackdraftitemid;
+                $feedback[$key]['format'] = $answerdata->feedbackformat ?? FORMAT_HTML;
+                $question->options->words[$index]->feedbackformat = $feedback[$key]['format'];
+                $question->options->words[$index]->feedback = $feedback[$key]['text'];
+
                 $orientation[] = $answerdata->orientation;
                 $startrow[] = $answerdata->startrow;
                 $startcolumn[] = $answerdata->startcolumn;
+                $key++;
             }
         }
-
         if (!empty($question->options)) {
             $question->numrows = $question->options->numrows;
             $question->numcolumns = $question->options->numcolumns;
         }
-
         $question->answer = $answer;
         $question->clue = $clue;
+        $question->feedback = $feedback;
         $question->orientation = $orientation;
         $question->startrow = $startrow;
         $question->startcolumn = $startcolumn;
@@ -270,44 +292,43 @@ class qtype_crossword_edit_form extends question_edit_form {
         $except = [];
         for ($i = 0; $i < count($answers); $i++) {
             // Skip the invalid word.
-            $clue = trim($clues[$i]);
+            $clues[$i]['text'] = trim($clues[$i]['text']);
             // Normalize answer.
             $answer = \qtype_crossword\util::safe_normalize(trim($answers[$i]));
-            if ($clue === '' || $answer === '') {
-                if ($clue === $answer) {
-                    continue;
-                }
-                $errors["answeroptions[$i]"] = get_string('pleaseenterclueandanswer', 'qtype_crossword', $i + 1);
+            if ($clues[$i]['text'] === $answer) {
+                continue;
+            }
+            if ($clues[$i]['text'] === '') {
+                $errors["clue[$i]"] = get_string('pleaseenterclueandanswer', 'qtype_crossword', $i + 1);
+            }
+            if ($answer === '') {
+                $errors["answer[$i]"] = get_string('pleaseenterclueandanswer', 'qtype_crossword', $i + 1);
             }
             $answercount++;
 
             // Check alphanumeric letter.
-            if (!isset($errors["answeroptions[$i]"]) && preg_match($regex, core_text::strtolower($answer))) {
-                $errors["answeroptions[$i]"] = get_string('mustbealphanumeric', 'qtype_crossword');
+            if (!isset($errors["answer[$i]"]) && preg_match($regex, core_text::strtolower($answer))) {
+                $errors["answer[$i]"] = get_string('mustbealphanumeric', 'qtype_crossword');
             }
 
             // Check answer length.
-            if (!(isset($errors["answeroptions[$i]"]) || $this->check_word_length($data, $i))) {
-                $errors["answeroptions[$i]"] = get_string('overflowposition', 'qtype_crossword');
+            if (!(isset($errors["answer[$i]"]) || $this->check_word_length($data, $i))) {
+                $errors["answer[$i]"] = get_string('overflowposition', 'qtype_crossword');
             }
-            // Check clue length.
-            if (!isset($errors["answeroptions[$i]"]) && core_text::strlen($clue) > 1333) {
-                $errors["answeroptions[$i]"] = get_string('maximumchars', '', 1333);
-            }
-            if (!isset($errors["answeroptions[$i]"])) {
+            if (!isset($errors["answer[$i]"])) {
                 $except[] = $i;
                 // Find conflicting words.
                 $positions = $this->get_word_conflict($data, $i, $except);
                 if ($positions) {
                     foreach ($positions as $position) {
-                        $errors["answeroptions[$position]"] = get_string('wrongintersection', 'qtype_crossword');
+                        $errors["answer[$position]"] = get_string('wrongintersection', 'qtype_crossword');
                     }
                 }
             }
         }
 
         if ($answercount < 1) {
-            $errors['answeroptions[0]'] = get_string('notenoughwords', 'qtype_crossword', 1);
+            $errors['answer[0]'] = get_string('notenoughwords', 'qtype_crossword', 1);
         }
 
         return $errors;
@@ -375,7 +396,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         // Compare the first word with another word.
         for ($i = count($data['answer']) - 1; $i >= 0; $i--) {
             $answer2 = \qtype_crossword\util::safe_normalize(trim(core_text::strtolower($data['answer'][$i])));
-            $clues = trim(core_text::strtolower($data['clue'][$i]));
+            $clues = trim(core_text::strtolower($data['clue'][$i]['text']));
             // Skip invalid word.
             if ($answer2 === "" || $clues === "") {
                 $except[] = $i;

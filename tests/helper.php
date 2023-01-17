@@ -76,38 +76,51 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'id' => 1,
                 'questionid' => 1,
                 'clue' => 'where is the Christ the Redeemer statue located in?',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'BRAZIL',
                 'startcolumn' => 0,
                 'startrow' => 1,
                 'orientation' => 0,
+                'feedback' => 'This is correct answer',
+                'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 2,
                 'questionid' => 1,
                 'clue' => 'Eiffel Tower is located in?',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'PARIS',
                 'startcolumn' => 2,
                 'startrow' => 0,
                 'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 3,
                 'questionid' => 1,
                 'clue' => 'Where is the Leaning Tower of Pisa?',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'ITALY',
                 'startcolumn' => 2,
                 'startrow' => 3,
                 'orientation' => 0,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
         ];
 
         foreach ($answerslist as $answer) {
             $cw->answers[] = new \qtype_crossword\answer(
+                $answer->id,
                 $answer->answer,
                 $answer->clue,
+                $answer->clueformat,
                 $answer->orientation,
                 $answer->startrow,
                 $answer->startcolumn,
+                $answer->feedback,
+                $answer->feedbackformat,
             );
         }
         return $cw;
@@ -127,9 +140,18 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->defaultmark = 1;
         $fromform->answer = ['BRAZIL', 'PARIS', 'ITALY'];
         $fromform->clue = [
-            'where is the Christ the Redeemer statue located in?',
-            'Eiffel Tower is located in?',
-            'Where is the Leaning Tower of Pisa?'
+            [
+                'text' => 'where is the Christ the Redeemer statue located in?',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => 'Eiffel Tower is located in?',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => 'Where is the Leaning Tower of Pisa?',
+                'format' => FORMAT_HTML
+            ],
         ];
         $fromform->orientation = [0, 1, 0];
         $fromform->startrow = [1, 0, 3];
@@ -146,8 +168,26 @@ class qtype_crossword_test_helper extends question_test_helper {
      */
     public function get_crossword_question_form_data_sampleimage() {
         $fromform = $this->get_crossword_question_form_data_normal();
-        $fromform->questiontext = ['text' => 'Cross word question text with sample image <img src="@@PLUGINFILE@@/test.jpg" />',
+        $fromform->correctfeedback = ['text' => 'Correct feedback <img src="@@PLUGINFILE@@/correctfbimg.jpg" />',
             'format' => FORMAT_HTML];
+        $fromform->partiallycorrectfeedback = ['text' => 'Partially correct feedback. <img src="@@PLUGINFILE@@/partialfbimg.jpg"',
+            'format' => FORMAT_HTML];
+        $fromform->incorrectfeedback = ['text' => 'Incorrect feedback. <img src="@@PLUGINFILE@@/incorrectfbimg.jpg"',
+            'format' => FORMAT_HTML];
+        $fromform->questiontext = [
+            'text' => 'Cross word question text with sample image <img src="@@PLUGINFILE@@/questiontextimg.jpg" />',
+            'format' => FORMAT_HTML
+        ];
+        $fromform->feedback = [
+            [
+                'text' => 'where is the Christ the Redeemer statue located in? <img src="@@PLUGINFILE@@/feedback.jpg" />',
+                'format' => FORMAT_HTML
+            ],
+        ];
+        $fromform->clue[0]['text'] = 'where is the Christ the Redeemer statue located in?' .
+            '<img src="@@PLUGINFILE@@/clueimg.jpg" />';
+        $fromform->feedback[0]['text'] = 'where is the Christ the Redeemer statue located in?' .
+            '<img src="@@PLUGINFILE@@/feedback.jpg" />';
         return $fromform;
     }
 
@@ -174,38 +214,51 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'id' => 1,
                 'questionid' => 2,
                 'clue' => '线索 1',
+                'clueformat' => FORMAT_HTML,
                 'answer' => '回答一',
                 'startcolumn' => 0,
                 'startrow' => 2,
                 'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 2,
                 'questionid' => 2,
                 'clue' => '线索 2',
+                'clueformat' => FORMAT_HTML,
                 'answer' => '回答两个',
                 'startcolumn' => 0,
                 'startrow' => 2,
                 'orientation' => 0,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 3,
                 'questionid' => 2,
                 'clue' => '线索 3',
+                'clueformat' => FORMAT_HTML,
                 'answer' => '回答三',
                 'startcolumn' => 1,
                 'startrow' => 1,
                 'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
         ];
 
         foreach ($answerslist as $answer) {
             $cw->answers[] = new \qtype_crossword\answer(
+                $answer->id,
                 $answer->answer,
                 $answer->clue,
+                $answer->clueformat,
                 $answer->orientation,
                 $answer->startrow,
                 $answer->startcolumn,
+                $answer->feedback,
+                $answer->feedbackformat,
             );
         }
         return $cw;
@@ -225,9 +278,18 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->defaultmark = 1;
         $fromform->answer = ['回答一', '回答两个', '回答三'];
         $fromform->clue = [
-            '线索 1',
-            '线索 2',
-            '线索 3'
+            [
+                'text' => '线索 1',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => '线索 2',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => '线索 3',
+                'format' => FORMAT_HTML
+            ],
         ];
         $fromform->orientation = [1, 0, 1];
         $fromform->startrow = [2, 2, 1];
@@ -260,29 +322,39 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'id' => 1,
                 'questionid' => 2,
                 'clue' => 'Answer contains letter é has codepoint \u00e9',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'Amélie',
                 'startcolumn' => 0,
                 'startrow' => 3,
                 'orientation' => 0,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 2,
                 'questionid' => 2,
                 'clue' => 'Answer contains letter é has codepoint \u0065\u0301',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'Amélie',
                 'startcolumn' => 2,
                 'startrow' => 1,
                 'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
         ];
 
         foreach ($answerslist as $answer) {
             $cw->answers[] = new \qtype_crossword\answer(
+                $answer->id,
                 $answer->answer,
                 $answer->clue,
+                $answer->clueformat,
                 $answer->orientation,
                 $answer->startrow,
                 $answer->startcolumn,
+                $answer->feedback,
+                $answer->feedbackformat,
             );
         }
         return $cw;
@@ -302,8 +374,14 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->defaultmark = 1;
         $fromform->answer = ['Amélie', 'Amélie'];
         $fromform->clue = [
-            'Answer contains letter é has codepoint \u00e9',
-            'Answer contains letter é has codepoint \u0065\u0301',
+            [
+                'text' => 'Answer contains letter é has codepoint \u00e9',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => 'Answer contains letter é has codepoint \u0065\u0301',
+                'format' => FORMAT_HTML
+            ],
         ];
         $fromform->orientation = [0, 1];
         $fromform->startrow = [3, 1];
@@ -403,38 +481,51 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'id' => 1,
                 'questionid' => 1,
                 'clue' => 'Name a man who gave presents to children on Christmas Day?',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'SANTA CLAUS',
                 'startcolumn' => 3,
                 'startrow' => 0,
                 'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 2,
                 'questionid' => 1,
                 'clue' => 'What day is Christmas?',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'DECEMBER 25',
                 'startcolumn' => 1,
                 'startrow' => 6,
                 'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 3,
                 'questionid' => 1,
                 'clue' => 'Name a fictional character who has green fur and hates Christmas?',
+                'clueformat' => FORMAT_HTML,
                 'answer' => 'GRINCH',
                 'startcolumn' => 0,
                 'startrow' => 2,
                 'orientation' => 0,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
             ],
         ];
 
         foreach ($answerslist as $answer) {
             $cw->answers[] = new \qtype_crossword\answer(
+                $answer->id,
                 $answer->answer,
                 $answer->clue,
+                $answer->clueformat,
                 $answer->orientation,
                 $answer->startrow,
                 $answer->startcolumn,
+                $answer->feedback,
+                $answer->feedbackformat,
             );
         }
         return $cw;
@@ -454,9 +545,18 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->defaultmark = 1;
         $fromform->answer = ['SANTA CLAUS', 'DECEMBER 25', 'GRINCH'];
         $fromform->clue = [
-            'Name a man who gave presents to children on Christmas Day?',
-            'What day is Christmas?',
-            'Name a fictional character who has green fur and hates Christmas?'
+            [
+                'text' => 'Name a man who gave presents to children on Christmas Day?',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => 'What day is Christmas?',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => 'Name a fictional character who has green fur and hates Christmas?',
+                'format' => FORMAT_HTML
+            ],
         ];
         $fromform->orientation = [1, 0, 0];
         $fromform->startrow = [0, 6, 2];

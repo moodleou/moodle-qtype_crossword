@@ -45,7 +45,8 @@ class backup_qtype_crossword_plugin extends backup_qtype_plugin {
 
         // Define the elements.
         $words = new backup_nested_element('words');
-        $word = new backup_nested_element('word', ['id'], ['answer', 'clue', 'orientation', 'startrow', 'startcolumn']);
+        $word = new backup_nested_element('word', ['id'], ['answer', 'clue', 'clueformat', 'orientation', 'startrow',
+            'startcolumn', 'feedback', 'feedbackformat']);
         $words->add_child($word);
         $pluginwrapper->add_child($crossword);
         $pluginwrapper->add_child($words);

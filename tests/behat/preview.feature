@@ -32,9 +32,9 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I set the field "Word 1" to "BRAZIL"
-    And I set the field "Word 2" to "PARIS"
-    And I set the field "Word 3" to "ITALY"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "PARIS"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "ITALY"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
@@ -42,8 +42,28 @@ Feature: Preview a Crossword question
   @javascript @_switch_window
   Scenario: Preview a Crossword question with sample image.
     When I am on the "crossword-004" "core_question > preview" page logged in as teacher
-    Then "//img[@src='@@PLUGINFILE@@/test.jpg']" "xpath_element" should not exist
-    And "//img[contains(@src,'question/questiontext')]" "xpath_element" should exist
+    And "//img[contains(@src,'question/questiontext') and contains(@src,'questiontextimg.jpg')]" "xpath_element" should exist
+    And "//img[contains(@src,'question/clue') and contains(@src,'clueimg.jpg')]" "xpath_element" should exist
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "PARIS"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "ITALY"
+    And I press "Submit and finish"
+    Then "//img[contains(@src,'question/correctfeedback') and contains(@src,'correctfbimg.jpg')]" "xpath_element" should exist
+    And I press "Start again"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "PARIS"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "NANNO"
+    And I press "Submit and finish"
+    And "//img[contains(@src,'question/partiallycorrectfeedback') and contains(@src,'partialfbimg.jpg')]" "xpath_element" should exist
+    And I press "Start again"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "LONDON"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "HANOI"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "NANNO"
+    And I press "Submit and finish"
+    And "//img[contains(@src,'question/incorrectfeedback') and contains(@src,'incorrectfbimg.jpg')]" "xpath_element" should exist
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit an partially correct response.
@@ -51,9 +71,9 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I set the field "Word 1" to "BRAZIL"
-    And I set the field "Word 2" to "PARIS"
-    And I set the field "Word 3" to "NANNO"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "PARIS"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "NANNO"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
@@ -64,9 +84,9 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I set the field "Word 1" to "LONDON"
-    And I set the field "Word 2" to "HANOI"
-    And I set the field "Word 3" to "NANNO"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "LONDON"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "HANOI"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "NANNO"
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
@@ -74,28 +94,28 @@ Feature: Preview a Crossword question
   @javascript @_switch_window
   Scenario: Deleting characters from input clue area.
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
-    And I set the field "Word 1" to "BRAZIL"
-    And I set the field "Word 2" to "PARIS"
-    And I set the field "Word 3" to "ITALY"
-    And I select "2" characters from position "1" in the "Word 1"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "PARIS"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "ITALY"
+    And I select "2" characters from position "1" in the "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word"
     And I press the delete key
-    And I select "3" characters from position "3" in the "Word 3"
+    And I select "3" characters from position "3" in the "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word"
     And I press the delete key
-    Then the field "Word 1" matches value "__AZIL"
-    And the field "Word 2" matches value "PARIS"
-    And the field "Word 3" matches value "IT___"
+    Then the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" matches value "__AZIL"
+    And the field "2 Down. Eiffel Tower is located in?, 5 letter word" matches value "PARIS"
+    And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "IT___"
 
   @javascript @_switch_window
   Scenario: Deleting intersect characters from input clue area.
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
-    And I set the field "Word 1" to "BRAZIL"
-    And I set the field "Word 2" to "PARIS"
-    And I set the field "Word 3" to "ITALY"
-    And I select "3" characters from position "2" in the "Word 2"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "PARIS"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "ITALY"
+    And I select "3" characters from position "2" in the "2 Down. Eiffel Tower is located in?, 5 letter word"
     And I press the delete key
-    Then the field "Word 1" matches value "BR_ZIL"
-    And the field "Word 2" matches value "P___S"
-    And the field "Word 3" matches value "_TALY"
+    Then the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" matches value "BR_ZIL"
+    And the field "2 Down. Eiffel Tower is located in?, 5 letter word" matches value "P___S"
+    And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "_TALY"
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question with unicode UTF-8 correct answer.
@@ -103,9 +123,9 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I enter unicode character "回答一" in the crossword clue "Word 1"
-    And I enter unicode character "回答两个" in the crossword clue "Word 2"
-    And I enter unicode character "回答三" in the crossword clue "Word 3"
+    And I enter unicode character "回答一" in the crossword clue "1 Down. 线索 1, 3 letter word"
+    And I enter unicode character "回答两个" in the crossword clue "2 Across. 线索 2, 4 letter word"
+    And I enter unicode character "回答三" in the crossword clue "3 Down. 线索 3, 3 letter word"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Answer 1: 回答一, Answer 2: 回答两个, Answer 3: 回答三"
@@ -116,9 +136,9 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I enter unicode character "回答一" in the crossword clue "Word 1"
-    And I enter unicode character "回答二" in the crossword clue "Word 2"
-    And I enter unicode character "回答三" in the crossword clue "Word 3"
+    And I enter unicode character "回答一" in the crossword clue "1 Down. 线索 1, 3 letter word"
+    And I enter unicode character "回答二" in the crossword clue "2 Across. 线索 2, 4 letter word"
+    And I enter unicode character "回答三" in the crossword clue "3 Down. 线索 3, 3 letter word"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
     And I should see "Answer 1: 回答一, Answer 2: 回答两个, Answer 3: 回答三"
@@ -129,9 +149,9 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I enter unicode character "回答四" in the crossword clue "Word 1"
-    And I enter unicode character "回答五" in the crossword clue "Word 2"
-    And I enter unicode character "回答六" in the crossword clue "Word 3"
+    And I enter unicode character "回答四" in the crossword clue "1 Down. 线索 1, 3 letter word"
+    And I enter unicode character "回答五" in the crossword clue "2 Across. 线索 2, 4 letter word"
+    And I enter unicode character "回答六" in the crossword clue "3 Down. 线索 3, 3 letter word"
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
     And I should see "Answer 1: 回答一, Answer 2: 回答两个, Answer 3: 回答三"
@@ -142,8 +162,8 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I enter unicode character "Amélie" in the crossword clue "Word 1"
-    And I enter unicode character "Amélie" in the crossword clue "Word 2"
+    And I enter unicode character "Amélie" in the crossword clue "1 Across. Answer contains letter é has codepoint \u00e9, 6 letter word"
+    And I enter unicode character "Amélie" in the crossword clue "2 Down. Answer contains letter é has codepoint \u0065\u0301, 6 letter word"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Answer 1: AMÉLIE, Answer 2: AMÉLIE"
@@ -154,8 +174,8 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I enter unicode character "Amélie" in the crossword clue "Word 1"
-    And I enter unicode character "Améliz" in the crossword clue "Word 2"
+    And I enter unicode character "Amélie" in the crossword clue "1 Across. Answer contains letter é has codepoint \u00e9, 6 letter word"
+    And I enter unicode character "Améliz" in the crossword clue "2 Down. Answer contains letter é has codepoint \u0065\u0301, 6 letter word"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
     And I should see "Answer 1: AMÉLIE, Answer 2: AMÉLIE"
@@ -166,8 +186,8 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
-    And I enter unicode character "Amelie" in the crossword clue "Word 1"
-    And I enter unicode character "Amelie" in the crossword clue "Word 2"
+    And I enter unicode character "Amelie" in the crossword clue "1 Across. Answer contains letter é has codepoint \u00e9, 6 letter word"
+    And I enter unicode character "Amelie" in the crossword clue "2 Down. Answer contains letter é has codepoint \u0065\u0301, 6 letter word"
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
     And I should see "Answer 1: AMÉLIE, Answer 2: AMÉLIE"
@@ -178,14 +198,14 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
     And I press "Start again with these options"
-    And I set the field "Word 1" to "BRAZIL"
-    And I set the field "Word 2" to "PARIT"
-    And I set the field "Word 3" to "ITALY"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "PARIT"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "ITALY"
     And I press "Check"
     And I press "Try again"
-    Then the field "Word 1" matches value "BRAZIL"
-    And the field "Word 2" matches value "_A_I_"
-    And the field "Word 3" matches value "ITALY"
+    Then the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" matches value "BRAZIL"
+    And the field "2 Down. Eiffel Tower is located in?, 5 letter word" matches value "_A_I_"
+    And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "ITALY"
 
   @javascript @_switch_window
   Scenario: User can type their answer with a space at the beginning.
@@ -193,14 +213,14 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
     And I press "Start again with these options"
-    And I set the field "Word 1" to "BRAZIL"
-    And I set the field "Word 2" to "  RIS"
-    And I set the field "Word 3" to "ITALY"
+    And I set the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" to "BRAZIL"
+    And I set the field "2 Down. Eiffel Tower is located in?, 5 letter word" to "  RIS"
+    And I set the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" to "ITALY"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
-    And the field "Word 1" matches value "BR_ZIL"
-    And the field "Word 2" matches value "__RIS"
-    And the field "Word 3" matches value "ITALY"
+    And the field "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" matches value "BR_ZIL"
+    And the field "2 Down. Eiffel Tower is located in?, 5 letter word" matches value "__RIS"
+    And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "ITALY"
 
   @javascript @_switch_window
   Scenario: When the user enters a space, the system will replace it with an underscore.
@@ -208,12 +228,12 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
     And I press "Start again with these options"
-    And I set the field "Word 1" to "SANTA CLAUS"
-    And I set the field "Word 2" to "DECEMBER 25"
-    And I set the field "Word 3" to "GRINCH"
-    Then the field "Word 1" matches value "SANTA_CLAUS"
-    And the field "Word 2" matches value "DECEMBER_25"
-    And the field "Word 3" matches value "GRINCH"
+    And I set the field "1 Down. Name a man who gave presents to children on Christmas Day?, 11 letter word" to "SANTA CLAUS"
+    And I set the field "2 Across. What day is Christmas?, 11 letter word" to "DECEMBER 25"
+    And I set the field "3 Across. Name a fictional character who has green fur and hates Christmas?, 6 letter word" to "GRINCH"
+    Then the field "1 Down. Name a man who gave presents to children on Christmas Day?, 11 letter word" matches value "SANTA_CLAUS"
+    And the field "2 Across. What day is Christmas?, 11 letter word" matches value "DECEMBER_25"
+    And the field "3 Across. Name a fictional character who has green fur and hates Christmas?, 6 letter word" matches value "GRINCH"
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response with mobile input.
@@ -222,24 +242,24 @@ Feature: Preview a Crossword question
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "Start again with these options"
     # BRAZIL
-    And I enter character "B" in the crossword clue using mobile input "Word 1" in position "1"
-    And I enter character "R" in the crossword clue using mobile input "Word 1" in position "2"
-    And I enter character "A" in the crossword clue using mobile input "Word 1" in position "3"
-    And I enter character "Z" in the crossword clue using mobile input "Word 1" in position "4"
-    And I enter character "I" in the crossword clue using mobile input "Word 1" in position "5"
-    And I enter character "L" in the crossword clue using mobile input "Word 1" in position "6"
+    And I enter character "B" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" in position "1"
+    And I enter character "R" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" in position "2"
+    And I enter character "A" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" in position "3"
+    And I enter character "Z" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" in position "4"
+    And I enter character "I" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" in position "5"
+    And I enter character "L" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in?, 6 letter word" in position "6"
     # PARIS
-    And I enter character "P" in the crossword clue using mobile input "Word 2" in position "1"
-    And I enter character "A" in the crossword clue using mobile input "Word 2" in position "2"
-    And I enter character "R" in the crossword clue using mobile input "Word 2" in position "3"
-    And I enter character "I" in the crossword clue using mobile input "Word 2" in position "4"
-    And I enter character "S" in the crossword clue using mobile input "Word 2" in position "5"
+    And I enter character "P" in the crossword clue using mobile input "2 Down. Eiffel Tower is located in?, 5 letter word" in position "1"
+    And I enter character "A" in the crossword clue using mobile input "2 Down. Eiffel Tower is located in?, 5 letter word" in position "2"
+    And I enter character "R" in the crossword clue using mobile input "2 Down. Eiffel Tower is located in?, 5 letter word" in position "3"
+    And I enter character "I" in the crossword clue using mobile input "2 Down. Eiffel Tower is located in?, 5 letter word" in position "4"
+    And I enter character "S" in the crossword clue using mobile input "2 Down. Eiffel Tower is located in?, 5 letter word" in position "5"
     # ITALY
-    And I enter character "I" in the crossword clue using mobile input "Word 3" in position "1"
-    And I enter character "T" in the crossword clue using mobile input "Word 3" in position "2"
-    And I enter character "A" in the crossword clue using mobile input "Word 3" in position "3"
-    And I enter character "L" in the crossword clue using mobile input "Word 3" in position "4"
-    And I enter character "Y" in the crossword clue using mobile input "Word 3" in position "5"
+    And I enter character "I" in the crossword clue using mobile input "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" in position "1"
+    And I enter character "T" in the crossword clue using mobile input "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" in position "2"
+    And I enter character "A" in the crossword clue using mobile input "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" in position "3"
+    And I enter character "L" in the crossword clue using mobile input "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" in position "4"
+    And I enter character "Y" in the crossword clue using mobile input "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" in position "5"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
