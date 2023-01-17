@@ -45,5 +45,63 @@ function xmldb_qtype_crossword_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022101000, 'qtype', 'crossword');
     }
 
+    if ($oldversion < 2023011000) {
+
+        // Define field feedback to be added to qtype_crossword_words.
+        $table = new xmldb_table('qtype_crossword_words');
+        $field = new xmldb_field('feedback', XMLDB_TYPE_TEXT, null, null, null, null, null, 'orientation');
+
+        // Conditionally launch add field feedback.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2023011000, 'qtype', 'crossword');
+    }
+
+    if ($oldversion < 2023011001) {
+
+        // Changing type of field clue on table qtype_crossword_words to text.
+        $table = new xmldb_table('qtype_crossword_words');
+        $field = new xmldb_field('clue', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'questionid');
+
+        // Launch change of type for field clue.
+        $dbman->change_field_type($table, $field);
+
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2023011001, 'qtype', 'crossword');
+    }
+
+    if ($oldversion < 2023011002) {
+
+        // Define field clueformat to be added to qtype_crossword_words.
+        $table = new xmldb_table('qtype_crossword_words');
+        $field = new xmldb_field('clueformat', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'clue');
+
+        // Conditionally launch add field clueformat.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2023011002, 'qtype', 'crossword');
+    }
+
+    if ($oldversion < 2023011003) {
+
+        // Define field feedbackformat to be added to qtype_crossword_words.
+        $table = new xmldb_table('qtype_crossword_words');
+        $field = new xmldb_field('feedbackformat', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'feedback');
+
+        // Conditionally launch add field feedbackformat.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2023011003, 'qtype', 'crossword');
+    }
+
     return true;
 }

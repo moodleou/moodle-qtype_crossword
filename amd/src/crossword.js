@@ -28,42 +28,45 @@ import {CrosswordGrid} from 'qtype_crossword/crossword_grid';
  * @return {Object} The words object.
  */
 const getWordsFromTable = function() {
-    const answersEl = document.querySelectorAll('fieldset#id_words .fcontainer .form-group.row');
     const alphaRegex = /^[a-z]+/;
+    const numberAnswer = document.querySelectorAll('[id^="fitem_id_answer"]').length;
     let words = [];
-    let i = 0;
-    let no = 0;
-    let word = {};
 
-    if (!answersEl) {
-        return words;
-    }
+    if (numberAnswer > 0) {
+        for (let no = 0; no < numberAnswer; no++) {
+            const coordinateEl = document.querySelector('#fgroup_id_coodinateoptions_' + no);
+            const answerEl = document.querySelector('#fitem_id_answer_' + no);
+            const clueEl = document.querySelector('#fitem_id_clue_' + no);
+            let word = {};
+            word.no = no + 1;
 
-    answersEl.forEach(obj => {
-        let inputEl = obj.querySelectorAll('input[type="text"]');
-        let selectEl = obj.querySelectorAll('select');
+            if (!coordinateEl || !answerEl || !clueEl) {
+                continue;
+            }
 
-        if (inputEl.length > 0) {
-            inputEl.forEach(inputEl => {
-                const name = inputEl.name.match(alphaRegex)?.pop();
-                word[name] = inputEl.value.trim().normalize('NFKC');
-            });
-        }
-
-        if (selectEl.length > 0) {
-            selectEl.forEach(selectEl => {
+            coordinateEl.querySelectorAll('select').forEach(selectEl => {
                 const name = selectEl.name.match(alphaRegex)?.pop();
                 word[name] = selectEl.selectedIndex;
             });
-        }
-        i++;
-        if (i !== 0 && i % 2 === 0) {
-            no++;
-            word.no = no;
+
+            word.answer = answerEl.querySelector('input[id^="id_answer"]').value.trim().normalize('NFKC');
+
+            const emptyContent = [
+                '<p dir="ltr" style="text-align: left;"><br></p>',
+                '<p dir="rtl" style="text-align: right;"><br></p>',
+                '<p dir="ltr" style="text-align: left;"></p>',
+                '<p dir="rtl" style="text-align: right;"></p>',
+            ];
+
+            let clueData = clueEl.querySelector('textarea[id^="id_clue_"]').value.trim();
+            if (emptyContent.includes(clueData)) {
+                clueData = '';
+            }
+            word.clue = clueData;
             words.push(word);
-            word = {};
         }
-    });
+    }
+
     return words;
 };
 

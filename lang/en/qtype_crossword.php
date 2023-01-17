@@ -30,6 +30,7 @@ $string['clue'] = 'Clue';
 $string['correctansweris'] = 'The correct answer is: {$a}';
 $string['correctanswersare'] = 'The correct answers are: {$a}';
 $string['down'] = 'Down';
+$string['editorformat'] = 'Editor format';
 $string['inputtitle'] = '{$a->number} {$a->orientation}. {$a->clue}, {$a->length} letter word';
 $string['mustbealphanumeric'] = 'The answer must be alphanumeric characters only';
 $string['notenoughwords'] = 'This type of question requires at least {$a} word';
@@ -49,6 +50,7 @@ $string['privacy:metadata'] = 'The Crossword plugin does not store any personal 
 $string['refresh'] = 'Refresh preview';
 $string['startcolumn'] = 'Column index';
 $string['startrow'] = 'Row index';
+$string['switchformat'] = 'Switch editor format';
 $string['updateform'] = 'Update the form';
 $string['wordhdrhelper_help'] = '<p>As the crossword is generated from the word list, you can either generate a single crossword layout for all users, or use the \'Shuffle crossword layout on new attempt\' option to generate a new layout for each new attempt per student (word combinations allowing).</p>
 <p>Add your words and clues using the text fields. If you want a specific word fixed on the grid, tick \'Fix word on grid\' and specify its orientation and placement.</p>

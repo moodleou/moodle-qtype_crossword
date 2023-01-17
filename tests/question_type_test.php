@@ -46,7 +46,7 @@ class question_type_test extends \question_testcase {
     }
 
     /**
-     * Test the export fuction.
+     * Test the export function.
      *
      * @covers \qtype_crossword::export_to_xml
      */
@@ -88,25 +88,33 @@ class question_type_test extends \question_testcase {
                         'shownumcorrect' => 1,
                         'words' => [
                             (object)[
+                                'id' => 1,
                                 'questionid' => 8862,
                                 'answer' => 'AAA',
                                 'clue' => 'Clue 1',
+                                'clueformat' => FORMAT_HTML,
                                 'orientation' => 0,
                                 'startrow' => 0,
                                 'startcolumn' => 0,
+                                'feedback' => '<b>Feedback data</b>',
+                                'feedbackformat' => FORMAT_PLAIN,
                             ] ,
                             (object)[
+                                'id' => 2,
                                 'questionid' => 8862,
                                 'answer' => 'BBB',
                                 'clue' => 'Clue 2',
+                                'clueformat' => FORMAT_HTML,
                                 'orientation' => 0,
                                 'startrow' => 1,
                                 'startcolumn' => 0,
                             ] ,
                             (object)[
+                                'id' => 2,
                                 'questionid' => 8862,
                                 'answer' => 'CCC',
                                 'clue' => 'Clue 3',
+                                'clueformat' => FORMAT_HTML,
                                 'orientation' => 0,
                                 'startrow' => 2,
                                 'startcolumn' => 0,
@@ -160,24 +168,39 @@ class question_type_test extends \question_testcase {
     <numcolumns>0</numcolumns>
     <word>
         <answer>AAA</answer>
-        <clue>Clue 1</clue>
+        <clue format="html">
+        <text>Clue 1</text>
+        </clue>
         <orientation>0</orientation>
         <startrow>0</startrow>
         <startcolumn>0</startcolumn>
+        <feedback format="plain_text">
+        <text><![CDATA[<b>Feedback data</b>]]></text>
+        </feedback>
     </word>
     <word>
         <answer>BBB</answer>
-        <clue>Clue 2</clue>
+        <clue format="html">
+        <text>Clue 2</text>
+        </clue>
         <orientation>0</orientation>
         <startrow>1</startrow>
         <startcolumn>0</startcolumn>
+        <feedback format="html">
+        <text></text>
+        </feedback>
     </word>
     <word>
         <answer>CCC</answer>
-        <clue>Clue 3</clue>
+        <clue format="html">
+        <text>Clue 3</text>
+        </clue>
         <orientation>0</orientation>
         <startrow>2</startrow>
         <startcolumn>0</startcolumn>
+        <feedback format="html">
+        <text></text>
+        </feedback>
     </word>
     <correctfeedback format="html">
       <text>Your answer is correct.</text>

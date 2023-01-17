@@ -42,8 +42,28 @@ Feature: Preview a Crossword question
   @javascript @_switch_window
   Scenario: Preview a Crossword question with sample image.
     When I am on the "crossword-004" "core_question > preview" page logged in as teacher
-    Then "//img[@src='@@PLUGINFILE@@/test.jpg']" "xpath_element" should not exist
-    And "//img[contains(@src,'question/questiontext')]" "xpath_element" should exist
+    And "//img[contains(@src,'question/questiontext') and contains(@src,'questiontextimg.jpg')]" "xpath_element" should exist
+    And "//img[contains(@src,'question/clue') and contains(@src,'clueimg.jpg')]" "xpath_element" should exist
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    And I set the field "Word 1" to "BRAZIL"
+    And I set the field "Word 2" to "PARIS"
+    And I set the field "Word 3" to "ITALY"
+    And I press "Submit and finish"
+    Then "//img[contains(@src,'question/correctfeedback') and contains(@src,'correctfbimg.jpg')]" "xpath_element" should exist
+    And I press "Start again"
+    And I set the field "Word 1" to "BRAZIL"
+    And I set the field "Word 2" to "PARIS"
+    And I set the field "Word 3" to "NANNO"
+    And I press "Submit and finish"
+    And "//img[contains(@src,'question/partiallycorrectfeedback') and contains(@src,'partialfbimg.jpg')]" "xpath_element" should exist
+    And I press "Start again"
+    And I set the field "Word 1" to "LONDON"
+    And I set the field "Word 2" to "HANOI"
+    And I set the field "Word 3" to "NANNO"
+    And I press "Submit and finish"
+    And "//img[contains(@src,'question/incorrectfeedback') and contains(@src,'incorrectfbimg.jpg')]" "xpath_element" should exist
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit an partially correct response.

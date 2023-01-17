@@ -95,11 +95,11 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
      * Return the contents of this qtype to be processed by the links decoder.
      */
     public static function define_decode_contents(): array {
-
         $contents = [];
 
-        $fields = ['correctfeedback', 'partiallycorrectfeedback', 'incorrectfeedback'];
-        $contents[] = new restore_decode_content('qtype_crossword_options', $fields, 'qtype_crossword_options');
+        $contents[] = new restore_decode_content('qtype_crossword_options',
+            ['correctfeedback', 'partiallycorrectfeedback', 'incorrectfeedback'], 'qtype_crossword_options');
+        $contents[] = new restore_decode_content('qtype_crossword_words', ['clue', 'feedback'], 'qtype_crossword_words');
 
         return $contents;
     }

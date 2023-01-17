@@ -19,21 +19,27 @@
         <numcolumns>0</numcolumns>
         <word>
             <answer>AAA</answer>
-            <clue>Clue 1</clue>
+            <clue format="html">
+            <text>Clue 1</text>
+            </clue>
             <orientation>0</orientation>
             <rowindex>0</rowindex>
             <columnindex>0</columnindex>
         </word>
         <word>
             <answer>BBB</answer>
-            <clue>Clue 2</clue>
+            <clue format="html">
+                <text>Clue 2</text>
+            </clue>
             <orientation>0</orientation>
             <rowindex>1</rowindex>
             <columnindex>0</columnindex>
         </word>
         <word>
             <answer>CCC</answer>
-            <clue>Clue 3</clue>
+            <clue format="html">
+                <text>Clue 3</text>
+            </clue>
             <orientation>0</orientation>
             <rowindex>2</rowindex>
             <columnindex>0</columnindex>

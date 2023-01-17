@@ -25,5 +25,5 @@ Feature: Test exporting Crossword questions
     When I am on the "Course 1" "core_question > course question export" page logged in as teacher
     And I set the field "id_format_xml" to "1"
     And I press "Export questions to file"
-    Then following "click here" should download between "1000" and "2000" bytes
+    Then following "click here" should download between "2000" and "3000" bytes
     And I log out

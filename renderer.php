@@ -57,7 +57,12 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $inputname = $qa->get_qt_field_name($fieldname);
             $inputvalue = $qa->get_last_qt_var($fieldname);
             $number = $key + 1;
-            $clue = $answer->clue;
+            $feedback = '';
+            if ($options->feedback) {
+                $feedback = $question->format_text($answer->feedback, $answer->feedbackformat,
+                    $qa, 'question', 'feedback', $answer->answerid);
+            }
+            $clue = $question->format_text($answer->clue, $answer->clueformat, $qa, 'question', 'clue', $answer->answerid);
             $title = get_string(
                 'inputtitle',
                 'qtype_crossword',
@@ -78,10 +83,11 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $inputdata = [
                 'number' => $number,
                 'clue' => $clue,
+                'feedback' => $feedback,
                 'length' => $length,
                 'value' => $inputvalue,
                 'attributes' => $attributes,
-                'title' => $title,
+                'title' => strip_tags($title),
                 'id' => $inputname,
                 'orientation' => (int) $answer->orientation,
                 'startRow' => (int) $answer->startrow,

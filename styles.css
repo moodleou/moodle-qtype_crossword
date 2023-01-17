@@ -165,6 +165,9 @@
 .qtype_crossword-grid-wrapper .wrap-clue .clue-content {
     word-break: break-word;
 }
+.qtype_crossword-grid-wrapper .wrap-clue .clue-count {
+    margin-right: 3px;
+}
 
 .qtype_crossword-grid-wrapper .wrap-clue.focus .clue-id {
     background: #ffe500;

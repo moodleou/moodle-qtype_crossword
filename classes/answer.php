@@ -26,11 +26,18 @@ namespace qtype_crossword;
 class answer {
 
     // Class properties.
+
+    /** @var int The answers id value. */
+    public $answerid;
+
     /** @var string The answers value. */
     public $answer;
 
     /** @var string The clues value. */
     public $clue;
+
+    /** @var int The clues value. */
+    public $clueformat;
 
     /** @var string The orientations value. */
     public $orientation;
@@ -41,21 +48,35 @@ class answer {
     /** @var string The startcolumn value. */
     public $startcolumn;
 
+    /** @var string The feedback value. */
+    public $feedback;
+
+    /** @var int The clues value. */
+    public $feedbackformat;
+
     /**
      * Answer constructor.
+     * @param int $answerid
      * @param string $answer
      * @param string $clue
+     * @param int $clueformat
      * @param string $orientation
      * @param string $startrow
      * @param string $startcolumn
+     * @param string $feedback
+     * @param string $feedbackformat
      */
-    public function __construct(string $answer, string $clue, string $orientation,
-        string $startrow, string $startcolumn) {
+    public function __construct(int $answerid, string $answer, string $clue, int $clueformat, string $orientation,
+        string $startrow, string $startcolumn, ?string $feedback, ?int $feedbackformat) {
+        $this->answerid = $answerid;
         $this->answer = \qtype_crossword\util::safe_normalize($answer);
         $this->clue = $clue;
+        $this->clueformat = $clueformat;
         $this->orientation = $orientation;
         $this->startrow = $startrow;
         $this->startcolumn = $startcolumn;
+        $this->feedback = $feedback;
+        $this->feedbackformat = $feedbackformat;
     }
 
     /**

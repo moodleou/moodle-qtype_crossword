@@ -54,9 +54,9 @@ class form_test extends \advanced_testcase {
                         'BRAZIL', 'PARIS', 'ITALY'
                     ],
                     'clue' => [
-                        'where is the Christ the Redeemer statue located in?',
-                        'Eiffel Tower is located in?',
-                        'Where is the Leaning Tower of Pisa?'
+                        ['text' => 'where is the Christ the Redeemer statue located in?', 'format' => FORMAT_HTML],
+                        ['text' => 'Eiffel Tower is located in?', 'format' => FORMAT_HTML],
+                        ['text' => 'Where is the Leaning Tower of Pisa?', 'format' => FORMAT_HTML]
                     ],
                     'orientation' => [
                         0, 1, 0
@@ -76,7 +76,9 @@ class form_test extends \advanced_testcase {
                         'AAA', 'BBB', 'CCC'
                     ],
                     'clue' => [
-                        'Clue A', 'Clue B', 'Clue C'
+                        ['text' => 'Clue A', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue B', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
                     ],
                     'orientation' => [
                         0, 0, 0
@@ -89,69 +91,75 @@ class form_test extends \advanced_testcase {
                     ],
                 ],
                 [
-                    'answeroptions[1]' => get_string('wrongintersection', 'qtype_crossword'),
-                    'answeroptions[2]' => get_string('wrongintersection', 'qtype_crossword')
+                    'answer[1]' => get_string('wrongintersection', 'qtype_crossword'),
+                    'answer[2]' => get_string('wrongintersection', 'qtype_crossword')
                 ]
             ],
             'Requires at least 1 word' => [
-              [
-                  'noanswers' => 3,
-                  'answer' => [
-                      '', '', ''
-                  ],
-                  'clue' => [
-                      '', '', ''
-                  ],
-                  'orientation' => [
-                      0, 0, 0
-                  ],
-                  'startrow' => [
-                      0, 0, 0
-                  ],
-                  'startcolumn' => [
-                      0, 0, 0
-                  ],
-              ], ['answeroptions[0]' => get_string('notenoughwords', 'qtype_crossword', 1)]
+                [
+                    'noanswers' => 3,
+                    'answer' => [
+                        '', '', ''
+                    ],
+                    'clue' => [
+                        ['text' => '', 'format' => FORMAT_HTML],
+                        ['text' => '', 'format' => FORMAT_HTML],
+                        ['text' => '', 'format' => FORMAT_HTML]
+                    ],
+                    'orientation' => [
+                        0, 0, 0
+                    ],
+                    'startrow' => [
+                        0, 0, 0
+                    ],
+                    'startcolumn' => [
+                        0, 0, 0
+                    ],
+                ], ['answer[0]' => get_string('notenoughwords', 'qtype_crossword', 1)]
             ],
             'The word start or end position is outside the defined grid size' => [
-              [
-                  'noanswers' => 3,
-                  'answer' => [
-                      'Toolongtext', 'BBB', 'CCC'
-                  ],
-                  'clue' => [
-                      'Clue A', 'Clue B', 'Clue C'
-                  ],
-                  'orientation' => [
-                      0, 0, 0
-                  ],
-                  'startrow' => [
-                      0, 1, 2
-                  ],
-                  'startcolumn' => [
-                      0, 0, 0
-                  ],
-              ], ['answeroptions[0]' => get_string('overflowposition', 'qtype_crossword')]
+                [
+                    'noanswers' => 3,
+                    'answer' => [
+                        'Toolongtext', 'BBB', 'CCC'
+                    ],
+                    'clue' => [
+                        ['text' => 'Clue A', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue B', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                    ],
+                    'orientation' => [
+                        0, 0, 0
+                    ],
+                    'startrow' => [
+                        0, 1, 2
+                    ],
+                    'startcolumn' => [
+                        0, 0, 0
+                    ],
+                ], ['answer[0]' => get_string('overflowposition', 'qtype_crossword')]
             ],
             'The answer must be alphanumeric characters only' => [
-              [
-                  'noanswers' => 3,
-                  'answer' => [
-                      'Speci@al char*', 'BBB', 'CCC'
-                  ],
-                  'clue' => [
-                      'Clue A', 'Clue B', 'Clue C'
-                  ],
-                  'orientation' => [
-                      0, 0, 0
-                  ],
-                  'startrow' => [
-                      0, 1, 2
-                  ],
-                  'startcolumn' => [
-                      0, 0, 0
-                  ],
-              ], ['answeroptions[0]' => get_string('mustbealphanumeric', 'qtype_crossword')]
+                [
+                    'noanswers' => 3,
+                    'answer' => [
+                        'Speci@al char*', 'BBB', 'CCC'
+                    ],
+                    'clue' => [
+                        ['text' => 'Clue A', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue B', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                    ],
+                    'orientation' => [
+                        0, 0, 0
+                    ],
+                    'startrow' => [
+                        0, 1, 2
+                    ],
+                    'startcolumn' => [
+                        0, 0, 0
+                    ],
+                ], ['answer[0]' => get_string('mustbealphanumeric', 'qtype_crossword')]
             ],
             'The word must have both clues and answers' => [
                 [
@@ -160,7 +168,9 @@ class form_test extends \advanced_testcase {
                         'AAA', '', 'CCC'
                     ],
                     'clue' => [
-                        '', 'Clue B', 'Clue C'
+                        ['text' => '', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue B', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
                     ],
                     'orientation' => [
                         0, 0, 0
@@ -173,8 +183,8 @@ class form_test extends \advanced_testcase {
                     ],
                 ],
                 [
-                    'answeroptions[0]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 1),
-                    'answeroptions[1]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 2),
+                    'answer[1]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 2),
+                    'clue[0]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 1),
                 ]
             ]
         ];
@@ -230,21 +240,21 @@ class form_test extends \advanced_testcase {
             'category' => 1,
             'name' => 'Test combined with varnumeric',
             'questiontext' => [
-                    'text' => 'Test crossword qtype',
-                    'format' => 1
+                'text' => 'Test crossword qtype',
+                'format' => 1
             ],
             'generalfeedback' => [
-                    'text' => '',
-                    'format' => 1
+                'text' => '',
+                'format' => 1
             ],
             'partiallycorrectfeedback' => [
-                    'text' => 'Your answer is partially correct.',
-                    'format' => 1
+                'text' => 'Your answer is partially correct.',
+                'format' => 1
             ],
             'shownumcorrect' => 1,
             'incorrectfeedback' => [
-                    'text' => 'Your answer is incorrect.',
-                    'format' => 1
+                'text' => 'Your answer is incorrect.',
+                'format' => 1
             ],
             'numcolumns' => 5,
             'numrows' => 7,

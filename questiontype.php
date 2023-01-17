@@ -37,7 +37,7 @@ require_once($CFG->libdir.'/questionlib.php');
 class qtype_crossword extends question_type {
 
     /** @const array The word fields list */
-    private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'startrow', 'startcolumn'];
+    private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'startrow', 'startcolumn', 'feedback'];
 
     public function get_question_options($question): bool {
         global $DB;
@@ -83,7 +83,7 @@ class qtype_crossword extends question_type {
         // For MVP version, default mark will be set automatically.
         $marks = 0;
         for ($i = 0; $i < count($form->answer); $i++) {
-            if (trim($form->answer[$i]) === '' || trim($form->clue[$i]) === '') {
+            if (trim($form->answer[$i]) === '' || trim($form->clue[$i]['text']) === '') {
                 continue;
             }
             $marks++;
@@ -118,7 +118,7 @@ class qtype_crossword extends question_type {
 
         // Insert all the new words.
         for ($i = 0; $i < $numwords; $i++) {
-            if (trim($question->answer[$i]) === '' || trim($question->clue[$i]) === '') {
+            if (trim($question->answer[$i]) === '' || trim($question->clue[$i]['text']) === '') {
                 continue;
             }
             // Update an existing word if possible.
@@ -128,24 +128,39 @@ class qtype_crossword extends question_type {
                 $word->questionid = $question->id;
                 $word->answer = '';
                 $word->clue = '';
+                $word->clueformat = FORMAT_HTML;
                 $word->orientation = 0;
                 $word->startrow = 0;
                 $word->startcolumn = 0;
+                $word->feedback = '';
+                $word->feedbackformat = FORMAT_HTML;
                 $word->id = $DB->insert_record('qtype_crossword_words', $word);
             }
             $word->answer = trim(mb_strtoupper($question->answer[$i]));
-            $word->clue = $question->clue[$i];
+            if (isset($question->feedback[$i])) {
+                $word->feedback = $this->import_or_save_files($question->feedback[$i],
+                    $context, 'question', 'feedback', $word->id);
+                $word->feedbackformat = $question->feedback[$i]['format'];
+            }
+            if (isset($question->clue[$i])) {
+                $word->clue = $this->import_or_save_files($question->clue[$i],
+                    $context, 'question', 'clue', $word->id);
+                $word->clueformat = $question->clue[$i]['format'];
+            }
             $word->orientation = $question->orientation[$i];
             $word->startrow = $question->startrow[$i];
             $word->startcolumn = $question->startcolumn[$i];
             $DB->update_record('qtype_crossword_words', $word);
         }
         // Remove remain words.
+        $fs = get_file_storage();
         if ($oldwords) {
             $ids = array_map(function($word){
                 return $word->id;
             }, $oldwords);
             list($idssql, $idsparams) = $DB->get_in_or_equal($ids, SQL_PARAMS_QM);
+            $fs->delete_area_files_select($context->id, 'question', 'feedback', "id $idssql", $idsparams);
+            $fs->delete_area_files_select($context->id, 'question', 'clue', "id $idssql", $idsparams);
             $DB->delete_records_select('qtype_crossword_words', "id $idssql", $idsparams);
         }
         $options = $DB->get_record('qtype_crossword_options', ['questionid' => $question->id]);
@@ -183,12 +198,16 @@ class qtype_crossword extends question_type {
         $this->initialise_combined_feedback($question, $questiondata, true);
         foreach ($questiondata->options->words as $answer) {
             $question->answers[] = new \qtype_crossword\answer(
+                $answer->id,
                 $answer->answer,
                 $answer->clue,
+                $answer->clueformat,
                 $answer->orientation,
                 $answer->startrow,
                 $answer->startcolumn,
-            );
+                $answer->feedback,
+                $answer->feedbackformat,
+                );
         }
         $question->numrows = (int) $questiondata->options->numrows;
         $question->numcolumns = (int) $questiondata->options->numcolumns;
@@ -198,12 +217,27 @@ class qtype_crossword extends question_type {
         $expout = parent::export_to_xml($question, $format, $extra);
         $expout .= '    <numrows>' . $format->xml_escape($question->options->numrows) . "</numrows>\n";
         $expout .= '    <numcolumns>' . $format->xml_escape($question->options->numcolumns) . "</numcolumns>\n";
-        $words = $question->options->words;
-        foreach ($words as $word => $value) {
+        $fs = get_file_storage();
+        foreach ($question->options->words as $word => $value) {
             $expout .= "    <word>\n";
             foreach (self::WORD_FIELDS as $xmlfield) {
-                $exportedvalue = $format->xml_escape($value->{$xmlfield});
-                $expout .= "        <$xmlfield>{$exportedvalue}</$xmlfield>\n";
+                if ($xmlfield === 'clue' || $xmlfield === 'feedback') {
+                    if (!isset($value->{$xmlfield})) {
+                        $value->{$xmlfield} = '';
+                    }
+                    $formatfield = $xmlfield . 'format';
+                    if (!isset($value->{$formatfield})) {
+                        $value->{$formatfield} = FORMAT_HTML;
+                    }
+                    $files = $fs->get_area_files($question->contextid, 'question', $xmlfield, $value->id);
+                    $expout .= "        <{$xmlfield} {$format->format($value->{$formatfield})}>\n";
+                    $expout .= '        ' . $format->writetext($value->{$xmlfield});
+                    $expout .= $format->write_files($files);
+                    $expout .= "        </{$xmlfield}>\n";
+                } else {
+                    $exportedvalue = $format->xml_escape($value->{$xmlfield});
+                    $expout .= "        <$xmlfield>{$exportedvalue}</$xmlfield>\n";
+                }
             }
             $expout .= "    </word>\n";
         }
@@ -217,15 +251,19 @@ class qtype_crossword extends question_type {
         }
         $question = $format->import_headers($data);
         $question->qtype = 'crossword';
-        $words = $data['#']['word'];
-        $wordnum = 0;
         $question->numrows = $format->getpath($data, ['#', 'numrows', 0, '#'], '', true);
         $question->numcolumns = $format->getpath($data, ['#', 'numcolumns', 0, '#'], '', true);
-        foreach ($words as $word) {
+        foreach ($data['#']['word'] as $word) {
             foreach (self::WORD_FIELDS as $field) {
-                $question->{$field}[] = $format->getpath($word, ['#', $field, 0, '#'], '', true);
+                if ($field === 'clue' || $field === 'feedback') {
+                    if (isset($word['#'][$field][0])) {
+                        $question->{$field}[] = $format->import_text_with_files($word['#'][$field][0], [], '',
+                            $question->questiontextformat);
+                    }
+                } else {
+                    $question->{$field}[] = $format->getpath($word, ['#', $field, 0, '#'], '', true);
+                }
             }
-            $wordnum++;
         }
         $format->import_combined_feedback($question, $data);
         $format->import_hints($question, $data, true, false, $format->get_format($question->questiontextformat));
