@@ -24,7 +24,7 @@ Feature: Preview a Crossword question
       | Test questions   | crossword | crossword-003 | different_codepoint                         |
       | Test questions   | crossword | crossword-004 | sampleimage                                 |
       | Test questions   | crossword | crossword-005 | clear_incorrect_response                    |
-      | Test questions   | crossword | crossword-006 | normal_with_space                           |
+      | Test questions   | crossword | crossword-006 | normal_with_hyphen_and_space                |
       | Test questions   | crossword | crossword-007 | accept_wrong_accents_but_subtract_point     |
       | Test questions   | crossword | crossword-008 | accept_wrong_accents_but_not_subtract_point |
       | Test questions   | crossword | crossword-009 | not_accept_wrong_accents                    |
@@ -211,7 +211,7 @@ Feature: Preview a Crossword question
     And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "ITALY"
 
   @javascript @_switch_window
-  Scenario: User can type their answer with a space at the beginning.
+  Scenario: Users can enter their answers with a leading space and the space will be replaced by an underscore.
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
@@ -226,17 +226,14 @@ Feature: Preview a Crossword question
     And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "ITALY"
 
   @javascript @_switch_window
-  Scenario: When the user enters a space, the system will replace it with an underscore.
+  Scenario: For answers that contain spaces or hyphens, the answer hint will not count those characters.
     When I am on the "crossword-006" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
     And I press "Start again with these options"
-    And I set the field "1 Down. Name a man who gave presents to children on Christmas Day?, 11 letter word" to "SANTA CLAUS"
-    And I set the field "2 Across. What day is Christmas?, 11 letter word" to "DECEMBER 25"
-    And I set the field "3 Across. Name a fictional character who has green fur and hates Christmas?, 6 letter word" to "GRINCH"
-    Then the field "1 Down. Name a man who gave presents to children on Christmas Day?, 11 letter word" matches value "SANTA_CLAUS"
-    And the field "2 Across. What day is Christmas?, 11 letter word" matches value "DECEMBER_25"
-    And the field "3 Across. Name a fictional character who has green fur and hates Christmas?, 6 letter word" matches value "GRINCH"
+    Then I should see "(5, 12)"
+    And I should see "(6, 5)"
+    And I should see "(3, 7-3)"
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response with mobile input.
@@ -325,3 +322,13 @@ Feature: Preview a Crossword question
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
     And I should see "Mark 1.30 out of 2.00"
+
+  @javascript @_switch_window
+  Scenario: User can enter alphanumeric characters continuously, the answer will automatically add special characters if any.
+    When I am on the "crossword-006" "core_question > preview" page logged in as teacher
+    And I set the field "1 Across. British broadcaster and naturalist, famous for his voice-overs of nature programmes?, 18 letter word" to "DAVIDATTENBOROUGH"
+    And I set the field "2 Down. Former Prime Minister of the United Kingdom?, 12 letter word" to "GORDONBROWN"
+    And I set the field "3 Down. Engineer, computer scientist and inventor of the World Wide Web?, 15 letter word" to "TIMBERNERSLEE"
+    Then the field "1 Across. British broadcaster and naturalist, famous for his voice-overs of nature programmes?, 18 letter word" matches value "DAVID ATTENBOROUGH"
+    And the field "2 Down. Former Prime Minister of the United Kingdom?, 12 letter word" matches value "GORDON BROWN"
+    And the field "3 Down. Engineer, computer scientist and inventor of the World Wide Web?, 15 letter word" matches value "TIM BERNERS-LEE"

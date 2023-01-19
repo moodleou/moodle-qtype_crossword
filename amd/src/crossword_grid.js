@@ -94,9 +94,10 @@ export class CrosswordGrid extends CrosswordQuestion {
             return;
         }
         for (let i = 0; i < words.length; i++) {
+            const answer = words[i].answer.trim().replace(/-|\s/g, '');
             let row = words[i].startrow + 1;
             let column = words[i].startcolumn + 1;
-            let answerLength = words[i].answer.length;
+            let answerLength = answer.length;
             let realLength = answerLength + words[i].startcolumn;
             let allowLength = parseInt(colsNum);
             let invalidWord = words[i].clue.trim() === '';
@@ -105,7 +106,8 @@ export class CrosswordGrid extends CrosswordQuestion {
             column++;
 
             if (!invalidWord) {
-                invalidWord = this.isInvalidAnswer(words[i].answer);
+                invalidWord = this.isContainSpecialCharacters(answer) ||
+                    this.checkCorrectnessAnswer(words[i].answer);
             }
 
             if (words[i].orientation) {
@@ -113,7 +115,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                 allowLength = parseInt(rowsNum);
             }
 
-            for (let j = 0; j < words[i].answer.length; j++) {
+            for (let j = 0; j < answer.length; j++) {
                 const number = i + 1;
                 const squareEl = document.querySelector('.grid-row:nth-child(' + row + ') .grid-square:nth-child(' + column + ')');
                 if (!squareEl) {
@@ -136,7 +138,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                         labelEl.innerText = label;
                     }
                 }
-                const letter = words[i].answer[j].toUpperCase().trim() ?? '';
+                const letter = answer[j].toUpperCase().trim() ?? '';
                 const contentEl = squareEl.querySelector('span.word-content');
                 if (!contentEl) {
                     let spanEl = document.createElement('span');
@@ -309,7 +311,8 @@ export class CrosswordGrid extends CrosswordQuestion {
         let count = 0;
         for (let i in words) {
             const word = words[i];
-            for (let key = 0; key < word.length; key++) {
+            const ignoreList = this.getIgnoreIndexByAnswerNumber(word.number);
+            for (let key = 0; key < word.length - ignoreList.length; key++) {
                 // Prepare attributes for g.
                 const customAttribute = {
                     'data-startrow': word.startRow,
@@ -562,7 +565,7 @@ export class CrosswordGrid extends CrosswordQuestion {
      * @param {String} value the character we are inserted to the clue grid.
      */
     handleInsertTextEventForGridInput(event, value) {
-        const {wordNumber} = this.options;
+        const {wordNumber, words} = this.options;
         const inputEl = event.target;
         const code = inputEl.dataset.code;
         const upperText = value.toUpperCase();
@@ -577,9 +580,8 @@ export class CrosswordGrid extends CrosswordQuestion {
             }
             textEl.innerHTML = upperText;
             const letterIndex = parseInt(textEl.closest('g').dataset.letterindex);
-            const nextCellEl = this.options.crosswordEl.querySelector(
-                `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex + 1}']`
-            );
+            const wordObj = words.find(word => word.number === parseInt(wordNumber));
+            const nextCellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex + 1).pop() ?? null;
             // Interact with clue.
             this.bindDataToClueInput(textEl.closest('g'), value);
             if (nextCellEl) {
@@ -615,7 +617,8 @@ export class CrosswordGrid extends CrosswordQuestion {
         inputEl.addEventListener('compositionend', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
-            const {wordNumber} = this.options;
+            const {wordNumber, words} = this.options;
+            const wordObj = words.find(word => word.number === parseInt(wordNumber));
             let key = evt.data.toUpperCase();
             const code = evt.target.dataset.code;
             if (this.replaceText(key) === '') {
@@ -633,9 +636,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                     if (this.replaceText(char) === '') {
                         continue;
                     }
-                    const cellEl = this.options.crosswordEl.querySelector(
-                        `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex + index}']`
-                    );
+                    const cellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex + index).pop() ?? null;
                     // Interact with clue.
                     if (cellEl) {
                         cellEl.querySelector('text.crossword-cell-text').innerHTML = char;
@@ -645,9 +646,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                     }
                 }
 
-                const nextCellEl = this.options.crosswordEl.querySelector(
-                    `g[data-word*='(${wordNumber})'][data-letteindex='${letterIndex + chars.length}']`
-                );
+                const nextCellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex + chars.length).pop() ?? null;
                 if (nextCellEl) {
                     nextCellEl.dispatchEvent(new Event('click'));
                 }
@@ -657,13 +656,15 @@ export class CrosswordGrid extends CrosswordQuestion {
 
         inputEl.addEventListener('keyup', (event) => {
             event.preventDefault();
-            const {wordNumber, cellWidth, cellHeight} = this.options;
+            const {wordNumber, cellWidth, cellHeight, words} = this.options;
             const {key, target} = event;
             const code = target.dataset.code;
             const gEl = this.options.crosswordEl.querySelector(`g[data-code='${code}']`);
-            const letterIndex = parseInt(gEl.dataset.letterindex);
+            const word = words.find(o => o.number === parseInt(wordNumber));
+            const letterIndex = this.findTheClosestCell(wordNumber, word,
+                parseInt(gEl.dataset.letterindex) - 1, false)[0];
             const previousCell = this.options.crosswordEl.querySelector(
-                `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex - 1}']`
+                `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex}']`
             );
             const textEl = gEl.querySelector('text.crossword-cell-text');
             let x = parseInt(gEl.querySelector('rect').getAttributeNS(null, 'x'));

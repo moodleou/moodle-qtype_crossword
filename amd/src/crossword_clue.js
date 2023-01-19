@@ -47,7 +47,11 @@ export class CrosswordClue extends CrosswordQuestion {
             let word = words.find(o => o.number === parseInt(questionId));
             if (word) {
                 const inputEl = el.querySelector('input');
-                inputEl.value += this.makeUnderscore(word.length - inputEl.value.length);
+                // Retrieve special characters list.
+                const ignoreIndexes = this.getIgnoreIndexByAnswerNumber(word.number, false);
+                const wordString = this.makeUnderscore(word.length - inputEl.value.length);
+                // Add special characters to the answer, then set it to the answer input.
+                inputEl.value += this.mapAnswerAndSpecialLetter(wordString, ignoreIndexes[0]);
                 if (!readonly) {
                     inputEl.disabled = false;
                 }
@@ -70,10 +74,16 @@ export class CrosswordClue extends CrosswordQuestion {
             return;
         }
         el.addEventListener('click', (e) => {
+            const {words} = this.options;
+            const wordNumber = e.target.closest('.wrap-clue').dataset.questionid;
+            const wordObj = words.find(o => o.number === parseInt(wordNumber));
             let startIndex = e.target.selectionStart;
             if (startIndex >= word.length) {
                 startIndex = word.length - 1;
             }
+            // Based on the selected letter index on the answer index,
+            // we will find the corresponding crossword cell index.
+            startIndex = this.findCellIndexFromAnswerIndex(wordObj, startIndex);
             this.focusCellByStartIndex(startIndex, word);
             this.focusClue();
             this.setStickyClue();
@@ -129,9 +139,12 @@ export class CrosswordClue extends CrosswordQuestion {
             let maxLength = parseInt(target.getAttribute('maxlength'));
             if ([this.ARROW_LEFT, this.ARROW_RIGHT].includes(key)) {
                 isValidKey = true;
-                const startIndex = target.selectionStart;
+                const word = words.find(o => o.number === parseInt(wordNumber));
+                // Based on the selected letter index of the answer input,
+                // we will find the cell with the corresponding letter index attribute.
+                const startIndex = this.findCellIndexFromAnswerIndex(word, target.selectionStart, false);
                 const gEl = this.options.crosswordEl
-                        .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
+                    .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${startIndex}']`);
                 if (gEl) {
                     this.toggleHighlight(word, gEl);
                 }
@@ -140,14 +153,14 @@ export class CrosswordClue extends CrosswordQuestion {
                 this.handleAndSyncDeletedStringToElement(target, value);
             }
 
-            if (key === this.END || key === this.HOME) {
+            if (key === this.END || key === this.HOME || key === this.ARROW_UP || key === this.ARROW_DOWN) {
                 isValidKey = true;
                 let startIndex = 0;
                 const word = words.find(o => o.number === parseInt(wordNumber));
                 if (!word) {
                     return;
                 }
-                if (key === this.END) {
+                if (key === this.END || key === this.ARROW_DOWN) {
                     startIndex = word.length - 1;
                 }
                 this.syncFocusCellAndInput(target, startIndex);
@@ -164,15 +177,30 @@ export class CrosswordClue extends CrosswordQuestion {
             const word = words.find(o => o.number === parseInt(wordNumber));
             let selection = event.target.selectionStart;
             let value = (event.clipboardData || window.clipboardData).getData('text');
+            let ignoreIndexes = this.getIgnoreIndexByAnswerNumber(word.number);
+            // Remove invalid characters, normarlize NFKC.
             value = this.replaceText(value).normalize('NFKC');
-            if (value === "") {
+            if (value === '') {
                 return;
             }
-            value.split('').forEach(char => {
-                const result = this.handleTypingData(event, wordNumber, word, selection, char);
-                if (result) {
-                    selection++;
+            let letterIndex = 1;
+            value.split('').every(char => {
+                // Stop function If the character overflows.
+                if (letterIndex > word.length - ignoreIndexes.length) {
+                    return false;
                 }
+                const result = this.handleTypingData(event, wordNumber, word, selection, char);
+                letterIndex++;
+                // Find the valid index.
+                if (result) {
+                    for (let index = selection + 1; index < word.length; index++) {
+                        if (!ignoreIndexes.includes(index)) {
+                            selection = index;
+                            break;
+                        }
+                    }
+                }
+                return true;
             });
         });
 
@@ -213,23 +241,20 @@ export class CrosswordClue extends CrosswordQuestion {
      * @return {Boolean} True if the data is valid.
      */
     handleTypingData(evt, wordNumber, word, selectionIndex, char) {
-        const gelEl = this.options.crosswordEl
-            .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${selectionIndex}']`);
+        const [count, gEl] = this.findTheClosestCell(wordNumber, word, selectionIndex);
         if (this.replaceText(char) === '') {
             return false;
         }
-        if (gelEl) {
-            gelEl.querySelector('text.crossword-cell-text').innerHTML = char.toUpperCase();
-            this.bindDataToClueInput(gelEl, char.toUpperCase());
+        if (gEl) {
+            gEl.querySelector('text.crossword-cell-text').innerHTML = char.toUpperCase();
+            this.bindDataToClueInput(gEl, char.toUpperCase());
         }
-        selectionIndex++;
 
         // Go to next letter.
-        const nexEl = this.options.crosswordEl
-            .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${selectionIndex}']`);
+        const [letterIndex, nexEl] = this.findTheClosestCell(wordNumber, word, count + 1);
         if (nexEl) {
             this.toggleHighlight(word, nexEl);
-            evt.target.setSelectionRange(selectionIndex, selectionIndex);
+            evt.target.setSelectionRange(letterIndex, letterIndex);
         }
         return true;
     }

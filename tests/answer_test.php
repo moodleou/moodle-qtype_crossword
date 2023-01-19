@@ -38,7 +38,7 @@ class answer_test extends \advanced_testcase {
      */
     public function test_is_correct(array $answerdata) {
         // Create a normal crossword question.
-        $q = \test_question_maker::make_question('crossword', 'normal_with_space');
+        $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_and_space');
         foreach ($q->answers as $key => $answer) {
             $this->assertTrue($answer->is_correct($answerdata[$key]));
         }
@@ -53,11 +53,37 @@ class answer_test extends \advanced_testcase {
     public function test_is_correct_provider(): array {
         return [
             'Normal case' => [
-                ['SANTA CLAUS', 'DECEMBER 25', 'GRINCH']
+                ['DAVID ATTENBOROUGH', 'GORDON BROWN', 'TIM BERNERS-LEE']
             ],
             'With Underscore' => [
-                ['SANTA_CLAUS', 'DECEMBER_25', 'GRINCH']
+                ['DAVID_ATTENBOROUGH', 'GORDON_BROWN', 'TIM_BERNERS-LEE']
             ]
         ];
+    }
+
+    /**
+     * Test generate_answer_hint function.
+     *
+     * @covers \qtype_crossword_question::generate_answer_hint
+     */
+    public function test_generate_answer_hint() {
+        // Create a normal crossword question.
+        $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_and_space');
+        $expecteddata = [
+            ['5, 12', ['space' => [5]]],
+            ['6, 5', ['space' => [6]]],
+            ['3, 7-3', ['space' => [3], 'hyphen' => [11]]],
+        ];
+        foreach ($q->answers as $key => $answer) {
+            $answerhintdata = $answer->generate_answer_hint();
+            // Retrieve answer hint.
+            $answerhint = $answerhintdata[0];
+            // Retrieve special character (space, hyphen) index list.
+            $specialcharacterindexes = $answerhintdata[1];
+            // Check answer hint.
+            $this->assertEquals($answerhint, $expecteddata[$key][0]);
+            // Check index list.
+            $this->assertEquals($specialcharacterindexes, $expecteddata[$key][1]);
+        }
     }
 }

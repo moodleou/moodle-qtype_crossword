@@ -166,7 +166,10 @@
     word-break: break-word;
 }
 /* Make video element is not oversize in clue when video don't have max-width */
-.qtype_crossword-grid-wrapper .wrap-clue .clue-content video {
+.qtype_crossword-grid-wrapper .wrap-clue .clue-content video,
+.qtype_crossword-grid-wrapper .wrap-clue .clue-content img,
+.qtype_crossword-grid-wrapper .sticky-clue video,
+.qtype_crossword-grid-wrapper .sticky-clue img {
     max-width: 100%;
 }
 

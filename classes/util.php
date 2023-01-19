@@ -49,6 +49,17 @@ class util {
     }
 
     /**
+     * Remove special characters from answer.
+     *
+     * @param string Text need to be removed special characters.
+     * @return string Text has been processed.
+     */
+    public static function remove_special_characters(string $text): string {
+        // Remove hyphen and space from text.
+        return preg_replace('/-|\s/', '', $text);
+    }
+
+    /**
      * Remove accent character in text. Eg: Français -> Francais.
      *
      * @param string $string The input string.

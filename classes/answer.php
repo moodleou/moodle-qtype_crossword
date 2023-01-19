@@ -39,7 +39,7 @@ class answer {
     /** @var int The clues format. E.g: FORMAT_HTML */
     public $clueformat;
 
-    /** @var string The orientations value. */
+    /** @var bool true = down, false = across. */
     public $orientation;
 
     /** @var string The startrow value. */
@@ -72,7 +72,7 @@ class answer {
         $this->answer = util::safe_normalize($answer);
         $this->clue = $clue;
         $this->clueformat = $clueformat;
-        $this->orientation = $orientation;
+        $this->orientation = (bool) $orientation;
         $this->startrow = $startrow;
         $this->startcolumn = $startcolumn;
         $this->feedback = $feedback;
@@ -105,5 +105,54 @@ class answer {
         $answerdata = \qtype_crossword\util::remove_accent($this->answer);
 
         return $answerinput === $answerdata;
+    }
+
+    /**
+     * Generate answer length hint; e.g: With the answer: TIM BERNERS-LEE
+     * the answer hint will be: 3, 7-3 and ignorecharcterindex will be ['space' => [3], 'hyphen' => [11]]
+     * Besides that will return a list of special characters with the existing index in the answer
+     *
+     * @return array The list contains the hint and the index of special characters in the answer.
+     */
+    public function generate_answer_hint(): array {
+        $count = 0;
+        $answerhint = '';
+        $ignorecharcterindex = [];
+        // Allow space and hyphen only.
+        $listspecialcharacters = ['space' => ' ', 'hyphen' => '-'];
+        // Retrieve the answer length (answers that still contain spaces and hyphens).
+        $length = \core_text::strlen($this->answer);
+        // Loop the answer by letter.
+        for ($index = 0; $index < $length; $index++) {
+            // Get the answer's letter by index (include unicode characters).
+            $letter = \core_text::substr($this->answer, $index, 1);
+            // In case the character is a space or a hyphen, we need to handle it further.
+            if (in_array($letter, array_values($listspecialcharacters))) {
+                // Get type of the special character.
+                // It should return 'space' or 'hyphen'.
+                $character = array_search($letter, $listspecialcharacters);
+                if ($character < -1) {
+                    continue;
+                }
+                // Store index of special character.
+                $ignorecharcterindex[$character][] = $index;
+                // Prevents the value 0 when double spaces/hyphen exist.
+                // E.g: The result should be 1, 2 instead of 1, 0, 2.
+                if ($count > 0) {
+                    // Generate answer hint.
+                    // Replace space with comma.
+                    $answerhint .= $count . str_replace(' ', ', ', $letter);
+                }
+                // Need to reset $count for the next letter.
+                $count = 0;
+                continue;
+            }
+            $count++;
+            // In the last loop if there is still count we need to append.
+            if ($index === $length - 1 && $count > 0) {
+                $answerhint .= $count;
+            }
+        }
+        return [$answerhint, $ignorecharcterindex];
     }
 }
