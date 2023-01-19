@@ -42,7 +42,8 @@ class qtype_crossword_test_helper extends question_test_helper {
      * @return array The test question array.
      */
     public function get_test_questions(): array {
-        return ['normal', 'unicode', 'different_codepoint', 'sampleimage', 'clear_incorrect_response', 'normal_with_space'];
+        return ['normal', 'unicode', 'different_codepoint', 'sampleimage', 'clear_incorrect_response',
+            'normal_with_hyphen_and_space'];
     }
 
     /**
@@ -445,25 +446,26 @@ class qtype_crossword_test_helper extends question_test_helper {
     }
 
     /**
-     * Makes a normal crossword question with answer contain spaces.
+     * Makes a normal crossword question with answer contain hyphen and spaces.
      *
      * The crossword layout is:
-     *
-     *        S
-     *        A
-     *  G R I N C H
-     *        T
-     *        A
-     *
-     *    D E C E M B E R
-     *        L
-     *        A
-     *        U
-     *        S
+     *       T               G
+     * D A V I D A T T E N B O R O U G H
+     *       M               R
+     *       B               D
+     *       E               O
+     *       R               N
+     *       N               B
+     *       E               R
+     *       R               O
+     *       S               W
+     *       L               N
+     *       E
+     *       E
      *
      * @return qtype_crossword_question
      */
-    public function make_crossword_question_normal_with_space() {
+    public function make_crossword_question_normal_with_hyphen_and_space() {
         question_bank::load_question_definition_classes('crossword');
         $cw = new qtype_crossword_question();
         test_question_maker::initialise_a_question($cw);
@@ -473,30 +475,31 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->correctfeedbackformat = FORMAT_HTML;
         $cw->penalty = 1;
         $cw->defaultmark = 1;
-        $cw->numrows = 11;
-        $cw->numcolumns = 12;
+        $cw->numrows = 13;
+        $cw->numcolumns = 17;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
                 'id' => 1,
                 'questionid' => 1,
-                'clue' => 'Name a man who gave presents to children on Christmas Day?',
+                'clue' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
                 'clueformat' => FORMAT_HTML,
-                'answer' => 'SANTA CLAUS',
-                'startcolumn' => 3,
-                'startrow' => 0,
-                'orientation' => 1,
+                'answer' => 'DAVID ATTENBOROUGH',
+                'startcolumn' => 0,
+                'startrow' => 1,
+                'orientation' => 0,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
             ],
             (object) [
                 'id' => 2,
                 'questionid' => 1,
-                'clue' => 'What day is Christmas?',
+                'clue' => 'Former Prime Minister of the United Kingdom?',
+                'answer' => 'GORDON BROWN',
                 'clueformat' => FORMAT_HTML,
                 'answer' => 'DECEMBER 25',
-                'startcolumn' => 1,
-                'startrow' => 6,
+                'startcolumn' => 11,
+                'startrow' => 0,
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
@@ -504,12 +507,12 @@ class qtype_crossword_test_helper extends question_test_helper {
             (object) [
                 'id' => 3,
                 'questionid' => 1,
-                'clue' => 'Name a fictional character who has green fur and hates Christmas?',
+                'clue' => 'Engineer, computer scientist and inventor of the World Wide Web?',
                 'clueformat' => FORMAT_HTML,
-                'answer' => 'GRINCH',
-                'startcolumn' => 0,
-                'startrow' => 2,
-                'orientation' => 0,
+                'answer' => 'TIM BERNERS-LEE',
+                'startcolumn' => 3,
+                'startrow' => 0,
+                'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
             ],
@@ -532,9 +535,9 @@ class qtype_crossword_test_helper extends question_test_helper {
     }
 
     /**
-     * Makes a normal crossword question with answer contains space.
+     * Makes a normal crossword question with answer contains hyphen and space.
      */
-    public function get_crossword_question_form_data_normal_with_space() {
+    public function get_crossword_question_form_data_normal_with_hyphen_and_space() {
         $fromform = new stdClass();
         $fromform->name = 'Cross word question';
         $fromform->questiontext = ['text' => 'Crossword question text', 'format' => FORMAT_HTML];
@@ -543,26 +546,26 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
         $fromform->penalty = 1;
         $fromform->defaultmark = 1;
-        $fromform->answer = ['SANTA CLAUS', 'DECEMBER 25', 'GRINCH'];
+        $fromform->answer = ['DAVID ATTENBOROUGH', 'GORDON BROWN', 'TIM BERNERS-LEE'];
         $fromform->clue = [
             [
-                'text' => 'Name a man who gave presents to children on Christmas Day?',
+                'text' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
                 'format' => FORMAT_HTML
             ],
             [
-                'text' => 'What day is Christmas?',
+                'text' => 'Former Prime Minister of the United Kingdom?',
                 'format' => FORMAT_HTML
             ],
             [
-                'text' => 'Name a fictional character who has green fur and hates Christmas?',
+                'text' => 'Engineer, computer scientist and inventor of the World Wide Web?',
                 'format' => FORMAT_HTML
             ],
         ];
-        $fromform->orientation = [1, 0, 0];
-        $fromform->startrow = [0, 6, 2];
-        $fromform->startcolumn = [3, 1, 0];
-        $fromform->numrows = 11;
-        $fromform->numcolumns = 12;
+        $fromform->orientation = [0, 1, 1];
+        $fromform->startrow = [1, 0, 0];
+        $fromform->startcolumn = [0, 11, 3];
+        $fromform->numrows = 13;
+        $fromform->numcolumns = 17;
         return $fromform;
     }
 }

@@ -319,4 +319,44 @@ class form_test extends \advanced_testcase {
             ],
         ];
     }
+
+    /**
+     * Test function check_correctness_answer.
+     *
+     * @param array $data Data from provider.
+     * @covers ::check_correctness_answer
+     * @dataProvider check_correctness_answer_provider
+     */
+    public function test_check_correctness_answer(array $data) {
+        list ($mform) = $this->prepare_test_data();
+        $method = new \ReflectionMethod(\qtype_crossword_edit_form::class,
+            'check_correctness_answer');
+        $method->setAccessible(true);
+        $result = $method->invoke($mform, $data[0]);
+        $this->assertEquals($data[1], $result);
+    }
+
+    /**
+     * Data provider for the check_correctness_answer test.
+     *
+     * @coversNothing
+     * @return array
+     */
+    public function check_correctness_answer_provider(): array {
+
+        return [
+            'Answer start with hyphen' => [
+                ['-MOODLE', get_string('wrongpositionhyphencharacter', 'qtype_crossword')],
+            ],
+            'Answer exists two consecutive hyphen' => [
+                ['MO--DLE', get_string('wrongadjacentcharacter', 'qtype_crossword')],
+            ],
+            'Answer exists two space hyphen' => [
+                ['MO  ODLE', get_string('wrongadjacentcharacter', 'qtype_crossword')],
+            ],
+            'The valid answer' => [
+                ['MOODLE', ''],
+            ],
+        ];
+    }
 }

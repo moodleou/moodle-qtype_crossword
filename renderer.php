@@ -50,10 +50,12 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             'readonly' => false
         ];
         $data['questiontext'] = $question->format_questiontext($qa);
+        $ignoreindexeslist = [];
         foreach ($question->answers as $key => $answer) {
             $orientation = 'across';
             $fieldname = 'sub' . $key;
-            $length = core_text::strlen($answer->answer);
+            [$lengthclue, $ignoreindex] = $answer->generate_answer_hint();
+            $answerlength = core_text::strlen($answer->answer);
             $inputname = $qa->get_qt_field_name($fieldname);
             $inputvalue = $qa->get_last_qt_var($fieldname);
             $number = $key + 1;
@@ -70,7 +72,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                     'number' => $number,
                     'orientation' => $orientationvalue[$answer->orientation],
                     'clue' => html_to_text($clue, 0, false),
-                    'length' => $length
+                    'length' => $answerlength,
                 ]
             );
 
@@ -78,13 +80,14 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 $orientation = 'down';
             }
 
-            $attributes = "name=$inputname id=$inputname maxlength=$length";
+            $attributes = "name=$inputname id=$inputname maxlength=$answerlength";
 
             $inputdata = [
                 'number' => $number,
                 'clue' => $clue,
                 'feedback' => $feedback,
-                'length' => $length,
+                'length' => $answerlength,
+                'lengthClue' => $lengthclue,
                 'value' => $inputvalue,
                 'attributes' => $attributes,
                 'label' => $label,
@@ -92,6 +95,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 'orientation' => (int) $answer->orientation,
                 'startRow' => (int) $answer->startrow,
                 'startColumn' => (int) $answer->startcolumn,
+                'ignoreIndexes' => json_encode($ignoreindex),
             ];
 
             if ($options->readonly) {

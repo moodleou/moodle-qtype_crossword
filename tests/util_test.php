@@ -72,4 +72,41 @@ class util_test extends \qbehaviour_walkthrough_test_base {
             ]
         ];
     }
+
+    /**
+     * Test remove_special_characters function.
+     *
+     * @dataProvider test_remove_special_characters_provider
+     * @covers \qtype_crossword\util::remove_special_characters
+     *
+     * @param string $text The string need to change.
+     * @param string $expected The expected text.
+     */
+    public function test_remove_special_characters(string $text, string $expected): void {
+        $text = \qtype_crossword\util::remove_special_characters($text);
+        $this->assertEquals($text, $expected);
+    }
+
+    /**
+     * Data provider for test_remove_special_characters() test cases.
+     *
+     * @coversNothing
+     * @return array List of data sets (test cases)
+     */
+    public function test_remove_special_characters_provider(): array {
+        return [
+            'Text with space' => [
+                'Los angeles',
+                'Losangeles',
+            ],
+            'Text with hyphen' => [
+                'Six-pack',
+                'Sixpack',
+            ],
+            'Text combine hyphen and space' => [
+                'Tim Berners-Lee',
+                'TimBernersLee',
+            ],
+        ];
+    }
 }

@@ -78,6 +78,7 @@ export class CrosswordQuestion {
             coordinates: '',
             maxSizeCell: 50,
             minSizeCell: 30,
+            specialCharacters: {hyphen: '-', space: ' '},
         };
         // Merge options.
         defaultOption = {...defaultOption, ...options};
@@ -161,14 +162,28 @@ export class CrosswordQuestion {
     }
 
     /**
-     * The answer must not contain any special character.
+     * Check the content of the answer for the existence of special characters.
      *
      * @param {String} answer The answer string need to be check.
-     * @return {Boolean} The value data.
+     * @return {Boolean} True if the answer is invalid.
      */
-    isInvalidAnswer = function(answer) {
-        return /[-@!$%^&*()_+|~=`\\#{}[\]:";'<>?,./]/gi.test(answer);
-    };
+    isContainSpecialCharacters(answer) {
+        return /([^\p{L}\p{N}\-\s]+)/ugi.test(answer);
+    }
+
+    /**
+     * Check the correctness of the answer using defined rules.
+     *
+     * @param {String} answer The answer string need to be check.
+     * @return {Boolean} True if the answer is invalid.
+     */
+    checkCorrectnessAnswer(answer) {
+        // The rules:
+        // 1. Answers cannot have spaces or huphen at the beginning or end.
+        // 2. The answer does not allow more than 1 contiguous space/hyphen.
+        // 3. The answer does not allow spaces and hyphens next to each other.
+        return /(^\s|^-|\s$|-$|-{2}|\s{2}|\s-|-\s)/gm.test(answer);
+    }
 
     /**
      * Generate underscore letter by length.
@@ -190,6 +205,7 @@ export class CrosswordQuestion {
     updateLetterIndexForCells(word) {
         const {wordNumber} = this.options;
         const letterList = this.options.crosswordEl.querySelectorAll(`g[data-word*='(${wordNumber})']`);
+        const ignoreList = this.getIgnoreIndexByAnswerNumber(word.number);
         // Convert letterList to array to use sort function.
         const letterListArray = Array.prototype.slice.call(letterList, 0);
         let letterIndex = 0;
@@ -203,10 +219,33 @@ export class CrosswordQuestion {
             }
             return aValue - bValue;
         }).forEach(el => {
+            // Incase the letter index in ignore list we must skip it.
+            if (ignoreList.includes(letterIndex)) {
+                letterIndex = this.generateLetterIndex(letterIndex, ignoreList, word.length);
+            }
             // Update letter index.
             el.dataset.letterindex = letterIndex;
             letterIndex++;
         });
+    }
+
+    /**
+     * Calculate and retreive the letter index.
+     *
+     * @param {Number} letterIndex The current letter index.
+     * @param {Array} ignoreList The ignore list; If the letter contains space or hyphen
+     * @param {Number} wordLength The word length.
+     * characters. We have to ignore it.
+     * @return {Number} The new letter index.
+     */
+    generateLetterIndex(letterIndex, ignoreList, wordLength) {
+        letterIndex++;
+        // If the new letter index still in ignore list;
+        // We need to increase it again.
+        if (ignoreList.includes(letterIndex) || letterIndex > wordLength - 1) {
+            return this.generateLetterIndex(letterIndex, ignoreList, wordLength);
+        }
+        return letterIndex;
     }
 
     /**
@@ -234,6 +273,10 @@ export class CrosswordQuestion {
         const stickyClue = this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper').querySelector('.sticky-clue');
         const {wordNumber, words} = this.options;
         const word = words.find(o => o.number === parseInt(wordNumber));
+        const clueContentSelector = `.contain-clue .wrap-clue[data-questionid="${wordNumber}"] .clue-content`;
+        // Clone clue content.
+        const clueContent = this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper')
+            .querySelector(clueContentSelector).innerHTML;
         if (!stickyClue && word) {
             return;
         }
@@ -249,7 +292,7 @@ export class CrosswordQuestion {
             stickyClue.append(spanEl);
         }
         strongEl.innerText = `${word.number} ${this.options.orientation[word.orientation]}`;
-        spanEl.innerText = `${word.clue} (${word.length})`;
+        spanEl.innerText = clueContent;
     }
 
     /**
@@ -259,7 +302,7 @@ export class CrosswordQuestion {
      * @return {String} The value data.
      */
     replaceText(value) {
-        return value.replace(/[-@!$%^&*()_+|~=`\\#{}[\]:";'<>?,./]/gi, '');
+        return value.replace(/([^\p{L}\p{N}\s]+)/ugi, '');
     }
 
     /**
@@ -269,7 +312,7 @@ export class CrosswordQuestion {
      * @param {String} key The letter data.
      */
     bindDataToClueInput(gEl, key) {
-        const {words, cellWidth, cellHeight} = this.options;
+        const {words} = this.options;
         const rectEl = gEl.querySelector('rect');
         const conflictPointX = rectEl.getAttributeNS(null, 'x');
         const conflictPointY = rectEl.getAttributeNS(null, 'y');
@@ -279,12 +322,7 @@ export class CrosswordQuestion {
             wordIds.forEach(wordId => {
                 const word = words.find(o => o.number === parseInt(wordId));
                 if (word) {
-                    const startPoint = this.calculatePosition(word, 0);
-                    if (word.orientation) {
-                        letterIndex = (parseInt(conflictPointY) - startPoint.y) / (cellHeight);
-                    } else {
-                        letterIndex = (parseInt(conflictPointX) - startPoint.x) / (cellWidth);
-                    }
+                    letterIndex = this.findCellOrder(word, conflictPointX, conflictPointY);
                     const clueInputEl = this.options.crosswordEl
                         .closest('.qtype_crossword-grid-wrapper')
                         .querySelector(`.wrap-clue[data-questionid='${wordId}'] input`);
@@ -292,8 +330,12 @@ export class CrosswordQuestion {
                     if (key === ' ') {
                         key = '_';
                     }
+                    letterIndex = this.findTheValidLetterIndex(letterIndex, word);
                     value = this.replaceAt(clueInputEl.value, letterIndex, key);
-                    clueInputEl.value = value.toUpperCase() + this.makeUnderscore(word.length - value.length);
+                    let answerString = value.toUpperCase() + this.makeUnderscore(word.length - value.length);
+                    const ignoreList = this.getIgnoreIndexByAnswerNumber(word.number, false);
+                    answerString = this.mapAnswerAndSpecialLetter(answerString, ignoreList[0]);
+                    clueInputEl.value = answerString;
                 }
             });
         }
@@ -388,8 +430,10 @@ export class CrosswordQuestion {
                     let titleData = '';
                     if (el.closest('g').dataset.code === gEl.dataset.code) {
                         el.classList.add('crossword-cell-focussed');
+                        const conflictPointX = gEl.querySelector('rect').getAttributeNS(null, 'x');
+                        const conflictPointY = gEl.querySelector('rect').getAttributeNS(null, 'y');
                         // Update aria label.
-                        let letterIndex = parseInt(el.closest('g').dataset.letterindex);
+                        let letterIndex = this.findCellOrder(word, conflictPointX, conflictPointY);
                         const data = {
                             row: word.startRow + 1,
                             column: word.startColumn + letterIndex + 1,
@@ -397,7 +441,7 @@ export class CrosswordQuestion {
                             orientation: orientation[word.orientation],
                             clue: word.clue,
                             letter: letterIndex + 1,
-                            count: word.length
+                            count: word.length - this.getIgnoreIndexByAnswerNumber(wordNumber).length,
                         };
                         if (word.orientation) {
                             data.row = word.startRow + letterIndex + 1;
@@ -470,5 +514,179 @@ export class CrosswordQuestion {
         svg.style.cssText = `max-width: ${maxWidth}px; min-width: ${minWidth}px;
             max-height: ${maxHeight}px;`;
         return svg;
+    }
+
+    /**
+     * Get ignore letter index by answer number.
+     *
+     * @param {Number} answerNumber The answer number.
+     * @param {Boolean} forceFlatObject Convert ignore index object to array and flat it; By default is true;
+     * @return {Array} List ignore letter index.
+     */
+    getIgnoreIndexByAnswerNumber(answerNumber, forceFlatObject = true) {
+        const {crosswordEl} = this.options;
+        // Get ignore indexes list from element. It should look like {"space":[3, 5],"hyphen":[11]};
+        // It contains special characters that exist in that answer with their index.
+        // With the example data above, we can see that in this answer there are two spaces and one hyphen;
+        // The indexes of the space are 3, 5 and with the hyphen are 11.
+        let ignoreIndexes = crosswordEl.closest('.qtype_crossword-grid-wrapper')?.querySelector(
+            `.contain-clue .wrap-clue[data-questionid='${answerNumber}']`)?.dataset?.ignoreindexes ?? '[]';
+        ignoreIndexes = JSON.parse(ignoreIndexes);
+        if (Array.isArray(ignoreIndexes) && ignoreIndexes.length === 0) {
+            ignoreIndexes = {};
+        }
+        // In the case, we just want to get the index of the special characters existing in this answer.
+        // E.g: [3, 5, 11].
+        if (forceFlatObject) {
+            return Object.values(ignoreIndexes).flat().sort((a, b) => {
+                return a - b;
+            });
+        }
+        // Return full ignoreIndexes.
+        // E.g: [{space:[3, 5], hyphen:[11]}].
+        return [ignoreIndexes];
+    }
+
+    /**
+     * Based on the answer string and special list, we will mix them together;
+     * e.g: the answer has 4 letters and the special list is {hyphen: [2]},
+     * the result will be: _ _ - _. We will replace the 2nd letter with the hyphen character (based on replaceLetter option).
+     *
+     * @param {String} answer The answer string which will be handled.
+     * @param {Object} specialList The special object contains a list of special characters and their indexes.
+     * E.g: {hyphen: [1, 2]}.
+     * @return {String} The mixed answer.
+     */
+    mapAnswerAndSpecialLetter(answer, specialList) {
+        const specials = this.options.specialCharacters;
+        if (Object.keys(specialList).length === 0 && specialList.constructor === Object) {
+            return answer;
+        }
+        for (let character in specialList) {
+            if (specials[character] !== undefined) {
+                for (let index of specialList[character]) {
+                    // Replace character.
+                    answer = this.replaceAt(answer, index, specials[character]);
+                }
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * Find the next or previous valid cell in the grid crossword based on index.
+     * E.g: Answer ALL-IN contains 6 letters, but in the crossword grid only 5 cells are displayed (no hyphen).
+     * And the letterindex property of each cell will be 0, 1, 2, 4, 5 (ignoring the hyphen index). So
+     * the next cell of the letter L (index 2) will be I (index 4).
+     *
+     * @param {Number} wordNumber The word selected number.
+     * @param {Object} word The word selected object.
+     * @param {Number} selectionIndex The selection index.
+     * @param {Boolean} isAscending If True find the next cell else find the previous cell.
+     * @return {Array} List contains the next/previous selection index and the next/previous g element.
+     */
+    findTheClosestCell(wordNumber, word, selectionIndex, isAscending = true) {
+        let count = selectionIndex;
+        let number = -1;
+        let notFound = true;
+        let closestCell = [];
+
+        // Find the next cell.
+        if (isAscending) {
+            number = Math.abs(number);
+        }
+
+        // We have to iterate through the crossword cell of a specific answer to find the closest valid one.
+        while (notFound) {
+            // The special characters will not be shown in a grid,
+            // So we have to find another cell by increasing/decreasing the selection Index.
+            const gelEl = this.options.crosswordEl
+            .querySelector(`g[data-word*='(${wordNumber})'][data-letterindex='${count}']`);
+            if (gelEl || count > word.length || count <= 0) {
+                notFound = false;
+                closestCell = [count, gelEl];
+            }
+            count += number;
+        }
+        return closestCell;
+    }
+
+    /**
+     * Find the valid letter index of answer input.
+     * E.g: The answer contains a hyphen: ALL-IN and the answer input will be displayed
+     * _ _ _ - _ _. With a hyphen (index 4), the user cannot interact.
+     * So the next valid letter index right after the letter index 2 (Letter L) is 4 (not 3).
+     *
+     * @param {Number} selectedIndex The selected index.
+     * @param {Object} word The word selected object.
+     * @param {Boolean} isAscending Find index in ascending or descending order, default true.
+     * @return {Number} Return new valid letter index.
+     */
+    findTheValidLetterIndex(selectedIndex, word, isAscending = true) {
+        // Retrieve invalid index and sort it in ascending order.
+        const ignoreIndexes = this.getIgnoreIndexByAnswerNumber(word.number);
+        let number = -1;
+        // Find the next letter index.
+        if (isAscending) {
+            number = Math.abs(number);
+        }
+        // Since there's an index difference between the cell grid and the answer input
+        // (the grid cells won't display special characters) we'll add/minus the difference.
+        for (let invalidIndex of ignoreIndexes) {
+            if (selectedIndex >= invalidIndex) {
+                if (!isAscending && selectedIndex === invalidIndex) {
+                    continue;
+                }
+                selectedIndex += number;
+            }
+        }
+        return selectedIndex;
+    }
+
+    /**
+     * Find the valid cell index from answer index.
+     *
+     * @param {Object} word The word selected object.
+     * @param {Number} answerIndex The selected letter index.
+     * @param {Boolean} skipIgnoreIndex If true, we will not count invalid index; Default true.
+     * @return {Number} Return new valid cell index.
+     */
+    findCellIndexFromAnswerIndex(word, answerIndex, skipIgnoreIndex = true) {
+        // Get special index list.
+        let ignoreIndexes = this.getIgnoreIndexByAnswerNumber(word.number);
+        let cellIndex = answerIndex;
+        // Loop to find valid index.
+        for (let index = cellIndex; index < word.length; index++) {
+            if (ignoreIndexes.includes(index)) {
+                cellIndex++;
+            } else {
+                break;
+            }
+        }
+        // Return valid index excluding special index.
+        // E.g: With the answer: TIM BERNERS-LEE  the next letter after letter B (index 4) is E (index 5);
+        // If skipIgnoreIndex is true, we will not count letter space (index 3).
+        // So the new letter index will be 4.
+        if (skipIgnoreIndex) {
+            return cellIndex - ignoreIndexes.filter(index => index <= cellIndex).length;
+        }
+        return cellIndex;
+    }
+
+    /**
+     * Find the order of the cell (starting at 0) based on coordinate of that cell.
+     *
+     * @param {Object} word The word selected object.
+     * @param {String} xCoordinate The x coordinate of cell.
+     * @param {String} yCoordinate The y coordinate of cell.
+     * @return {Number} The cell order.
+     */
+    findCellOrder(word, xCoordinate, yCoordinate) {
+        const {cellWidth, cellHeight} = this.options;
+        const startPoint = this.calculatePosition(word, 0);
+        if (word.orientation) {
+            return (parseInt(yCoordinate) - startPoint.y) / (cellHeight);
+        }
+        return (parseInt(xCoordinate) - startPoint.x) / (cellWidth);
     }
 }

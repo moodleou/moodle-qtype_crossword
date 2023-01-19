@@ -49,7 +49,7 @@ const getWordsFromForm = function() {
                 word[name] = selectEl.selectedIndex;
             });
 
-            word.answer = answerEl.querySelector('input[id^="id_answer"]').value.trim().normalize('NFKC');
+            word.answer = answerEl.querySelector('input[id^="id_answer"]').value.normalize('NFKC');
             let clueData = clueEl.querySelector('textarea[id^="id_clue_"]').value.trim();
             // If it is a HTML empty content, set clue to empty.
             if (htmlIsEmpty(clueData)) {

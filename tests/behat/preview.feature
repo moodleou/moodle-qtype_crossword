@@ -18,13 +18,13 @@ Feature: Preview a Crossword question
       | contextlevel | reference | name           |
       | Course       | C1        | Test questions |
     And the following "questions" exist:
-      | questioncategory | qtype     | name          | template                 |
-      | Test questions   | crossword | crossword-001 | normal                   |
-      | Test questions   | crossword | crossword-002 | unicode                  |
-      | Test questions   | crossword | crossword-003 | different_codepoint      |
-      | Test questions   | crossword | crossword-004 | sampleimage              |
-      | Test questions   | crossword | crossword-005 | clear_incorrect_response |
-      | Test questions   | crossword | crossword-006 | normal_with_space        |
+      | questioncategory | qtype     | name          | template                            |
+      | Test questions   | crossword | crossword-001 | normal                              |
+      | Test questions   | crossword | crossword-002 | unicode                             |
+      | Test questions   | crossword | crossword-003 | different_codepoint                 |
+      | Test questions   | crossword | crossword-004 | sampleimage                         |
+      | Test questions   | crossword | crossword-005 | clear_incorrect_response            |
+      | Test questions   | crossword | crossword-006 | normal_with_hyphen_and_space        |
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response.
@@ -208,7 +208,7 @@ Feature: Preview a Crossword question
     And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "ITALY"
 
   @javascript @_switch_window
-  Scenario: User can type their answer with a space at the beginning.
+  Scenario: Users can enter their answers with a leading space and the space will be replaced by an underscore.
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
@@ -223,7 +223,7 @@ Feature: Preview a Crossword question
     And the field "3 Across. Where is the Leaning Tower of Pisa?, 5 letter word" matches value "ITALY"
 
   @javascript @_switch_window
-  Scenario: When the user enters a space, the system will replace it with an underscore.
+  Scenario: For answers that contain spaces or hyphens, the answer hint will not count those characters.
     When I am on the "crossword-006" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
@@ -263,3 +263,16 @@ Feature: Preview a Crossword question
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
+
+  @javascript @_switch_window
+  Scenario: User can enter alphanumeric characters continuously, the answer will automatically add special characters if any.
+    When I am on the "crossword-006" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Interactive with multiple tries"
+    And I press "Start again with these options"
+    And I set the field "Word 1" to "DAVIDATTENBOROUGH"
+    And I set the field "Word 2" to "GORDONBROWN"
+    And I set the field "Word 3" to "TIMBERNERSLEE"
+    Then the field "Word 1" matches value "DAVID ATTENBOROUGH"
+    And the field "Word 2" matches value "GORDON BROWN"
+    And the field "Word 3" matches value "TIM BERNERS-LEE"

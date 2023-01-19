@@ -24,6 +24,7 @@
       "number": "",
       "clue": "<p>Clue html content</p>",
       "length": "",
+      "lengthClue": "",
       "value": "",
       "attributes": "id=q38:1_sub1",
       "feedbackimage": "",
@@ -32,15 +33,16 @@
       "orientation": 0,
       "startRow": 0,
       "startColumn": 0,
-      "feedback": "<p>feed back html content</p>"
+      "feedback": "<p>feed back html content</p>",
+      "ignoreIndexes": ""
     }
 }}
-<div class="col-12 wrap-clue" data-questionid="{{number}}" data-startrow="{{startRow}}"
+<div class="col-12 wrap-clue" data-questionid="{{number}}" data-startrow="{{startRow}}" data-ignoreindexes="{{ignoreIndexes}}"
     data-startcolumn="{{startColumn}}" data-length="{{length}}" data-orientation="{{orientation}}" data-clue="{{clue}}">
     <div class="d-flex my-2">
         <div class="clue-id"><span>{{number}}</span></div>
         <div class="clue-content w-100">{{{clue}}}</div>
-        <div class="clue-count ml-1">({{length}})</div>
+        <div class="clue-count ml-1">({{lengthClue}})</div>
     </div>
     <label class="accesshide" for="{{id}}">{{label}}</label>
     <input
