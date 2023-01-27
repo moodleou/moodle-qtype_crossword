@@ -77,7 +77,7 @@ function xmldb_qtype_crossword_upgrade($oldversion) {
 
         // Define field clueformat to be added to qtype_crossword_words.
         $table = new xmldb_table('qtype_crossword_words');
-        $field = new xmldb_field('clueformat', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'clue');
+        $field = new xmldb_field('clueformat', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'clue');
 
         // Conditionally launch add field clueformat.
         if (!$dbman->field_exists($table, $field)) {
@@ -92,7 +92,7 @@ function xmldb_qtype_crossword_upgrade($oldversion) {
 
         // Define field feedbackformat to be added to qtype_crossword_words.
         $table = new xmldb_table('qtype_crossword_words');
-        $field = new xmldb_field('feedbackformat', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'feedback');
+        $field = new xmldb_field('feedbackformat', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'feedback');
 
         // Conditionally launch add field feedbackformat.
         if (!$dbman->field_exists($table, $field)) {

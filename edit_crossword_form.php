@@ -62,30 +62,6 @@ class qtype_crossword_edit_form extends question_edit_form {
         $this->add_interactive_settings(true, true);
     }
 
-    public function definition_after_data() {
-        // We can't modify submitted data in data_preprocessing function.
-        // Override this function allow us to modify submitted data.
-        $submittedformat = optional_param('editorformat', null, PARAM_INT);
-        $switchformat = optional_param('switchformat', null, PARAM_TEXT);
-        if (isset($submittedformat) && $switchformat) {
-            $mform = $this->_form;
-            foreach ($_POST['clue'] as $index => $c) {
-                $mform->getElement("clue[$index]")->setValue([
-                    'text' => $_POST['clue'][$index]['text'],
-                    'format' => $submittedformat,
-                    'itemid' => $_POST['clue'][$index]['itemid']
-                ]);
-            }
-            foreach ($_POST['feedback'] as $index => $f) {
-                $mform->getElement("feedback[$index]")->setValue([
-                    'text' => $_POST['feedback'][$index]['text'],
-                    'format' => $submittedformat,
-                    'itemid' => $_POST['feedback'][$index]['itemid']
-                ]);
-            }
-        }
-    }
-
     protected function get_per_answer_fields($mform, $label, $gradeoptions,
             &$repeatedoptions, &$wordsoptions): array {
         $repeated = [];
@@ -131,16 +107,6 @@ class qtype_crossword_edit_form extends question_edit_form {
         $minoptions = QUESTION_NUMANS_START, $addoptions = QUESTION_NUMANS_ADD) {
         $mform->addElement('header', 'words',
             get_string('words', 'qtype_crossword'), '');
-
-        $switchformatgroup = [];
-        $switchformatgroup[] = $mform->createElement('select', 'editorformat',
-            get_string('editorformat', 'qtype_crossword'), format_text_menu());;
-        $switchformatgroup[] = $mform->createElement('submit', 'switchformat', get_string('switchformat', 'qtype_crossword'));
-
-        $mform->setExpanded('words', 1);
-        $mform->registerNoSubmitButton('switchformat');
-        $mform->addElement('group', 'switchformat',
-            '', $switchformatgroup, null, false);
 
         $answersoption = '';
         $repeatedoptions = [];

@@ -58,12 +58,12 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $inputvalue = $qa->get_last_qt_var($fieldname);
             $number = $key + 1;
             $feedback = '';
-            if ($options->feedback) {
+            if ($options->generalfeedback) {
                 $feedback = $question->format_text($answer->feedback, $answer->feedbackformat,
                     $qa, 'question', 'feedback', $answer->answerid);
             }
             $clue = $question->format_text($answer->clue, $answer->clueformat, $qa, 'question', 'clue', $answer->answerid);
-            $title = get_string(
+            $label = format_string(get_string(
                 'inputtitle',
                 'qtype_crossword',
                 (object) [
@@ -72,7 +72,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                     'clue' => $clue,
                     'length' => $length
                 ]
-            );
+            ));
 
             if ($answer->orientation) {
                 $orientation = 'down';
@@ -87,7 +87,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 'length' => $length,
                 'value' => $inputvalue,
                 'attributes' => $attributes,
-                'title' => strip_tags($title),
+                'label' => $label,
                 'id' => $inputname,
                 'orientation' => (int) $answer->orientation,
                 'startRow' => (int) $answer->startrow,

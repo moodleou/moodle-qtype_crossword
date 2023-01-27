@@ -67,7 +67,8 @@ EOF;
         if (!$this->running_javascript()) {
             throw new ErrorException('Enter unicode character requires JavaScript');
         }
-
+        // Escape backlash for behat test so we get the correct value in javacript.
+        $input = str_replace('\\', '\\\\', $input);
         // Enter unicode characters.
         $script = <<<EOF
                 const id = [...document.querySelectorAll('.contain-clue .wrap-clue label.accesshide')]

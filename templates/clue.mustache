@@ -27,7 +27,7 @@
       "value": "",
       "attributes": "id=q38:1_sub1",
       "feedbackimage": "",
-      "title": "Title",
+      "label": "label for accessibility",
       "id": "q38:1_sub1",
       "orientation": 0,
       "startRow": 0,
@@ -39,16 +39,15 @@
     data-startcolumn="{{startColumn}}" data-length="{{length}}" data-orientation="{{orientation}}" data-clue="{{clue}}">
     <div class="d-flex my-2">
         <div class="clue-id"><span>{{number}}</span></div>
-        <div class="clue-content">{{{clue}}}</div>
-        <div class="clue-count">({{length}})</div>
+        <div class="clue-content w-100">{{{clue}}}</div>
+        <div class="clue-count ml-1">({{length}})</div>
     </div>
-    <label class="accesshide" for="{{id}}">{{#str}} wordno, qtype_crossword, {{number}} {{/str}}</label>
+    <label class="accesshide" for="{{id}}">{{label}}</label>
     <input
         type="text"
         class="control {{classes}}"
     {{attributes}}
         value="{{value}}"
-        aria-label="{{title}}"
         disabled
         autocomplete="off"
         spellcheck="false">
@@ -56,7 +55,7 @@
         {{{feedbackimage}}}
     {{/feedbackimage}}
     {{#feedback}}
-        <div class="qtype_crossword-feedback my-2">
+        <div class="outcome clearfix my-2">
              {{{feedback}}}
         </div>
     {{/feedback}}

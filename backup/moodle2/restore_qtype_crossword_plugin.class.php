@@ -61,6 +61,12 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
      * @param array $data
      */
     public function process_qtype_crossword_word(array $data): void {
+        if (!isset($data['clueformat'])) {
+            $data['clueformat'] = FORMAT_HTML;
+        }
+        if (!isset($data['feedbackformat'])) {
+            $data['feedbackformat'] = FORMAT_HTML;
+        }
         self::process_qtype_crossword_data_with_table_name($data, 'qtype_crossword_words');
     }
 
@@ -74,7 +80,7 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
         global $DB;
         $data = (object)$data;
         $oldid = $data->id;
-
+        
         // Detect if the question is created or mapped.
         $oldquestionid   = $this->get_old_parentid('question');
         $newquestionid   = $this->get_new_parentid('question');

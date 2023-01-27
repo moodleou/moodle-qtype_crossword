@@ -23,11 +23,11 @@
 import {CrosswordGrid} from 'qtype_crossword/crossword_grid';
 
 /**
- * Get words from the table.
+ * Get list of words object from moodle form to display in the preview section.
  *
- * @return {Object} The words object.
+ * @return {array} List of the words object. E.g: {answer: PARIS, clue: sample clue, no: word number in the form}
  */
-const getWordsFromTable = function() {
+const getWordsFromForm = function() {
     const alphaRegex = /^[a-z]+/;
     const numberAnswer = document.querySelectorAll('[id^="fitem_id_answer"]').length;
     let words = [];
@@ -52,13 +52,25 @@ const getWordsFromTable = function() {
             word.answer = answerEl.querySelector('input[id^="id_answer"]').value.trim().normalize('NFKC');
 
             const emptyContent = [
-                '<p dir="ltr" style="text-align: left;"><br></p>',
+                // For FF and Chrome.
+                '<p></p>',
+                '<p><br></p>',
+                '<br>',
+                '<p dir="rtl" style="text-align: right;"></p>',
                 '<p dir="rtl" style="text-align: right;"><br></p>',
                 '<p dir="ltr" style="text-align: left;"></p>',
-                '<p dir="rtl" style="text-align: right;"></p>',
+                '<p dir="ltr" style="text-align: left;"><br></p>',
+                // For IE 9 and 10.
+                '<p>&nbsp;</p>',
+                '<p><br>&nbsp;</p>',
+                '<p dir="rtl" style="text-align: right;">&nbsp;</p>',
+                '<p dir="rtl" style="text-align: right;"><br>&nbsp;</p>',
+                '<p dir="ltr" style="text-align: left;">&nbsp;</p>',
+                '<p dir="ltr" style="text-align: left;"><br>&nbsp;</p>'
             ];
 
             let clueData = clueEl.querySelector('textarea[id^="id_clue_"]').value.trim();
+            // If it is a HTML empty content, set clue to empty.
             if (emptyContent.includes(clueData)) {
                 clueData = '';
             }
@@ -93,7 +105,7 @@ export const preview = (options) => {
             event.preventDefault();
             const columnEl = document.querySelector('select[name="numcolumns"]');
             const rowEl = document.querySelector('select[name="numrows"]');
-            const words = getWordsFromTable(options.target);
+            const words = getWordsFromForm(options.target);
             const settings = {...options,
                 words,
                 colsNum: columnEl.options[columnEl.selectedIndex].text,

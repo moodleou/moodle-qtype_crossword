@@ -32,9 +32,9 @@
         <FIELD NAME="answer" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="The answer text."/>
         <FIELD NAME="startcolumn" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false" COMMENT="The vertical index."/>
         <FIELD NAME="startrow" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Horizontal index."/>
-        <FIELD NAME="orientation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The orientation option."/>
+        <FIELD NAME="orientation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="The orientation option."/>
         <FIELD NAME="feedback" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Feed back for answer"/>
-        <FIELD NAME="feedbackformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="feedbackformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
