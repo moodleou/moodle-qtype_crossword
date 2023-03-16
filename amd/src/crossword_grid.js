@@ -509,6 +509,39 @@ export class CrosswordGrid extends CrosswordQuestion {
     }
 
     /**
+     * Handle insert text event (for keyboard and non-keyboard events).
+     *
+     * @param {Object} event Event data.
+     * @param {String} value the character we are inserted to the clue grid.
+     */
+    handleInsertTextEventForGridInput(event, value) {
+        const {wordNumber} = this.options;
+        const inputEl = event.target;
+        const code = inputEl.dataset.code;
+        const upperText = value.toUpperCase();
+        if (this.replaceText(value) === '') {
+            return;
+        }
+        // Filter value.
+        if (code) {
+            const textEl = this.options.crosswordEl.querySelector(`g[data-code='${code}'] text.crossword-cell-text`);
+            if (!textEl) {
+                return;
+            }
+            textEl.innerHTML = upperText;
+            const letterIndex = parseInt(textEl.closest('g').dataset.letterindex);
+            const nextCellEl = this.options.crosswordEl.querySelector(
+                `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex + 1}']`
+            );
+            // Interact with clue.
+            this.bindDataToClueInput(textEl.closest('g'), value);
+            if (nextCellEl) {
+                nextCellEl.dispatchEvent(new Event('click'));
+            }
+        }
+    }
+
+    /**
      * Add event to word input element.
      *
      * @param {Element} inputEl The input element.
@@ -518,32 +551,17 @@ export class CrosswordGrid extends CrosswordQuestion {
         if (readonly) {
             return;
         }
+        inputEl.addEventListener('input', (e) => {
+            e.preventDefault();
+            if (e.inputType === 'insertText') {
+                this.handleInsertTextEventForGridInput(e, e.data);
+            }
+            return true;
+        });
+
         inputEl.addEventListener('keypress', (e) => {
             e.preventDefault();
-            const {wordNumber} = this.options;
-            const inputEl = e.target;
-            const code = inputEl.dataset.code;
-            let value = e.key.toUpperCase();
-            if (this.replaceText(e.key) === '') {
-                return false;
-            }
-            // Filter value.
-            if (code) {
-                const textEl = this.options.crosswordEl.querySelector(`g[data-code='${code}'] text.crossword-cell-text`);
-                if (!textEl) {
-                    return false;
-                }
-                textEl.innerHTML = value;
-                const letterIndex = parseInt(textEl.closest('g').dataset.letterindex);
-                const nextCellEl = this.options.crosswordEl.querySelector(
-                    `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex + 1}']`
-                );
-                // Interact with clue.
-                this.bindDataToClueInput(textEl.closest('g'), e.key);
-                if (nextCellEl) {
-                    nextCellEl.dispatchEvent(new Event('click'));
-                }
-            }
+            this.handleInsertTextEventForGridInput(e, e.key);
             return true;
         });
 
