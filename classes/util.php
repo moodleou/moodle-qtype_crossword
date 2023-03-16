@@ -16,6 +16,7 @@
 
 namespace qtype_crossword;
 use Normalizer;
+use \qtype_crossword_question;
 /**
  * Static utilities.
  *
@@ -24,23 +25,21 @@ use Normalizer;
  * @copyright 2022, The Open University
  */
 class util {
+
     /**
-     * Normalise a UTf-8 string to FORM_C, avoiding the pitfalls in PHP's
+     * Normalise a UTF-8 string to FORM_C, avoiding the pitfalls in PHP's
      * normalizer_normalize function.
-     * @param string $string the input string.
-     * @return string the normalised string.
+     * @param string $string The input string.
+     * @param int $normalizeform The form normalize. Default is FORM_KC.
+     * @return string The normalised string.
      */
-    public static function safe_normalize(string $string): string {
+    public static function safe_normalize(string $string, int $normalizeform = Normalizer::FORM_KC): string {
         if ($string === '') {
             return '';
         }
 
-        if (!function_exists('normalizer_normalize')) {
-            return $string;
-        }
-
-        $normalised = normalizer_normalize($string, Normalizer::FORM_KC);
-        if (is_null($normalised)) {
+        $normalised = normalizer_normalize($string, $normalizeform);
+        if ($normalised === false) {
             // An error occurred in normalizer_normalize, but we have no idea what.
             debugging('Failed to normalise string: ' . $string, DEBUG_DEVELOPER);
             return $string; // Return the original string, since it is the best we have.
@@ -48,5 +47,38 @@ class util {
 
         return $normalised;
     }
-}
 
+    /**
+     * Remove accent character in text. Eg: Français -> Francais.
+     *
+     * @param string $string The input string.
+     * @return string The normal string without accents.
+     */
+    public static function remove_accent(string $string): string {
+        return preg_replace('/\p{Mn}/u', '', self::safe_normalize($string, Normalizer::FORM_KD));
+    }
+
+    /**
+     * Calculate fraction of answer.
+     *
+     * @param qtype_crossword_question $question The question object.
+     * @param answer $answer The answer object.
+     * @param string $inputanswer The inputanswer need to calculate.
+     * @return float The fraction value of the answer.
+     */
+    public static function calculate_fraction_for_answer(qtype_crossword_question $question, answer $answer,
+            string $inputanswer): float {
+        // Absolutely correct.
+        if ($question->is_full_fraction($answer, $inputanswer)) {
+            return 1;
+        }
+
+        // Partially correct.
+        if ($question->is_partial_fraction($answer, $inputanswer)) {
+            return 1 - $question->accentpenalty;
+        }
+
+        // Incorrect.
+        return 0;
+    }
+}

@@ -17,6 +17,8 @@
         <idnumber>Crossword  idnumber</idnumber>
         <numrows>0</numrows>
         <numcolumns>0</numcolumns>
+        <accentgradingtype>penalty</accentgradingtype>
+        <accentpenalty>0.2</accentpenalty>
         <word>
             <answer>AAA</answer>
             <clue format="html">

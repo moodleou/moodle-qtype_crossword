@@ -16,6 +16,9 @@
 
 namespace qtype_crossword;
 
+use question_attempt_step;
+use question_testcase;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -108,16 +111,19 @@ class question_test extends \advanced_testcase {
     /**
      * Test function grading.
      *
+     * @param array $answeroptions List testcases with answer options.
      * @covers \qtype_crossword_question::grade_response
+     * @dataProvider grading_provider
      */
-    public function test_grading() {
-        $question = \test_question_maker::make_question('crossword');
-
-        $this->assertEquals([0.66666666666666663, \question_state::$gradedpartial],
-            $question->grade_response(['sub0' => 'LONDON', 'sub1' => 'PARIS', 'sub2' => 'ITALY']));
-        $this->assertEquals([1, \question_state::$gradedright],
-            $question->grade_response(['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY']));
-
+    public function test_grading(array $answeroptions) {
+        $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
+        foreach ($answeroptions['answers'] as $answer) {
+            [$fraction, $state] = $question->grade_response($answer['answers']);
+            $this->assertEqualsWithDelta($answer['fraction'], $fraction, question_testcase::GRADE_DELTA);
+            $this->assertEqualsWithDelta($answer['state'], $state, question_testcase::GRADE_DELTA);
+        }
     }
 
     /**
@@ -169,6 +175,169 @@ class question_test extends \advanced_testcase {
                 ['sub0' => '', 'sub1' => '', 'sub2' => ''],
                 0
             ]
+        ];
+    }
+
+    /**
+     * Test function get_num_parts_right.
+     *
+     * @param array $answeroptions List testcases with answer options.
+     * @covers \qtype_crossword_question::get_num_parts_right
+     * @dataProvider grading_provider
+     */
+    public function test_get_num_parts_right(array $answeroptions) {
+        $this->resetAfterTest();
+        $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
+        $question->start_attempt(new question_attempt_step(), 1);
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
+        foreach ($answeroptions['answers'] as $answer) {
+            [$numrightanswer, $totalanswer] = $question->get_num_parts_right($answer['answers']);
+            $this->assertEquals($answer['numrightanswer'], $numrightanswer);
+            $this->assertEquals(count($answer['answers']), $totalanswer);
+        }
+    }
+
+    /**
+     * Test function get_num_parts_partial.
+     *
+     * @param array $answeroptions List testcases with answer options.
+     * @covers \qtype_crossword_question::get_num_parts_partial
+     * @dataProvider grading_provider
+     */
+    public function test_get_num_parts_partial(array $answeroptions) {
+        $this->resetAfterTest();
+        $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
+        $question->start_attempt(new question_attempt_step(), 1);
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
+        foreach ($answeroptions['answers'] as $answer) {
+            $numanswerspartial = $question->get_num_parts_partial($answer['answers']);
+            $this->assertEquals($answer['numpartialanswer'], $numanswerspartial);
+        }
+    }
+
+    /**
+     * Test function is_full_fraction.
+     *
+     * @param array $answeroptions List testcases with answer options.
+     * @covers \qtype_crossword_question::is_full_fraction
+     * @dataProvider grading_provider
+     */
+    public function is_full_fraction(array $answeroptions) {
+        $this->resetAfterTest();
+        $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
+        $question->start_attempt(new question_attempt_step(), 1);
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
+        foreach ($answeroptions['answers'] as $answer) {
+            $numanswerspartial = $question->is_full_fraction($answer);
+            $this->assertEquals($answer['numpartialanswer'], $numanswerspartial);
+        }
+    }
+
+    /**
+     * Data provider for the get_num_parts_right and grading test.
+     *
+     * @coversNothing
+     * @return array
+     */
+    public function grading_provider(): array {
+
+        return [
+            'Answer options not accepts wrong accented' => [
+                [
+                    'answers' => [
+                        'Answer is absolutely correct' => [
+                            'answers' => ['sub0' => 'PÂTÉ', 'sub1' => 'TÉLÉPHONE'],
+                            'numrightanswer' => 2,
+                            'numpartialanswer' => 0,
+                            'fraction' => 1,
+                            'state' => \question_state::$gradedright,
+                        ],
+                        'Answers with incorrect accents' => [
+                            'answers' => ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
+                            'numrightanswer' => 0,
+                            'numpartialanswer' => 0,
+                            'fraction' => 0,
+                            'state' => \question_state::$gradedwrong,
+                        ],
+                        'Answers are wrong' => [
+                            'answers' => ['sub0' => 'PETE', 'sub1' => 'TALAPHONE'],
+                            'numrightanswer' => 0,
+                            'numpartialanswer' => 0,
+                            'fraction' => 0,
+                            'state' => \question_state::$gradedwrong,
+                        ],
+                    ],
+                    'options' => [
+                        'accentgradingtype' => \qtype_crossword::ACCENT_GRADING_STRICT,
+                        'accentpenalty' => 0,
+                    ],
+                ],
+            ],
+            'Answer options accepts wrong accented but subtracts 10%' => [
+                [
+                    'answers' => [
+                        'Answer is absolutely correct' => [
+                            'answers' => ['sub0' => 'PÂTÉ', 'sub1' => 'TÉLÉPHONE'],
+                            'numrightanswer' => 2,
+                            'numpartialanswer' => 0,
+                            'fraction' => 1,
+                            'state' => \question_state::$gradedright,
+                        ],
+                        'Answers with incorrect accents' => [
+                            'answers' => ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
+                            'numrightanswer' => 0,
+                            'numpartialanswer' => 2,
+                            'fraction' => 0.9,
+                            'state' => \question_state::$gradedpartial,
+                        ],
+                        'Answers are wrong' => [
+                            'answers' => ['sub0' => 'PETE', 'sub1' => 'TALAPHONE'],
+                            'numrightanswer' => 0,
+                            'numpartialanswer' => 0,
+                            'fraction' => 0,
+                            'state' => \question_state::$gradedwrong,
+                        ],
+                    ],
+                    'options' => [
+                        'accentgradingtype' => \qtype_crossword::ACCENT_GRADING_PENALTY,
+                        'accentpenalty' => 0.1,
+                    ],
+                ],
+            ],
+            'Answer options accepts wrong accented and do not subtracts points' => [
+                [
+                    'answers' => [
+                        'Answer is absolutely correct' => [
+                            'answers' => ['sub0' => 'PÂTÉ', 'sub1' => 'TÉLÉPHONE'],
+                            'numrightanswer' => 2,
+                            'numpartialanswer' => 0,
+                            'fraction' => 1,
+                            'state' => \question_state::$gradedright,
+                        ],
+                        'Answers with incorrect accents' => [
+                            'answers' => ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
+                            'numrightanswer' => 2,
+                            'numpartialanswer' => 0,
+                            'fraction' => 1,
+                            'state' => \question_state::$gradedright,
+                        ],
+                        'Answers are wrong' => [
+                            'answers' => ['sub0' => 'PETE', 'sub1' => 'TALAPHONE'],
+                            'numrightanswer' => 0,
+                            'numpartialanswer' => 0,
+                            'fraction' => 0,
+                            'state' => \question_state::$gradedwrong,
+                        ],
+                    ],
+                    'options' => [
+                        'accentgradingtype' => \qtype_crossword::ACCENT_GRADING_IGNORE,
+                        'accentpenalty' => 0,
+                    ],
+                ],
+            ],
         ];
     }
 }

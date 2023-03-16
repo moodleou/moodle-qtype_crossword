@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once($CFG->dirroot . '/question/type/crossword/questiontype.php');
 
 /**
  * Test helper class for the crossword question type.
@@ -42,7 +43,8 @@ class qtype_crossword_test_helper extends question_test_helper {
      * @return array The test question array.
      */
     public function get_test_questions(): array {
-        return ['normal', 'unicode', 'different_codepoint', 'sampleimage', 'clear_incorrect_response', 'normal_with_space'];
+        return ['normal', 'unicode', 'different_codepoint', 'sampleimage', 'clear_incorrect_response', 'normal_with_space',
+            'not_accept_wrong_accents', 'accept_wrong_accents_but_subtract_point', 'accept_wrong_accents_but_not_subtract_point'];
     }
 
     /**
@@ -70,6 +72,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->defaultmark = 1;
         $cw->numrows = 5;
         $cw->numcolumns = 7;
+        $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
@@ -158,6 +162,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->startcolumn = [0, 2, 2];
         $fromform->numrows = 5;
         $fromform->numcolumns = 7;
+        $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $fromform->accentpenalty = 0;
         return $fromform;
     }
 
@@ -208,6 +214,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->defaultmark = 1;
         $cw->numrows = 4;
         $cw->numcolumns = 4;
+        $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
@@ -296,6 +304,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->startcolumn = [0, 0, 1];
         $fromform->numrows = 4;
         $fromform->numcolumns = 4;
+        $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $fromform->accentpenalty = 0;
         return $fromform;
     }
 
@@ -316,6 +326,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->defaultmark = 1;
         $cw->numrows = 6;
         $cw->numcolumns = 6;
+        $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
@@ -388,6 +400,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->startcolumn = [0, 2];
         $fromform->numrows = 6;
         $fromform->numcolumns = 6;
+        $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $fromform->accentpenalty = 0;
         return $fromform;
     }
 
@@ -398,11 +412,7 @@ class qtype_crossword_test_helper extends question_test_helper {
      */
     public function make_crossword_question_clear_incorrect_response() {
         $cw = $this->make_crossword_question_normal();
-        $cw->hints = [
-            new question_hint_with_parts(1, 'Hint 1.', FORMAT_HTML, true, true),
-            new question_hint_with_parts(2, 'Hint 2.', FORMAT_HTML, true, true),
-        ];
-        return $cw;
+        return $this->set_hints_for_question($cw);
     }
 
     /**
@@ -412,21 +422,7 @@ class qtype_crossword_test_helper extends question_test_helper {
      */
     public function get_crossword_question_form_data_clear_incorrect_response() {
         $fromform = $this->get_crossword_question_form_data_normal();
-        $fromform->penalty = '0.3333333';
-        $fromform->hint = [
-            [
-                'text' => 'You are wrong.',
-                'format' => FORMAT_HTML,
-            ],
-            [
-                'text' => 'You are wrong.',
-                'format' => FORMAT_HTML,
-            ],
-        ];
-        $fromform->hintshownumcorrect = [1, 1];
-        $fromform->hintclearwrong = [1, 1];
-        $fromform->hintoptions = [1, 1];
-        return $fromform;
+        return $this->set_multiple_tries_for_form_data($fromform, '0.3333333');
     }
 
     /**
@@ -475,6 +471,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->defaultmark = 1;
         $cw->numrows = 11;
         $cw->numcolumns = 12;
+        $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
@@ -563,6 +561,220 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->startcolumn = [3, 1, 0];
         $fromform->numrows = 11;
         $fromform->numcolumns = 12;
+        $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $fromform->accentpenalty = 0;
+        return $fromform;
+    }
+
+    /**
+     * Makes a normal crossword question do not accept wrong accents.
+     *
+     * The crossword layout is:
+     *
+     * P Â T É
+     *     É
+     *     L
+     *     É
+     *     P
+     *     H
+     *     O
+     *     N
+     *     E
+     * @return qtype_crossword_question
+     */
+    public function make_crossword_question_not_accept_wrong_accents() {
+        question_bank::load_question_definition_classes('crossword');
+        $cw = new qtype_crossword_question();
+        test_question_maker::initialise_a_question($cw);
+        $cw->name = 'Cross word question contain accent';
+        $cw->questiontext = 'Cross word question text.';
+        $cw->correctfeedback = 'Cross word feedback.';
+        $cw->correctfeedbackformat = FORMAT_HTML;
+        $cw->penalty = 1;
+        $cw->defaultmark = 1;
+        $cw->numrows = 9;
+        $cw->numcolumns = 4;
+        $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $cw->accentpenalty = 0;
+        $cw->qtype = question_bank::get_qtype('crossword');
+        $answerslist = [
+            (object) [
+                'id' => 1,
+                'questionid' => 1,
+                'clue' => 'Des accompagnements à base de foie animal ?',
+                'clueformat' => FORMAT_HTML,
+                'answer' => 'PÂTÉ',
+                'startcolumn' => 0,
+                'startrow' => 0,
+                'orientation' => 0,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
+            ],
+            (object) [
+                'id' => 2,
+                'questionid' => 1,
+                'clue' => 'Appareil utilisé pour passer des appels ?',
+                'clueformat' => FORMAT_HTML,
+                'answer' => 'TÉLÉPHONE',
+                'startcolumn' => 2,
+                'startrow' => 0,
+                'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
+            ],
+        ];
+
+        foreach ($answerslist as $answer) {
+            $cw->answers[] = new \qtype_crossword\answer(
+                $answer->id,
+                $answer->answer,
+                $answer->clue,
+                $answer->clueformat,
+                $answer->orientation,
+                $answer->startrow,
+                $answer->startcolumn,
+                $answer->feedback,
+                $answer->feedbackformat,
+            );
+        }
+        return $cw;
+    }
+
+    /**
+     * Makes a normal crossword question do not accept wrong accents.
+     */
+    public function get_crossword_question_form_data_not_accept_wrong_accents() {
+        $fromform = new stdClass();
+        $fromform->name = 'Cross word question';
+        $fromform->questiontext = ['text' => 'Crossword question text', 'format' => FORMAT_HTML];
+        $fromform->correctfeedback = ['text' => 'Correct feedback', 'format' => FORMAT_HTML];
+        $fromform->partiallycorrectfeedback = ['text' => 'Partially correct feedback.', 'format' => FORMAT_HTML];
+        $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
+        $fromform->penalty = 0.2;
+        $fromform->defaultmark = 1;
+        $fromform->answer = ['PÂTÉ', 'TÉLÉPHONE'];
+        $fromform->clue = [
+            [
+                'text' => 'Des accompagnements à base de foie animal ?',
+                'format' => FORMAT_HTML
+            ],
+            [
+                'text' => 'Appareil utilisé pour passer des appels ?',
+                'format' => FORMAT_HTML
+            ],
+        ];
+        $fromform->orientation = [0, 1];
+        $fromform->startrow = [0, 0];
+        $fromform->startcolumn = [0, 2];
+        $fromform->numrows = 9;
+        $fromform->numcolumns = 4;
+        $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $fromform->accentpenalty = 0;
+        return $fromform;
+    }
+
+    /**
+     * Makes a normal crossword question accepts wrong accents but subtracts points.
+     *
+     * The crossword layout is:
+     *
+     * P Â T É
+     *     É
+     *     L
+     *     É
+     *     P
+     *     H
+     *     O
+     *     N
+     *     E
+     * @return qtype_crossword_question
+     */
+    public function make_crossword_question_accept_wrong_accents_but_subtract_point() {
+        $cw = $this->make_crossword_question_not_accept_wrong_accents();
+        $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_PENALTY;
+        $cw->accentpenalty = 0.25;
+        return $this->set_hints_for_question($cw);
+    }
+
+    /**
+     * Makes a normal crossword question accept wrong accents but subtracts points.
+     */
+    public function get_crossword_question_form_data_accept_wrong_accents_but_subtract_point() {
+        $fromform = $this->get_crossword_question_form_data_not_accept_wrong_accents();
+        $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_PENALTY;
+        $fromform->accentpenalty = 0.25;
+        return $this->set_multiple_tries_for_form_data($fromform, '0.1');
+    }
+
+    /**
+     * Makes a normal crossword question accepts wrong accents but do not subtract points.
+     *
+     * The crossword layout is:
+     *
+     * P Â T É
+     *     É
+     *     L
+     *     É
+     *     P
+     *     H
+     *     O
+     *     N
+     *     E
+     * @return qtype_crossword_question
+     */
+    public function make_crossword_question_accept_wrong_accents_but_not_subtract_point() {
+        $cw = $this->make_crossword_question_not_accept_wrong_accents();
+        $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_IGNORE;
+        $cw->accentpenalty = 0;
+        return $this->set_hints_for_question($cw);
+    }
+
+    /**
+     * Makes a normal crossword question accept wrong accents but do not subtract points.
+     */
+    public function get_crossword_question_form_data_accept_wrong_accents_but_not_subtract_point() {
+        $fromform = $this->get_crossword_question_form_data_not_accept_wrong_accents();
+        $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_IGNORE;
+        $fromform->accentpenalty = 0;
+        return $this->set_multiple_tries_for_form_data($fromform, '0.1');
+    }
+
+    /**
+     * Set default hints for questions.
+     *
+     * @param qtype_crossword_question $cw Crossword question object.
+     * @return qtype_crossword_question Crossword question object after setting hints.
+     */
+    private function set_hints_for_question(qtype_crossword_question $cw): qtype_crossword_question {
+        $cw->hints = [
+            new question_hint_with_parts(1, 'Hint 1.', FORMAT_HTML, true, true),
+            new question_hint_with_parts(2, 'Hint 2.', FORMAT_HTML, true, true),
+        ];
+        return $cw;
+    }
+
+    /**
+     * Set multiple tries for from data.
+     *
+     * @param stdClass $fromform Form data.
+     * @param float $penalty Penalty points for each attempt.
+     * @return stdClass Form data after setting data multiple try.
+     */
+    private function set_multiple_tries_for_form_data(stdClass $fromform, float $penalty): stdClass {
+        $fromform->penalty = $penalty;
+        $fromform->hint = [
+            [
+                'text' => 'You are wrong.',
+                'format' => FORMAT_HTML,
+            ],
+            [
+                'text' => 'You are wrong.',
+                'format' => FORMAT_HTML,
+            ],
+        ];
+        $fromform->hintshownumcorrect = [1, 1];
+        $fromform->hintclearwrong = [1, 1];
+        $fromform->hintoptions = [1, 1];
         return $fromform;
     }
 }

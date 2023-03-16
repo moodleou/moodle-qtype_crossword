@@ -39,7 +39,7 @@ class backup_qtype_crossword_plugin extends backup_qtype_plugin {
 
         // Now create the qtype own structures.
         $crossword = new backup_nested_element('crossword', ['id'], ['correctfeedback',
-            'correctfeedbackformat', 'numrows', 'numcolumns',
+            'correctfeedbackformat', 'numrows', 'numcolumns', 'accentgradingtype', 'accentpenalty',
             'partiallycorrectfeedback', 'partiallycorrectfeedbackformat',
             'incorrectfeedback', 'incorrectfeedbackformat', 'shownumcorrect']);
 

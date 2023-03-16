@@ -22,9 +22,15 @@
  * @license  https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['accentgradingignore'] = 'Just grade the letters and ignore any accents';
+$string['accentgradingpenalty'] = 'Partial mark if the letters are correct but one or more accents are wrong';
+$string['accentgradingstrict'] = 'Accented letters must completely match or the answer is wrong';
+$string['accentletters'] = 'Accented letters';
+$string['accentpenalty'] = 'Grade for answers with incorrect accents';
 $string['across'] = 'Across';
 $string['addmorewordblanks'] = 'Blanks for {no} more words';
 $string['answer'] = 'Answer';
+$string['answeroptions'] = 'Answer options';
 $string['celltitle'] = 'Row {row}, Column {column}. {number} {orientation}. {clue}, letter {letter} of {count}';
 $string['clue'] = 'Clue';
 $string['correctansweris'] = 'The correct answer is: {$a}';

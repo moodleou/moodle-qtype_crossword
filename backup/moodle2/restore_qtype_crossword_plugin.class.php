@@ -82,14 +82,13 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
         $oldid = $data->id;
 
         // Detect if the question is created or mapped.
-        $oldquestionid   = $this->get_old_parentid('question');
-        $newquestionid   = $this->get_new_parentid('question');
-        $questioncreated = $this->get_mappingid('question_created', $oldquestionid) ? true : false;
+        $questioncreated = $this->get_mappingid('question_created',
+            $this->get_old_parentid('question')) ? true : false;
 
         // If the question has been created by restore, we need to create its question_crossword too.
         if ($questioncreated) {
             // Adjust some columns.
-            $data->questionid = $newquestionid;
+            $data->questionid = $this->get_new_parentid('question');
             // Insert record.
             $newitemid = $DB->insert_record($tablename, $data);
             // Create mapping.

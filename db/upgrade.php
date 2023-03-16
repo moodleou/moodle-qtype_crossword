@@ -103,5 +103,37 @@ function xmldb_qtype_crossword_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023011003, 'qtype', 'crossword');
     }
 
+    if ($oldversion < 2023032900) {
+
+        // Define field accentgradingtype to be added to qtype_crossword_options.
+        $table = new xmldb_table('qtype_crossword_options');
+        $field = new xmldb_field('accentgradingtype', XMLDB_TYPE_CHAR, '200',
+            null, XMLDB_NOTNULL, null, 'strict', 'numcolumns');
+
+        // Conditionally launch add field accentgradingtype.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2023032900, 'qtype', 'crossword');
+    }
+
+    if ($oldversion < 2023032901) {
+
+        // Define field accentpenalty to be added to qtype_crossword_options.
+        $table = new xmldb_table('qtype_crossword_options');
+        $field = new xmldb_field('accentpenalty', XMLDB_TYPE_NUMBER, '12, 7',
+            null, XMLDB_NOTNULL, null, '0.5', 'accentgradingtype');
+
+        // Conditionally launch add field accentpenalty.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2023032901, 'qtype', 'crossword');
+    }
+
     return true;
 }
