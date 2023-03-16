@@ -22,6 +22,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use qtype_crossword\util;
+
 // For a complete list of base question classes please examine the file
 // /question/type/questionbase.php.
 //
@@ -40,6 +42,12 @@ class qtype_crossword_question extends question_graded_automatically {
 
     /** @var int The column number. */
     public $numcolumns;
+
+    /** @var int The accented letters options. */
+    public $accentedlettersoptions;
+
+    /** @var float The penalty mark for each incorrect accents. */
+    public $penaltyforincorrectaccents;
 
     /**
      * Answer field name.
@@ -108,19 +116,34 @@ class qtype_crossword_question extends question_graded_automatically {
     }
 
     public function grade_response(array $response): array {
-        list($right, $total) = $this->get_num_parts_right($response);
-        $fraction = $right / $total;
+        // Retrieve a number of right answers and only wrong accent answers.
+        [$numrightanswers, $numpartialanswers] = $this->get_num_parts_right($response);
+        // Calculate fraction.
+        $fraction = ($numrightanswers + $numpartialanswers - $numpartialanswers * $this->penaltyforincorrectaccents)
+            / count($this->answers);
         return [$fraction, question_state::graded_state_for_fraction($fraction)];
     }
 
     public function get_num_parts_right(array $response): array {
         $numright = 0;
+        $numpartial = 0;
         foreach ($this->answers as $key => $answer) {
-            if ($answer->is_correct($response[$this->field($key)])) {
+            $answerdata = $response[$this->field($key)];
+            // In this case, the answer is absolutely correct.
+            if ($answer->is_correct($answerdata)) {
                 $numright++;
+            } else if ($this->accentedlettersoptions !== util::DONT_ACCEPT_WRONG_ACCENTED
+                    && $answer->is_wrong_accents($answerdata)) {
+                // The answer is accepted with the wrong accented, but points will be deducted.
+                if ($this->accentedlettersoptions === util::ACCEPT_WRONG_ACCENTED_BUT_PENALTY) {
+                    $numpartial++;
+                } else {
+                    // Accept answers with incorrect punctuation without deducting points.
+                    $numright++;
+                }
             }
         }
-        return [$numright, count($this->answers)];
+        return [$numright, $numpartial];
     }
 
     public function clear_wrong_from_response(array $response): array {

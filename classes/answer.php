@@ -89,4 +89,17 @@ class answer {
     public function is_correct(string $answer): bool {
         return $this->answer === str_replace('_', ' ', $answer);
     }
+
+    /**
+     * Check the input answer has the same letter but different accent,
+     * Also remove the underscore character with a space before comparing it.
+     *
+     * @param string $answer The answer need to be checked, maybe contain underscore characters.
+     * @return bool The result after check, True if only different accent.
+     */
+    public function is_wrong_accents(string $answer): bool {
+        $answerinput = \qtype_crossword\util::remove_accent(str_replace('_', ' ', $answer));
+        $answerdata = \qtype_crossword\util::remove_accent(str_replace('_', ' ', $this->answer));
+        return $answerinput === $answerdata;
+    }
 }

@@ -103,7 +103,12 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 $selected = $response[$fieldname];
             }
 
-            $fraction = (int) ($selected && $answer->is_correct($selected));
+            // Calculate fraction.
+            $fraction = 0;
+            if ($selected !== 0) {
+                $fraction = \qtype_crossword\util::calculate_fraction_for_answer($question, $answer, $selected);
+            }
+
             if ($options->correctness) {
                 $inputdata['classes'] = $this->feedback_class($fraction);
                 $inputdata['feedbackimage'] = $this->feedback_image($fraction);

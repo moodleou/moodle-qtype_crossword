@@ -85,6 +85,8 @@ class question_type_test extends \question_testcase {
                         'incorrectfeedbackformat' => '1',
                         'numrows' => 0,
                         'numcolumns' => 0,
+                        'accentedlettersoptions' => 1,
+                        'penaltyforincorrectaccents' => 0.2,
                         'shownumcorrect' => 1,
                         'words' => [
                             (object)[
@@ -166,6 +168,8 @@ class question_type_test extends \question_testcase {
     <idnumber></idnumber>
     <numrows>0</numrows>
     <numcolumns>0</numcolumns>
+    <accentedlettersoptions>1</accentedlettersoptions>
+    <penaltyforincorrectaccents>0.2</penaltyforincorrectaccents>
     <word>
       <answer>AAA</answer>
       <clue format="html">

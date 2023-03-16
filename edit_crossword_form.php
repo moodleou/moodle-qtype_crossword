@@ -170,6 +170,27 @@ class qtype_crossword_edit_form extends question_edit_form {
 
         // Add preview section.
         $mform->addElement('html', '<div class="crossword-contain mx-3" id="crossword"></div>');
+
+        // Add answer options.
+        $mform->addElement('header', 'answeroptionsheader', get_string('answeroptions', 'qtype_crossword'));
+        $mform->setExpanded('answeroptionsheader', 0);
+        $optionsaccented = [
+            get_string('mustmatchexactly', 'qtype_crossword'),
+            get_string('deductmarksforwrongpunctuation', 'qtype_crossword'),
+            get_string('acceptwrongaccents', 'qtype_crossword'),
+        ];
+        $mform->addElement('select', 'accentedlettersoptions', get_string('accentedcharacters', 'qtype_crossword'),
+            $optionsaccented);
+        $mform->setDefault('accentedlettersoptions', $this->get_default_value('accentedlettersoptions', 0));
+        $penaltyoptions = question_bank::fraction_options();
+        // Remove None and 100%.
+        unset($penaltyoptions['0.0']);
+        unset($penaltyoptions['1.0']);
+        $mform->addElement('select', 'penaltyforincorrectaccents',
+            get_string('penaltyforincorrectaccents', 'qtype_crossword'), $penaltyoptions);
+        $mform->setDefault('penaltyforincorrectaccents', $this->get_default_value('penaltyforincorrectaccents',  0.5));
+        $mform->hideIf('penaltyforincorrectaccents', 'accentedlettersoptions', 'noteq', 1);
+
         // Call js to render preview section.
         $options = new stdClass();
         $options->element = '#id_refresh';
@@ -272,6 +293,8 @@ class qtype_crossword_edit_form extends question_edit_form {
         if (!empty($question->options)) {
             $question->numrows = $question->options->numrows;
             $question->numcolumns = $question->options->numcolumns;
+            $question->accentedlettersoptions = $question->options->accentedlettersoptions;
+            $question->penaltyforincorrectaccents = $question->options->penaltyforincorrectaccents;
         }
         $question->answer = $answer;
         $question->clue = $clue;

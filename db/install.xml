@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="question/type/crossword/db" VERSION="20230111" COMMENT="XMLDB file for Moodle question/type/crossword"
+<XMLDB PATH="question/type/crossword/db" VERSION="20230310" COMMENT="XMLDB file for Moodle question/type/crossword"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
@@ -10,6 +10,8 @@
         <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references question.id."/>
         <FIELD NAME="numrows" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="A number of rows."/>
         <FIELD NAME="numcolumns" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The number of columns."/>
+        <FIELD NAME="accentedlettersoptions" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Accented letters options column."/>
+        <FIELD NAME="penaltyforincorrectaccents" TYPE="number" LENGTH="12" NOTNULL="true" DEFAULT="0.5" SEQUENCE="false" DECIMALS="7" COMMENT="Grade for answers with incorrect accents column."/>
         <FIELD NAME="correctfeedback" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Feedback shown for any correct response."/>
         <FIELD NAME="correctfeedbackformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="partiallycorrectfeedback" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Feedback shown for any partially correct response."/>

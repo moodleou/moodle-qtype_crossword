@@ -76,6 +76,8 @@ class qtype_crossword extends question_type {
         $options->shownumcorrect = 1;
         $options->numrows = 10;
         $options->numcolumns = 10;
+        $options->accentedlettersoptions = 0;
+        $options->penaltyforincorrectaccents = 0.5;
         return $options;
     }
 
@@ -172,11 +174,15 @@ class qtype_crossword extends question_type {
             $options->incorrectfeedback = '';
             $options->numrows = 10;
             $options->numcolumns = 10;
+            $options->accentedlettersoptions = 0;
+            $options->penaltyforincorrectaccents = 0.5;
             $options->id = $DB->insert_record('qtype_crossword_options', $options);
         }
 
         $options->numrows = $question->numrows;
         $options->numcolumns = $question->numcolumns;
+        $options->accentedlettersoptions = $question->accentedlettersoptions;
+        $options->penaltyforincorrectaccents = $question->penaltyforincorrectaccents ?? 0.5;
         $options = $this->save_combined_feedback_helper($options, $question, $context, true);
         $DB->update_record('qtype_crossword_options', $options);
         $this->save_hints($question, true);
@@ -211,6 +217,8 @@ class qtype_crossword extends question_type {
         }
         $question->numrows = (int) $questiondata->options->numrows;
         $question->numcolumns = (int) $questiondata->options->numcolumns;
+        $question->accentedlettersoptions = (int) $questiondata->options->accentedlettersoptions;
+        $question->penaltyforincorrectaccents = (float) $questiondata->options->penaltyforincorrectaccents;
     }
 
     public function export_to_xml($question, qformat_xml $format, $extra = null): string {
@@ -219,6 +227,10 @@ class qtype_crossword extends question_type {
         $expout .= '    <numcolumns>' . $format->xml_escape($question->options->numcolumns) . "</numcolumns>\n";
         $fs = get_file_storage();
         foreach ($question->options->words as $word => $value) {
+            $expout .= '    <accentedlettersoptions>' . $format->xml_escape($question->options->accentedlettersoptions)
+                . "</accentedlettersoptions>\n";
+            $expout .= '    <penaltyforincorrectaccents>' . $format->xml_escape($question->options->penaltyforincorrectaccents)
+                . "</penaltyforincorrectaccents>\n";
             $expout .= "    <word>\n";
             foreach (self::WORD_FIELDS as $xmlfield) {
                 if ($xmlfield === 'clue' || $xmlfield === 'feedback') {
@@ -254,6 +266,8 @@ class qtype_crossword extends question_type {
         $question->numrows = $format->getpath($data, ['#', 'numrows', 0, '#'], '', true);
         $question->numcolumns = $format->getpath($data, ['#', 'numcolumns', 0, '#'], '', true);
         foreach ($data['#']['word'] as $word) {
+            $question->accentedlettersoptions = $format->getpath($data, ['#', 'accentedlettersoptions', 0, '#'], '', true);
+            $question->penaltyforincorrectaccents = $format->getpath($data, ['#', 'penaltyforincorrectaccents', 0, '#'], '', true);
             foreach (self::WORD_FIELDS as $field) {
                 if ($field === 'clue' || $field === 'feedback') {
                     if (isset($word['#'][$field][0])) {

@@ -74,9 +74,9 @@ Feature: Test creating a Crossword question
       | Number of rows                     | 6                                                    |
       | Number of columns                  | 6                                                    |
       | id_clue_0                          | Answer contains letter é has codepoint \u00e9        |
-      | id_clue_1                          | Answer contains letter é has codepoint \u0065\u0301  |
+      | id_clue_1                          | Answer contains letter é has codepoint \u0065\u0301 |
       | id_answer_0                        | Amélie                                               |
-      | id_answer_1                        | Amélie                                               |
+      | id_answer_1                        | Amélie                                              |
       | id_startrow_0                      | 3                                                    |
       | id_startrow_1                      | 1                                                    |
       | id_startcolumn_0                   | 0                                                    |
@@ -87,3 +87,73 @@ Feature: Test creating a Crossword question
       | For any partially correct response | Partially correct feedback.                          |
       | For any incorrect response         | Incorrect feedback.                                  |
     Then I should see "crossword-003"
+
+  Scenario: Create a Crossword question with the answer option do not accept wrong accent.
+    When I am on the "Course 1" "core_question > course question bank" page logged in as teacher
+    And I add a "Crossword" question filling the form with:
+      | Question name                      | crossword-004                               |
+      | Question text                      | Crossword question text                     |
+      | Number of rows                     | 9                                           |
+      | Number of columns                  | 4                                           |
+      | Accented letters                   | 0                                           |
+      | id_clue_0                          | Des accompagnements à base de foie animal ? |
+      | id_clue_1                          | Appareil utilisé pour passer des appels ?   |
+      | id_answer_0                        | PÂTÉ                                        |
+      | id_answer_1                        | TÉLÉPHONE                                   |
+      | id_startrow_0                      | 0                                           |
+      | id_startrow_1                      | 0                                           |
+      | id_startcolumn_0                   | 0                                           |
+      | id_startcolumn_1                   | 2                                           |
+      | For any correct response           | Correct feedback                            |
+      | id_orientation_0                   | 0                                           |
+      | id_orientation_1                   | 1                                           |
+      | For any partially correct response | Partially correct feedback.                 |
+      | For any incorrect response         | Incorrect feedback.                         |
+    Then I should see "crossword-004"
+
+  Scenario: Create a Crossword question with an answer that accepts the wrong accents but subtracts points.
+    When I am on the "Course 1" "core_question > course question bank" page logged in as teacher
+    And I add a "Crossword" question filling the form with:
+      | Question name                            | crossword-005                               |
+      | Question text                            | Crossword question text                     |
+      | Number of rows                           | 9                                           |
+      | Number of columns                        | 4                                           |
+      | Accented letters                         | 1                                           |
+      | Grade for answers with incorrect accents | 0.5                                         |
+      | id_clue_0                                | Des accompagnements à base de foie animal ? |
+      | id_clue_1                                | Appareil utilisé pour passer des appels ?   |
+      | id_answer_0                              | PÂTÉ                                        |
+      | id_answer_1                              | TÉLÉPHONE                                   |
+      | id_startrow_0                            | 0                                           |
+      | id_startrow_1                            | 0                                           |
+      | id_startcolumn_0                         | 0                                           |
+      | id_startcolumn_1                         | 2                                           |
+      | For any correct response                 | Correct feedback                            |
+      | id_orientation_0                         | 0                                           |
+      | id_orientation_1                         | 1                                           |
+      | For any partially correct response       | Partially correct feedback.                 |
+      | For any incorrect response               | Incorrect feedback.                         |
+    Then I should see "crossword-005"
+
+  Scenario: Create a Crossword question with an answer that accepts the wrong accents and do not subtracts points.
+    When I am on the "Course 1" "core_question > course question bank" page logged in as teacher
+    And I add a "Crossword" question filling the form with:
+      | Question name                      | crossword-006                               |
+      | Question text                      | Crossword question text                     |
+      | Number of rows                     | 9                                           |
+      | Number of columns                  | 4                                           |
+      | Accented letters                   | 2                                           |
+      | id_clue_0                          | Des accompagnements à base de foie animal ? |
+      | id_clue_1                          | Appareil utilisé pour passer des appels ?   |
+      | id_answer_0                        | PÂTÉ                                        |
+      | id_answer_1                        | TÉLÉPHONE                                   |
+      | id_startrow_0                      | 0                                           |
+      | id_startrow_1                      | 0                                           |
+      | id_startcolumn_0                   | 0                                           |
+      | id_startcolumn_1                   | 2                                           |
+      | For any correct response           | Correct feedback                            |
+      | id_orientation_0                   | 0                                           |
+      | id_orientation_1                   | 1                                           |
+      | For any partially correct response | Partially correct feedback.                 |
+      | For any incorrect response         | Incorrect feedback.                         |
+    Then I should see "crossword-006"

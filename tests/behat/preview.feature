@@ -18,13 +18,16 @@ Feature: Preview a Crossword question
       | contextlevel | reference | name           |
       | Course       | C1        | Test questions |
     And the following "questions" exist:
-      | questioncategory | qtype     | name          | template                 |
-      | Test questions   | crossword | crossword-001 | normal                   |
-      | Test questions   | crossword | crossword-002 | unicode                  |
-      | Test questions   | crossword | crossword-003 | different_codepoint      |
-      | Test questions   | crossword | crossword-004 | sampleimage              |
-      | Test questions   | crossword | crossword-005 | clear_incorrect_response |
-      | Test questions   | crossword | crossword-006 | normal_with_space        |
+      | questioncategory | qtype     | name          | template                                    |
+      | Test questions   | crossword | crossword-001 | normal                                      |
+      | Test questions   | crossword | crossword-002 | unicode                                     |
+      | Test questions   | crossword | crossword-003 | different_codepoint                         |
+      | Test questions   | crossword | crossword-004 | sampleimage                                 |
+      | Test questions   | crossword | crossword-005 | clear_incorrect_response                    |
+      | Test questions   | crossword | crossword-006 | normal_with_space                           |
+      | Test questions   | crossword | crossword-007 | accept_wrong_accents_but_subtract_point     |
+      | Test questions   | crossword | crossword-008 | accept_wrong_accents_but_not_subtract_point |
+      | Test questions   | crossword | crossword-009 | not_accept_wrong_accents                    |
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response.
@@ -263,3 +266,61 @@ Feature: Preview a Crossword question
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
+
+  Scenario: When the answer option accept incorrect accents but subtracts point and user enters answer wrong accents.
+    When I am on the "crossword-007" "core_question > preview" page logged in as teacher
+    And I set the field "Word 1" to "PATE"
+    And I enter unicode character "TÉLÉPHONE" in the crossword clue "Word 2"
+    And I press "Submit and finish"
+    Then I should see "Partially correct"
+    And I should see "Mark 1.75 out of 2.00"
+
+  @javascript @_switch_window
+  Scenario: When the answer option accept incorrect accents and teacher enters answer wrong accents.
+    When I am on the "crossword-008" "core_question > preview" page logged in as teacher
+    And I set the field "Word 1" to "PATE"
+    And I set the field "Word 2" to "TELEPHONE"
+    And I press "Submit and finish"
+    Then I should see "Correct feedback"
+    And I should see "Mark 2.00 out of 2.00"
+
+  @javascript @_switch_window
+  Scenario: The teacher enters the wrong accents when the answer option does not allow the wrong accents.
+    When I am on the "crossword-009" "core_question > preview" page logged in as teacher
+    And I enter unicode character "PATE" in the crossword clue "Word 1"
+    And I enter unicode character "TELEPHONE" in the crossword clue "Word 2"
+    And I press "Submit and finish"
+    Then I should see "Incorrect feedback."
+    And I should see "Mark 0.00 out of 2.00"
+
+  @javascript @_switch_window
+  Scenario: The teacher tries to answer a lot when the answer option allows incorrect accents, no points will be deducted.
+    When I am on the "crossword-008" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Interactive with multiple tries"
+    And I press "Start again with these options"
+    And I enter unicode character "PATE" in the crossword clue "Word 1"
+    And I enter unicode character "TALAPHONE" in the crossword clue "Word 2"
+    And I press "Check"
+    And I press "Try again"
+    And I enter unicode character "PATE" in the crossword clue "Word 1"
+    And I enter unicode character "TELEPHONE" in the crossword clue "Word 2"
+    And I press "Submit and finish"
+    Then I should see "Correct feedback"
+    And I should see "Mark 1.80 out of 2.00"
+
+  @javascript @_switch_window
+  Scenario: The teacher tries to answer a lot when the answer option allows incorrect accents, points will be deducted.
+    When I am on the "crossword-007" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Interactive with multiple tries"
+    And I press "Start again with these options"
+    And I enter unicode character "PATE" in the crossword clue "Word 1"
+    And I enter unicode character "TALAPHONE" in the crossword clue "Word 2"
+    And I press "Check"
+    And I press "Try again"
+    And I enter unicode character "PATE" in the crossword clue "Word 1"
+    And I enter unicode character "TELEPHONE" in the crossword clue "Word 2"
+    And I press "Submit and finish"
+    Then I should see "Partially correct feedback."
+    And I should see "Mark 1.30 out of 2.00"
