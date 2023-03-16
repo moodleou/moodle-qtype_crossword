@@ -80,4 +80,32 @@ EOF;
 EOF;
         $this->getSession()->getDriver()->executeScript($script);
     }
+
+    /**
+     * Enter character from using mobile input for crossword clue.
+     *
+     * @When I enter character :character in the crossword clue using mobile input :input in position :position
+     * @param string $character user input character.
+     * @param string $input the text of the label element.
+     * @param int $position the position we want insert the character.
+     */
+    public function i_enter_character_in_the_crossword_clue_using_mobile_input(string $character,
+        string $input, int $position): void {
+        if (!$this->running_javascript()) {
+            throw new ErrorException('Enter mobile device keyboard requires JavaScript');
+        }
+        // Start at index 0.
+        $position = $position - 1;
+        // Enter unicode characters.
+        $script = <<<EOF
+                const id = [...document.querySelectorAll('.contain-clue .wrap-clue label.accesshide')]
+                .find(el => el.innerText === '$input')?.getAttribute('for');
+                const input = document.getElementById(id);
+                input.click();
+                input.setSelectionRange('$position ', '$position');
+                const event = new InputEvent('beforeinput', {data: '$character', inputType: 'insertText'});
+                input.dispatchEvent(event);
+EOF;
+        $this->getSession()->getDriver()->executeScript($script);
+    }
 }

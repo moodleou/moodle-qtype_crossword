@@ -214,3 +214,32 @@ Feature: Preview a Crossword question
     Then the field "Word 1" matches value "SANTA_CLAUS"
     And the field "Word 2" matches value "DECEMBER_25"
     And the field "Word 3" matches value "GRINCH"
+
+  @javascript @_switch_window
+  Scenario: Preview a Crossword question and submit a correct response with mobile input.
+    When I am on the "crossword-001" "core_question > preview" page logged in as teacher
+    And I expand all fieldsets
+    And I set the field "How questions behave" to "Immediate feedback"
+    And I press "Start again with these options"
+    # BRAZIL
+    And I enter character "B" in the crossword clue using mobile input "Word 1" in position "1"
+    And I enter character "R" in the crossword clue using mobile input "Word 1" in position "2"
+    And I enter character "A" in the crossword clue using mobile input "Word 1" in position "3"
+    And I enter character "Z" in the crossword clue using mobile input "Word 1" in position "4"
+    And I enter character "I" in the crossword clue using mobile input "Word 1" in position "5"
+    And I enter character "L" in the crossword clue using mobile input "Word 1" in position "6"
+    # PARIS
+    And I enter character "P" in the crossword clue using mobile input "Word 2" in position "1"
+    And I enter character "A" in the crossword clue using mobile input "Word 2" in position "2"
+    And I enter character "R" in the crossword clue using mobile input "Word 2" in position "3"
+    And I enter character "I" in the crossword clue using mobile input "Word 2" in position "4"
+    And I enter character "S" in the crossword clue using mobile input "Word 2" in position "5"
+    # ITALY
+    And I enter character "I" in the crossword clue using mobile input "Word 3" in position "1"
+    And I enter character "T" in the crossword clue using mobile input "Word 3" in position "2"
+    And I enter character "A" in the crossword clue using mobile input "Word 3" in position "3"
+    And I enter character "L" in the crossword clue using mobile input "Word 3" in position "4"
+    And I enter character "Y" in the crossword clue using mobile input "Word 3" in position "5"
+    And I press "Submit and finish"
+    Then I should see "Correct feedback"
+    And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"

@@ -82,18 +82,21 @@ export class CrosswordClue extends CrosswordQuestion {
         el.addEventListener('focus', (e) => {
             e.target.dispatchEvent(new Event('click'));
         });
+        el.addEventListener('beforeinput', (e) => {
+            if (e.inputType === 'insertText' && e.data) {
+                this.handleInsertedCharacterToElement(e, e.data);
+            }
+        });
+
+        el.addEventListener('input', (e) => {
+            if (e.inputType === 'deleteContentBackward') {
+                this.handleAndSyncDeletedStringToElement(e.target, e.target.value);
+            }
+        });
 
         el.addEventListener('keypress', (e) => {
             e.preventDefault();
-            const {words, wordNumber} = this.options;
-            const word = words.find(o => o.number === parseInt(wordNumber));
-            let {key, target} = e;
-            let startIndex = target.selectionStart;
-            key = this.replaceText(key).normalize('NFKC');
-            if (key === '') {
-                return;
-            }
-            this.handleTypingData(e, wordNumber, word, startIndex, key);
+            this.handleInsertedCharacterToElement(e, e.key);
         });
 
         el.addEventListener('compositionstart', (evt) => {
@@ -134,19 +137,7 @@ export class CrosswordClue extends CrosswordQuestion {
                 }
             }
             if (key === this.DELETE || key === this.BACKSPACE) {
-                isValidKey = true;
-                const word = words.find(o => o.number === parseInt(wordNumber));
-                let startIndex = target.selectionStart;
-                if (!word) {
-                    return;
-                }
-                const selectionLength = word.length - value.length;
-                const underScore = this.makeUnderscore(selectionLength);
-                value = [value.slice(0, startIndex), underScore, value.slice(startIndex)].join('');
-                target.value = value;
-                // In case the user deletes the entire answer we need to update the crossword grid.
-                this.syncLettersByText(value, false);
-                this.syncFocusCellAndInput(target, startIndex);
+                this.handleAndSyncDeletedStringToElement(target, value);
             }
 
             if (key === this.END || key === this.HOME) {
@@ -286,5 +277,45 @@ export class CrosswordClue extends CrosswordQuestion {
             focused.classList.add('crossword-cell-highlighted');
         }
         gEl.querySelector('rect').classList.add('crossword-cell-focussed');
+    }
+
+    /**
+     *
+     * Add underscore to deleted string and sync it to crossword clue input.
+     *
+     * @param {Element} target The element target
+     * @param {String} value the string input after we deleted single or multiples character.
+     */
+    handleAndSyncDeletedStringToElement(target, value) {
+        const {words, wordNumber} = this.options;
+        const word = words.find(o => o.number === parseInt(wordNumber));
+        if (!word) {
+            return;
+        }
+        let startIndex = target.selectionStart;
+        const selectionLength = word.length - value.length;
+        const underScore = this.makeUnderscore(selectionLength);
+        // Insert underscore to deleted string.
+        target.value = [value.slice(0, startIndex), underScore, value.slice(startIndex)].join('');
+        // In case the user deletes the entire answer we need to update the crossword grid.
+        this.syncLettersByText(target.value, false);
+        this.syncFocusCellAndInput(target, startIndex);
+    }
+
+    /**
+     * Insert the character to clue input.
+     *
+     * @param {Object} event Event data.
+     * @param {String} value the character we are inserted to the clue input.
+     */
+    handleInsertedCharacterToElement(event, value) {
+        const {words, wordNumber} = this.options;
+        const word = words.find(o => o.number === parseInt(wordNumber));
+        let startIndex = event.target.selectionStart;
+        value = this.replaceText(value).normalize('NFKC');
+        if (value === '') {
+            return;
+        }
+        this.handleTypingData(event, wordNumber, word, startIndex, value);
     }
 }
