@@ -105,6 +105,9 @@
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-cell {
     cursor: pointer;
     fill: #fff;
+    stroke: #000;
+    stroke-width: 2px;
+    paint-order: stroke;
 }
 
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-grid-background {
@@ -120,7 +123,7 @@
 }
 
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-cell-number {
-    font-size: 0.625rem;
+    font-size: 0.5rem;
 }
 
 .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-hidden-input-wrapper {
@@ -151,6 +154,10 @@
     text-transform: uppercase;
     text-anchor: middle;
     caret-color: transparent;
+}
+
+body.gecko .qtype_crossword-grid-wrapper .wrap-crossword #crossword .crossword-hidden-input-wrapper input:focus {
+    outline-offset: -2px;
 }
 
 .qtype_crossword-grid-wrapper .wrap-clue .clue-id {
