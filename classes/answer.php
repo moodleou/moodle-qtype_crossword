@@ -36,7 +36,7 @@ class answer {
     /** @var string The clues value. */
     public $clue;
 
-    /** @var int The clues value. */
+    /** @var int The clues format. E.g: FORMAT_HTML */
     public $clueformat;
 
     /** @var string The orientations value. */
@@ -51,7 +51,7 @@ class answer {
     /** @var string The feedback value. */
     public $feedback;
 
-    /** @var int The clues value. */
+    /** @var int The feedback format. E.g: FORMAT_HTML */
     public $feedbackformat;
 
     /**
@@ -63,8 +63,8 @@ class answer {
      * @param string $orientation
      * @param string $startrow
      * @param string $startcolumn
-     * @param string $feedback
-     * @param string $feedbackformat
+     * @param null|string $feedback
+     * @param null|int $feedbackformat
      */
     public function __construct(int $answerid, string $answer, string $clue, int $clueformat, string $orientation,
         string $startrow, string $startcolumn, ?string $feedback, ?int $feedbackformat) {

@@ -80,7 +80,6 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
         global $DB;
         $data = (object)$data;
         $oldid = $data->id;
-        
         // Detect if the question is created or mapped.
         $oldquestionid   = $this->get_old_parentid('question');
         $newquestionid   = $this->get_new_parentid('question');

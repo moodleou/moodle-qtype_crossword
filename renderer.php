@@ -63,16 +63,16 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                     $qa, 'question', 'feedback', $answer->answerid);
             }
             $clue = $question->format_text($answer->clue, $answer->clueformat, $qa, 'question', 'clue', $answer->answerid);
-            $label = format_string(get_string(
-                'inputtitle',
+            $label = get_string(
+                'inputlabel',
                 'qtype_crossword',
                 (object) [
                     'number' => $number,
                     'orientation' => $orientationvalue[$answer->orientation],
-                    'clue' => $clue,
+                    'clue' => strip_tags($clue), // Strip html tags in clue so screen-reader doesn't read html tags.
                     'length' => $length
                 ]
-            ));
+            );
 
             if ($answer->orientation) {
                 $orientation = 'down';

@@ -32,17 +32,6 @@ require_once($CFG->dirroot . '/question/type/crossword/questiontype.php');
  */
 class backup_test extends \restore_date_testcase {
 
-    /** @var qtype_crossword instance of the question type class to test. */
-    protected $qtype;
-
-    public function setUp(): void {
-        $this->qtype = new qtype_crossword();
-    }
-
-    protected function tearDown(): void {
-        $this->qtype = null;
-    }
-
     /**
      * Load required libraries
      */
@@ -52,12 +41,12 @@ class backup_test extends \restore_date_testcase {
     }
 
     /**
-     * Restore the studentquiz backup file in the fixture folder base on filemame.
+     * Restore the crossword backup file in the fixture folder base on filemame.
      *
      * @param string $filename backup file name in the fixture folder.
      * @param string $coursefullname course full name to be restored.
      * @param string $courseshortname course short name to be restored.
-     * @return mixed bool|stdClass return the studentquiz object restored.
+     * @return mixed bool|stdClass return the question object restored.
      */
     protected function restore_crossword_question_backup_file_to_course_shortname(string $filename, string $coursefullname,
         string $courseshortname) {
@@ -185,7 +174,7 @@ class backup_test extends \restore_date_testcase {
     }
 
     /**
-     * Test old sq backup data from earlier version.
+     * Test crossword old backup data
      *
      * @covers \restore_qtype_crossword_plugin
      * @dataProvider test_cw_backup_data_provider
@@ -209,7 +198,8 @@ class backup_test extends \restore_date_testcase {
 
         $cw = $this->restore_crossword_question_backup_file_to_course_shortname($filename, $coursefullname, $courseshortname);
         $q = \question_bank::load_question($cw->id);
-        $this->qtype->get_question_options($q);
+        $qtype = new qtype_crossword();
+        $qtype->get_question_options($q);
         // Verify question exist after restore and question word options is correct.
         $this->assertEquals($questionname, $q->name);
         $count = 0;

@@ -28,12 +28,12 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Redundant, because of the answer field. Foreign key references question.id."/>
         <FIELD NAME="clue" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The clue text."/>
-        <FIELD NAME="clueformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="clueformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
         <FIELD NAME="answer" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="The answer text."/>
         <FIELD NAME="startcolumn" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false" COMMENT="The vertical index."/>
         <FIELD NAME="startrow" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Horizontal index."/>
-        <FIELD NAME="orientation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="The orientation option."/>
-        <FIELD NAME="feedback" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Feed back for answer"/>
+        <FIELD NAME="orientation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The orientation option."/>
+        <FIELD NAME="feedback" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Feedback for answer"/>
         <FIELD NAME="feedbackformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
