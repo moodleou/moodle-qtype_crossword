@@ -281,9 +281,9 @@ export class CrosswordQuestion {
                 if (word) {
                     const startPoint = this.calculatePosition(word, 0);
                     if (word.orientation) {
-                        letterIndex = (parseInt(conflictPointY) - startPoint.y) / (cellHeight + 1);
+                        letterIndex = (parseInt(conflictPointY) - startPoint.y) / (cellHeight);
                     } else {
-                        letterIndex = (parseInt(conflictPointX) - startPoint.x) / (cellWidth + 1);
+                        letterIndex = (parseInt(conflictPointX) - startPoint.x) / (cellWidth);
                     }
                     const clueInputEl = this.options.crosswordEl
                         .closest('.qtype_crossword-grid-wrapper')
@@ -309,12 +309,12 @@ export class CrosswordQuestion {
      */
     calculatePosition(word, key) {
         const {cellWidth, cellHeight} = this.options;
-        let x = (cellWidth * word.startColumn) + (word.startColumn + 1);
-        let y = (cellHeight * word.startRow) + (word.startRow + 1);
+        let x = cellWidth * word.startColumn;
+        let y = cellHeight * word.startRow;
         if (word.orientation) {
-            y += (key * cellHeight) + key;
+            y += (key * cellHeight);
         } else {
-            x += (key * cellWidth) + key;
+            x += (key * cellWidth);
         }
         return {x, y};
     }
@@ -461,12 +461,12 @@ export class CrosswordQuestion {
     setSizeForCrossword(svg) {
         const {colsNum, maxSizeCell, minSizeCell} = this.options;
         // Get max width and min width for crossword with current max cell size and min cell size.
-        const maxWidth = colsNum * (maxSizeCell + 1) + 1;
-        const minWidth = colsNum * (minSizeCell + 1) + 1;
+        const maxWidth = colsNum * maxSizeCell;
+        const minWidth = colsNum * minSizeCell;
         // To avoid the case that the crossword has too high a height when we have many rows (eg 30) and too few columns (eg 3).
         // We will limit the maximum height of the crossword.
         // This reduces the size of the crossword but still ensures that the size of each cell keep in the range min and max sizes.
-        const maxHeight = this.MAX_ROW * (minSizeCell + 1) + 1;
+        const maxHeight = this.MAX_ROW * minSizeCell;
         svg.style.cssText = `max-width: ${maxWidth}px; min-width: ${minWidth}px;
             max-height: ${maxHeight}px;`;
         return svg;
