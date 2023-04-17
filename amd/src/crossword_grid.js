@@ -182,7 +182,7 @@ export class CrosswordGrid extends CrosswordQuestion {
     buildCrossword() {
         const options = this.options;
         // Setup size of crossword.
-        this.options = {...options, width: options.colsNum * 32 + 1, height: options.rowsNum * 32 + 1};
+        this.options = {...options, width: options.colsNum * 31, height: options.rowsNum * 31};
         // Set up for clue input: maxlength, aria-label.
         const crosswordClue = new CrosswordClue(this.options);
         crosswordClue.setUpClue();
@@ -232,6 +232,9 @@ export class CrosswordGrid extends CrosswordQuestion {
 
         // Set size for crossword.
         svg = this.setSizeForCrossword(svg);
+
+        // Add horizontal and vertical line.
+        svg = this.setBorder(svg);
         // Create an input, by default, it will be hidden.
         const inputContainEl = this.createElementFrom(
             'div',
@@ -379,6 +382,50 @@ export class CrosswordGrid extends CrosswordQuestion {
     }
 
     /**
+     * Set horizontal and vertical line for grid.
+     *
+     * @param {Element} svg The svg element.
+     * @return {Element} The svg element after appended border.
+     */
+    setBorder(svg) {
+        const {colsNum, rowsNum, cellWidth, cellHeight, width, height} = this.options;
+
+        for (let i = 0; i <= rowsNum; i++) {
+            let strokeWidth = 1;
+            if (i === 0 || i === rowsNum) {
+                strokeWidth = 2;
+            }
+            const horizontalLine = this.createElementNSFrom('line', {
+                x1: 0,
+                y1: i * cellHeight,
+                x2: width,
+                y2: i * cellHeight,
+                stroke: '#000',
+                'stroke-width': strokeWidth,
+            });
+            svg.appendChild(horizontalLine);
+        }
+
+        for (let i = 0; i <= colsNum; i++) {
+            let strokeWidth = 1;
+            if (i === 0 || i === colsNum) {
+                strokeWidth = 2;
+            }
+            const verticalLine = this.createElementNSFrom('line', {
+                x1: i * cellWidth,
+                y1: 0,
+                x2: i * cellWidth,
+                y2: height,
+                stroke: '#000',
+                'stroke-width': strokeWidth,
+            });
+            svg.appendChild(verticalLine);
+        }
+
+        return svg;
+    }
+
+    /**
      * Create word number for the cell.
      *
      * @param {Element} g The g element.
@@ -389,8 +436,8 @@ export class CrosswordGrid extends CrosswordQuestion {
      */
     appendCellNumber(g, position, wordNumber) {
         // Update position.
-        const x = position.x + 1;
-        const y = position.y + 9;
+        const x = position.x + 2;
+        const y = position.y + 10;
         let textNumber = this.createElementNSFrom(
             'text',
             {
@@ -497,13 +544,13 @@ export class CrosswordGrid extends CrosswordQuestion {
             const inputWrapperEl = this.options.crosswordEl.querySelector('.crossword-hidden-input-wrapper');
             let top = rect.top - parentEl.top;
             if (top < 1) {
-                top = 1;
+                top = 0;
             }
             inputWrapperEl.style.cssText = `
-                display: block; top: ${top}px;
-                left: ${rect.left - parentEl.left}px;
-                width: ${rect.width}px;
-                height: ${rect.height}px
+                display: block; top: ${top + 2}px;
+                left: ${rect.left - parentEl.left + 2}px;
+                width: ${rect.width - 3}px;
+                height: ${rect.height - 3}px
             `;
         }
     }
@@ -633,16 +680,16 @@ export class CrosswordGrid extends CrosswordQuestion {
             }
             if ([this.ARROW_UP, this.ARROW_DOWN, this.ARROW_LEFT, this.ARROW_RIGHT].includes(key)) {
                 if (key === this.ARROW_UP) {
-                    y -= (cellHeight + 1);
+                    y -= cellHeight;
                 }
                 if (key === this.ARROW_DOWN) {
-                    y += (cellHeight + 1);
+                    y += cellHeight;
                 }
                 if (key === this.ARROW_LEFT) {
-                    x -= (cellWidth + 1);
+                    x -= cellWidth;
                 }
                 if (key === this.ARROW_RIGHT) {
-                    x += (cellWidth + 1);
+                    x += cellWidth;
                 }
                 const nextCell = this.options.crosswordEl.querySelector(`g rect[x='${x}'][y='${y}']`);
                 if (nextCell) {
