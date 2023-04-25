@@ -273,26 +273,35 @@ export class CrosswordQuestion {
         const stickyClue = this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper').querySelector('.sticky-clue');
         const {wordNumber, words} = this.options;
         const word = words.find(o => o.number === parseInt(wordNumber));
-        const clueContentSelector = `.contain-clue .wrap-clue[data-questionid="${wordNumber}"] .clue-content`;
-        // Clone clue content.
+        const clueWrapperSelector = `.contain-clue .wrap-clue[data-questionid="${wordNumber}"]`;
         const clueContent = this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper')
-            .querySelector(clueContentSelector).innerHTML;
+            .querySelector(clueWrapperSelector + ' .clue-content').innerHTML;
+        const clueCount = this.options.crosswordEl.closest('.qtype_crossword-grid-wrapper')
+            .querySelector(clueWrapperSelector + ' .clue-count').innerText;
         if (!stickyClue && word) {
             return;
         }
         let strongEl = stickyClue.querySelector('strong');
-        let spanEl = stickyClue.querySelector('span');
+        let clueEl = stickyClue.querySelector('span.clue');
+        let countEl = stickyClue.querySelector('span.count');
         if (!strongEl) {
             strongEl = document.createElement('strong');
-            strongEl.classList.add('mr-1');
+            strongEl.classList.add('mr-1', 'text-nowrap');
             stickyClue.append(strongEl);
         }
-        if (!spanEl) {
-            spanEl = document.createElement('span');
-            stickyClue.append(spanEl);
+        if (!clueEl) {
+            clueEl = document.createElement('span');
+            clueEl.classList.add('clue', 'clearfix');
+            stickyClue.append(clueEl);
+        }
+        if (!countEl) {
+            countEl = document.createElement('span');
+            countEl.classList.add('count', 'text-nowrap', 'ml-1');
+            stickyClue.append(countEl);
         }
         strongEl.innerText = `${word.number} ${this.options.orientation[word.orientation]}`;
-        spanEl.innerText = clueContent;
+        clueEl.innerHTML = clueContent;
+        countEl.innerText = clueCount;
     }
 
     /**

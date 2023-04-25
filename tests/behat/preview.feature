@@ -228,12 +228,9 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
     And I press "Start again with these options"
-    And I set the field "1 Down. Name a man who gave presents to children on Christmas Day?, 11 letter word" to "SANTA CLAUS"
-    And I set the field "2 Across. What day is Christmas?, 11 letter word" to "DECEMBER 25"
-    And I set the field "3 Across. Name a fictional character who has green fur and hates Christmas?, 6 letter word" to "GRINCH"
-    Then the field "1 Down. Name a man who gave presents to children on Christmas Day?, 11 letter word" matches value "SANTA_CLAUS"
-    And the field "2 Across. What day is Christmas?, 11 letter word" matches value "DECEMBER_25"
-    And the field "3 Across. Name a fictional character who has green fur and hates Christmas?, 6 letter word" matches value "GRINCH"
+    Then I should see "(5, 12)"
+    And I should see "(6, 5)"
+    And I should see "(3, 7-3)"
 
   @javascript @_switch_window
   Scenario: Preview a Crossword question and submit a correct response with mobile input.
@@ -267,12 +264,9 @@ Feature: Preview a Crossword question
   @javascript @_switch_window
   Scenario: User can enter alphanumeric characters continuously, the answer will automatically add special characters if any.
     When I am on the "crossword-006" "core_question > preview" page logged in as teacher
-    And I expand all fieldsets
-    And I set the field "How questions behave" to "Interactive with multiple tries"
-    And I press "Start again with these options"
-    And I set the field "Word 1" to "DAVIDATTENBOROUGH"
-    And I set the field "Word 2" to "GORDONBROWN"
-    And I set the field "Word 3" to "TIMBERNERSLEE"
-    Then the field "Word 1" matches value "DAVID ATTENBOROUGH"
-    And the field "Word 2" matches value "GORDON BROWN"
-    And the field "Word 3" matches value "TIM BERNERS-LEE"
+    And I set the field "1 Across. British broadcaster and naturalist, famous for his voice-overs of nature programmes?, 18 letter word" to "DAVIDATTENBOROUGH"
+    And I set the field "2 Down. Former Prime Minister of the United Kingdom?, 12 letter word" to "GORDONBROWN"
+    And I set the field "3 Down. Engineer, computer scientist and inventor of the World Wide Web?, 15 letter word" to "TIMBERNERSLEE"
+    Then the field "1 Across. British broadcaster and naturalist, famous for his voice-overs of nature programmes?, 18 letter word" matches value "DAVID ATTENBOROUGH"
+    And the field "2 Down. Former Prime Minister of the United Kingdom?, 12 letter word" matches value "GORDON BROWN"
+    And the field "3 Down. Engineer, computer scientist and inventor of the World Wide Web?, 15 letter word" matches value "TIM BERNERS-LEE"

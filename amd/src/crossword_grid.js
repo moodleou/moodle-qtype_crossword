@@ -565,7 +565,7 @@ export class CrosswordGrid extends CrosswordQuestion {
      * @param {String} value the character we are inserted to the clue grid.
      */
     handleInsertTextEventForGridInput(event, value) {
-        const {wordNumber} = this.options;
+        const {wordNumber, words} = this.options;
         const inputEl = event.target;
         const code = inputEl.dataset.code;
         const upperText = value.toUpperCase();
@@ -580,9 +580,8 @@ export class CrosswordGrid extends CrosswordQuestion {
             }
             textEl.innerHTML = upperText;
             const letterIndex = parseInt(textEl.closest('g').dataset.letterindex);
-            const nextCellEl = this.options.crosswordEl.querySelector(
-                `g[data-word*='(${wordNumber})'][data-letterindex='${letterIndex + 1}']`
-            );
+            const wordObj = words.find(word => word.number === parseInt(wordNumber));
+            const nextCellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex + 1).pop() ?? null;
             // Interact with clue.
             this.bindDataToClueInput(textEl.closest('g'), value);
             if (nextCellEl) {

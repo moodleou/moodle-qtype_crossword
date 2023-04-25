@@ -497,7 +497,6 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'clue' => 'Former Prime Minister of the United Kingdom?',
                 'answer' => 'GORDON BROWN',
                 'clueformat' => FORMAT_HTML,
-                'answer' => 'DECEMBER 25',
                 'startcolumn' => 11,
                 'startrow' => 0,
                 'orientation' => 1,
