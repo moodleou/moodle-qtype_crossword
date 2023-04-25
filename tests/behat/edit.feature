@@ -35,28 +35,28 @@ Feature: Test editing a Crossword question
   Scenario: Editing Crossword question will change the accented setting to not accept wrong accent.
     When I am on the "crossword-001" "core_question > edit" page logged in as teacher
     And I set the following fields to these values:
-      | Accented letters | 0 |
+      | Accented letters | strict |
     And I press "id_submitbutton"
     And I choose "Edit question" action for "crossword-001" in the question bank
     Then the following fields match these values:
-      | Accented letters | 0 |
+      | Accented letters | strict |
 
   Scenario: Editing Crossword question will change the accented setting to accept wrong accent but subtracts points.
     When I am on the "crossword-001" "core_question > edit" page logged in as teacher
     And I set the following fields to these values:
-      | Accented letters                         | 1   |
-      | Grade for answers with incorrect accents | 0.5 |
+      | Accented letters                         | penalty |
+      | Grade for answers with incorrect accents | 0.5     |
     And I press "id_submitbutton"
     And I choose "Edit question" action for "crossword-001" in the question bank
     Then the following fields match these values:
-      | Accented letters                         | 1   |
-      | Grade for answers with incorrect accents | 0.5 |
+      | Accented letters                         | penalty |
+      | Grade for answers with incorrect accents | 0.5     |
 
   Scenario: Editing Crossword question will change the accented setting to accept wrong accent.
     When I am on the "crossword-001" "core_question > edit" page logged in as teacher
     And I set the following fields to these values:
-      | Accented letters | 2 |
+      | Accented letters | ignore |
     And I press "id_submitbutton"
     And I choose "Edit question" action for "crossword-001" in the question bank
     Then the following fields match these values:
-      | Accented letters | 2 |
+      | Accented letters | ignore |

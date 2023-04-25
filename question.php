@@ -22,8 +22,6 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use qtype_crossword\util;
-
 // For a complete list of base question classes please examine the file
 // /question/type/questionbase.php.
 //
@@ -43,11 +41,11 @@ class qtype_crossword_question extends question_graded_automatically {
     /** @var int The column number. */
     public $numcolumns;
 
-    /** @var int The accented letters options. */
-    public $accentedlettersoptions;
+    /** @var string The accented grading type. */
+    public $accentgradingtype;
 
     /** @var float The penalty mark for each incorrect accents. */
-    public $penaltyforincorrectaccents;
+    public $accentpenalty;
 
     /**
      * Answer field name.
@@ -116,34 +114,46 @@ class qtype_crossword_question extends question_graded_automatically {
     }
 
     public function grade_response(array $response): array {
-        // Retrieve a number of right answers and only wrong accent answers.
-        [$numrightanswers, $numpartialanswers] = $this->get_num_parts_right($response);
+        // Retrieve a number of right answers and total answers.
+        [$numrightanswers, $total] = $this->get_num_parts_right($response);
+        // Retrieve a number of wrong accent numbers.
+        $numpartialanswers = $this->get_num_parts_partial($response);
         // Calculate fraction.
-        $fraction = ($numrightanswers + $numpartialanswers - $numpartialanswers * $this->penaltyforincorrectaccents)
-            / count($this->answers);
+        $fraction = ($numrightanswers + $numpartialanswers - $numpartialanswers * $this->accentpenalty)
+            / $total;
+
         return [$fraction, question_state::graded_state_for_fraction($fraction)];
     }
 
     public function get_num_parts_right(array $response): array {
         $numright = 0;
-        $numpartial = 0;
         foreach ($this->answers as $key => $answer) {
             $answerdata = $response[$this->field($key)];
             // In this case, the answer is absolutely correct.
-            if ($answer->is_correct($answerdata)) {
+            if ($this->is_full_fraction($answer, $answerdata)) {
                 $numright++;
-            } else if ($this->accentedlettersoptions !== util::DONT_ACCEPT_WRONG_ACCENTED
-                    && $answer->is_wrong_accents($answerdata)) {
-                // The answer is accepted with the wrong accented, but points will be deducted.
-                if ($this->accentedlettersoptions === util::ACCEPT_WRONG_ACCENTED_BUT_PENALTY) {
-                    $numpartial++;
-                } else {
-                    // Accept answers with incorrect punctuation without deducting points.
-                    $numright++;
-                }
             }
         }
-        return [$numright, $numpartial];
+        return [$numright, count($this->answers)];
+    }
+
+    /**
+     * Get number of answers are wrong accents.
+     *
+     * @param array $response The answer list.
+     * @return int The number of partial answers.
+     */
+    public function get_num_parts_partial(array $response): int {
+        $numpartial = 0;
+        foreach ($this->answers as $key => $answer) {
+            $answerdata = $response[$this->field($key)];
+            // In this case, the answer is partial correct.
+            if ($this->is_partial_fraction($answer, $answerdata)) {
+                $numpartial++;
+            }
+        }
+
+        return $numpartial;
     }
 
     public function clear_wrong_from_response(array $response): array {
@@ -153,6 +163,37 @@ class qtype_crossword_question extends question_graded_automatically {
             }
         }
         return $response;
+    }
+
+    /**
+     * Verify if the answer can receive full marks.
+     * The answer must satisfy at least one of two conditions:
+     * Condition 1 - the answer is completely correct, including accent characters;
+     * Condition 2 - the answer has the same letter characters but incorrect accent characters
+     * and the accent grading type of the question is disregarded.
+     *
+     * @param qtype_crossword\answer $answer The answer object.
+     * @param string $inputanswer The inputanswer need to calculate.
+     * @return bool The result of answer. True if it's correct.
+     */
+    public function is_full_fraction(qtype_crossword\answer $answer, string $inputanswer): bool {
+        return $answer->is_correct($inputanswer) || ($this->accentgradingtype === \qtype_crossword::ACCENT_GRADING_IGNORE &&
+                $answer->is_wrong_accents($inputanswer));
+    }
+
+    /**
+     * Verify if the answer can receive apart from marks.
+     * The answer must satisfy two conditions:
+     * Condition 1 - the answer is wrong accent only;
+     * Condition 2 - the accent grading type of the question is penalty.
+     *
+     * @param qtype_crossword\answer $answer The answer object.
+     * @param string $inputanswer The inputanswer need to calculate.
+     * @return bool The result of answer. True if it's partial correct.
+     */
+    public function is_partial_fraction(qtype_crossword\answer $answer, string $inputanswer): bool {
+        return $answer->is_wrong_accents($inputanswer) &&
+            $this->accentgradingtype === \qtype_crossword::ACCENT_GRADING_PENALTY;
     }
 
     /**

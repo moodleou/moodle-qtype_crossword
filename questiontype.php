@@ -39,6 +39,15 @@ class qtype_crossword extends question_type {
     /** @const array The word fields list */
     private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'startrow', 'startcolumn', 'feedback'];
 
+    /** @const string The answer must be completely correct and must not be accents wrong */
+    const ACCENT_GRADING_STRICT = 'strict';
+
+    /** @const string Accents errors are allowed, but points will be deducted. */
+    const ACCENT_GRADING_PENALTY = 'penalty';
+
+    /** @const string Accents errors are allowed and the points will not be deducted. */
+    const ACCENT_GRADING_IGNORE = 'ignore';
+
     public function get_question_options($question): bool {
         global $DB;
         parent::get_question_options($question);
@@ -76,8 +85,8 @@ class qtype_crossword extends question_type {
         $options->shownumcorrect = 1;
         $options->numrows = 10;
         $options->numcolumns = 10;
-        $options->accentedlettersoptions = 0;
-        $options->penaltyforincorrectaccents = 0.5;
+        $options->accentgradingtype = self::ACCENT_GRADING_STRICT;
+        $options->accentpenalty = 0.5;
         return $options;
     }
 
@@ -174,15 +183,15 @@ class qtype_crossword extends question_type {
             $options->incorrectfeedback = '';
             $options->numrows = 10;
             $options->numcolumns = 10;
-            $options->accentedlettersoptions = 0;
-            $options->penaltyforincorrectaccents = 0.5;
+            $options->accentgradingtype = self::ACCENT_GRADING_STRICT;
+            $options->accentpenalty = 0.5;
             $options->id = $DB->insert_record('qtype_crossword_options', $options);
         }
 
         $options->numrows = $question->numrows;
         $options->numcolumns = $question->numcolumns;
-        $options->accentedlettersoptions = $question->accentedlettersoptions;
-        $options->penaltyforincorrectaccents = $question->penaltyforincorrectaccents ?? 0.5;
+        $options->accentgradingtype = $question->accentgradingtype;
+        $options->accentpenalty = $question->accentpenalty ?? 0.5;
         $options = $this->save_combined_feedback_helper($options, $question, $context, true);
         $DB->update_record('qtype_crossword_options', $options);
         $this->save_hints($question, true);
@@ -217,20 +226,20 @@ class qtype_crossword extends question_type {
         }
         $question->numrows = (int) $questiondata->options->numrows;
         $question->numcolumns = (int) $questiondata->options->numcolumns;
-        $question->accentedlettersoptions = (int) $questiondata->options->accentedlettersoptions;
-        $question->penaltyforincorrectaccents = (float) $questiondata->options->penaltyforincorrectaccents;
+        $question->accentgradingtype = $questiondata->options->accentgradingtype;
+        $question->accentpenalty = (float) $questiondata->options->accentpenalty;
     }
 
     public function export_to_xml($question, qformat_xml $format, $extra = null): string {
         $expout = parent::export_to_xml($question, $format, $extra);
         $expout .= '    <numrows>' . $format->xml_escape($question->options->numrows) . "</numrows>\n";
         $expout .= '    <numcolumns>' . $format->xml_escape($question->options->numcolumns) . "</numcolumns>\n";
+        $expout .= '    <accentgradingtype>' . $format->xml_escape($question->options->accentgradingtype)
+            . "</accentgradingtype>\n";
+        $expout .= '    <accentpenalty>' . $format->xml_escape($question->options->accentpenalty)
+            . "</accentpenalty>\n";
         $fs = get_file_storage();
         foreach ($question->options->words as $word => $value) {
-            $expout .= '    <accentedlettersoptions>' . $format->xml_escape($question->options->accentedlettersoptions)
-                . "</accentedlettersoptions>\n";
-            $expout .= '    <penaltyforincorrectaccents>' . $format->xml_escape($question->options->penaltyforincorrectaccents)
-                . "</penaltyforincorrectaccents>\n";
             $expout .= "    <word>\n";
             foreach (self::WORD_FIELDS as $xmlfield) {
                 if ($xmlfield === 'clue' || $xmlfield === 'feedback') {
@@ -265,9 +274,9 @@ class qtype_crossword extends question_type {
         $question->qtype = 'crossword';
         $question->numrows = $format->getpath($data, ['#', 'numrows', 0, '#'], '', true);
         $question->numcolumns = $format->getpath($data, ['#', 'numcolumns', 0, '#'], '', true);
+        $question->accentgradingtype = $format->getpath($data, ['#', 'accentgradingtype', 0, '#'], '', true);
+        $question->accentpenalty = $format->getpath($data, ['#', 'accentpenalty', 0, '#'], '', true);
         foreach ($data['#']['word'] as $word) {
-            $question->accentedlettersoptions = $format->getpath($data, ['#', 'accentedlettersoptions', 0, '#'], '', true);
-            $question->penaltyforincorrectaccents = $format->getpath($data, ['#', 'penaltyforincorrectaccents', 0, '#'], '', true);
             foreach (self::WORD_FIELDS as $field) {
                 if ($field === 'clue' || $field === 'feedback') {
                     if (isset($word['#'][$field][0])) {

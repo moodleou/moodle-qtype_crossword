@@ -17,6 +17,7 @@
 namespace qtype_crossword;
 
 use question_attempt_step;
+use question_testcase;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -116,12 +117,12 @@ class question_test extends \advanced_testcase {
      */
     public function test_grading(array $answeroptions) {
         $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
-        $question->accentedlettersoptions = $answeroptions['options']['accentedlettersoptions'];
-        $question->penaltyforincorrectaccents = $answeroptions['options']['penalty'];
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
         foreach ($answeroptions['answers'] as $answer) {
             [$fraction, $state] = $question->grade_response($answer['answers']);
-            $this->assertEquals($answer['fraction'], $fraction);
-            $this->assertEquals($answer['state'], $state);
+            $this->assertEqualsWithDelta($answer['fraction'], $fraction, question_testcase::GRADE_DELTA);
+            $this->assertEqualsWithDelta($answer['state'], $state, question_testcase::GRADE_DELTA);
         }
     }
 
@@ -188,12 +189,50 @@ class question_test extends \advanced_testcase {
         $this->resetAfterTest();
         $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
         $question->start_attempt(new question_attempt_step(), 1);
-        $question->accentedlettersoptions = $answeroptions['options']['accentedlettersoptions'];
-        $question->penaltyforincorrectaccents = $answeroptions['options']['penalty'];
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
         foreach ($answeroptions['answers'] as $answer) {
-            [$numrightanswer, $numpartialanswer] = $question->get_num_parts_right($answer['answers']);
+            [$numrightanswer, $totalanswer] = $question->get_num_parts_right($answer['answers']);
             $this->assertEquals($answer['numrightanswer'], $numrightanswer);
-            $this->assertEquals($answer['numpartialanswer'], $numpartialanswer);
+            $this->assertEquals(count($answer['answers']), $totalanswer);
+        }
+    }
+
+    /**
+     * Test function get_num_parts_partial.
+     *
+     * @param array $answeroptions List testcases with answer options.
+     * @covers \qtype_crossword_question::get_num_parts_partial
+     * @dataProvider grading_provider
+     */
+    public function test_get_num_parts_partial(array $answeroptions) {
+        $this->resetAfterTest();
+        $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
+        $question->start_attempt(new question_attempt_step(), 1);
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
+        foreach ($answeroptions['answers'] as $answer) {
+            $numanswerspartial = $question->get_num_parts_partial($answer['answers']);
+            $this->assertEquals($answer['numpartialanswer'], $numanswerspartial);
+        }
+    }
+
+    /**
+     * Test function is_full_fraction.
+     *
+     * @param array $answeroptions List testcases with answer options.
+     * @covers \qtype_crossword_question::is_full_fraction
+     * @dataProvider grading_provider
+     */
+    public function is_full_fraction(array $answeroptions) {
+        $this->resetAfterTest();
+        $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
+        $question->start_attempt(new question_attempt_step(), 1);
+        $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
+        $question->accentpenalty = $answeroptions['options']['accentpenalty'];
+        foreach ($answeroptions['answers'] as $answer) {
+            $numanswerspartial = $question->is_full_fraction($answer);
+            $this->assertEquals($answer['numpartialanswer'], $numanswerspartial);
         }
     }
 
@@ -232,8 +271,8 @@ class question_test extends \advanced_testcase {
                         ],
                     ],
                     'options' => [
-                        'accentedlettersoptions' => \qtype_crossword\util::DONT_ACCEPT_WRONG_ACCENTED,
-                        'penalty' => 0,
+                        'accentgradingtype' => \qtype_crossword::ACCENT_GRADING_STRICT,
+                        'accentpenalty' => 0,
                     ],
                 ],
             ],
@@ -263,8 +302,8 @@ class question_test extends \advanced_testcase {
                         ],
                     ],
                     'options' => [
-                        'accentedlettersoptions' => \qtype_crossword\util::ACCEPT_WRONG_ACCENTED_BUT_PENALTY,
-                        'penalty' => 0.1,
+                        'accentgradingtype' => \qtype_crossword::ACCENT_GRADING_PENALTY,
+                        'accentpenalty' => 0.1,
                     ],
                 ],
             ],
@@ -294,8 +333,8 @@ class question_test extends \advanced_testcase {
                         ],
                     ],
                     'options' => [
-                        'accentedlettersoptions' => \qtype_crossword\util::ACCEPT_WRONG_ACCENTED,
-                        'penalty' => 0,
+                        'accentgradingtype' => \qtype_crossword::ACCENT_GRADING_IGNORE,
+                        'accentpenalty' => 0,
                     ],
                 ],
             ],

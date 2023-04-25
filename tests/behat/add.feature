@@ -95,7 +95,7 @@ Feature: Test creating a Crossword question
       | Question text                      | Crossword question text                     |
       | Number of rows                     | 9                                           |
       | Number of columns                  | 4                                           |
-      | Accented letters                   | 0                                           |
+      | Accented letters                   | strict                                      |
       | id_clue_0                          | Des accompagnements à base de foie animal ? |
       | id_clue_1                          | Appareil utilisé pour passer des appels ?   |
       | id_answer_0                        | PÂTÉ                                        |
@@ -118,7 +118,7 @@ Feature: Test creating a Crossword question
       | Question text                            | Crossword question text                     |
       | Number of rows                           | 9                                           |
       | Number of columns                        | 4                                           |
-      | Accented letters                         | 1                                           |
+      | Accented letters                         | penalty                                     |
       | Grade for answers with incorrect accents | 0.5                                         |
       | id_clue_0                                | Des accompagnements à base de foie animal ? |
       | id_clue_1                                | Appareil utilisé pour passer des appels ?   |
@@ -142,7 +142,7 @@ Feature: Test creating a Crossword question
       | Question text                      | Crossword question text                     |
       | Number of rows                     | 9                                           |
       | Number of columns                  | 4                                           |
-      | Accented letters                   | 2                                           |
+      | Accented letters                   | ignore                                      |
       | id_clue_0                          | Des accompagnements à base de foie animal ? |
       | id_clue_1                          | Appareil utilisé pour passer des appels ?   |
       | id_answer_0                        | PÂTÉ                                        |

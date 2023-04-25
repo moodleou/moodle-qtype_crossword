@@ -16,7 +16,6 @@
 
 namespace qtype_crossword;
 use Normalizer;
-use \qtype_crossword\answer;
 use \qtype_crossword_question;
 /**
  * Static utilities.
@@ -27,17 +26,8 @@ use \qtype_crossword_question;
  */
 class util {
 
-    /** @var int The answer must be completely correct and must not be accents wrong */
-    const DONT_ACCEPT_WRONG_ACCENTED = 0;
-
-    /** @var int Accents errors are allowed, but points will be deducted. */
-    const ACCEPT_WRONG_ACCENTED_BUT_PENALTY = 1;
-
-    /** @var int Accents errors are allowed and the points will not be deducted. */
-    const ACCEPT_WRONG_ACCENTED = 2;
-
     /**
-     * Normalise a UTf-8 string to FORM_C, avoiding the pitfalls in PHP's
+     * Normalise a UTF-8 string to FORM_C, avoiding the pitfalls in PHP's
      * normalizer_normalize function.
      * @param string $string The input string.
      * @param int $normalizeform The form normalize. Default is FORM_KC.
@@ -48,12 +38,8 @@ class util {
             return '';
         }
 
-        if (!function_exists('normalizer_normalize')) {
-            return $string;
-        }
-
         $normalised = normalizer_normalize($string, $normalizeform);
-        if (is_null($normalised)) {
+        if ($normalised === false) {
             // An error occurred in normalizer_normalize, but we have no idea what.
             debugging('Failed to normalise string: ' . $string, DEBUG_DEVELOPER);
             return $string; // Return the original string, since it is the best we have.
@@ -80,23 +66,19 @@ class util {
      * @param string $inputanswer The inputanswer need to calculate.
      * @return float The fraction value of the answer.
      */
-    public static function calculate_fraction_for_answer(qtype_crossword_question $question,
-            answer $answer, string $inputanswer): float {
-        // Check the correctness of input answers. If its correct fraction will be 1.
-        $fraction = (int) $answer->is_correct($inputanswer);
-        // If the fraction is different from 1, we will check if the answer is incorrect in punctuation
-        // and accentedlettersoptions allows for incorrect accents.
-        if (!$fraction && $question->accentedlettersoptions !== self::DONT_ACCEPT_WRONG_ACCENTED
-                && $answer->is_wrong_accents($inputanswer)) {
-            $penaltypoint = 0;
-            if ($question->accentedlettersoptions === self::ACCEPT_WRONG_ACCENTED_BUT_PENALTY) {
-                // Set penalty point based on penaltyforincorrectaccents options.
-                $penaltypoint = $question->penaltyforincorrectaccents;
-            }
-
-            return 1 - $penaltypoint;
+    public static function calculate_fraction_for_answer(qtype_crossword_question $question, answer $answer,
+            string $inputanswer): float {
+        // Absolutely correct.
+        if ($question->is_full_fraction($answer, $inputanswer)) {
+            return 1;
         }
 
-        return $fraction;
+        // Partially correct.
+        if ($question->is_partial_fraction($answer, $inputanswer)) {
+            return 1 - $question->accentpenalty;
+        }
+
+        // Incorrect.
+        return 0;
     }
 }

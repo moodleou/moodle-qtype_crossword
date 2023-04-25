@@ -17,11 +17,13 @@
 namespace qtype_crossword;
 
 use qtype_crossword;
+use qtype_crossword_test_helper;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . "/phpunit/classes/restore_date_testcase.php");
 require_once($CFG->dirroot . '/question/type/crossword/questiontype.php');
+require_once($CFG->dirroot . '/question/type/crossword/tests/helper.php');
 
 /**
  * Unit tests for backup/restore process in crossword qtype.
@@ -29,6 +31,8 @@ require_once($CFG->dirroot . '/question/type/crossword/questiontype.php');
  * @package qtype_crossword
  * @copyright 2023 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers \restore_qtype_crossword_plugin
+ * @covers \backup_qtype_crossword_plugin
  */
 class backup_test extends \restore_date_testcase {
 
@@ -173,7 +177,6 @@ class backup_test extends \restore_date_testcase {
     /**
      * Test crossword old backup data
      *
-     * @covers \restore_qtype_crossword_plugin
      * @dataProvider test_cw_backup_data_provider
      * @param string $filename file name of the backup file.
      * @param string $coursefullname course full name.
@@ -213,6 +216,79 @@ class backup_test extends \restore_date_testcase {
             $this->assertEquals($expectedwords[$count]['answer'], $word->answer);
             $count++;
         }
+    }
+
+
+    /**
+     * Test backup/restore question type crossword.
+     *
+     * @dataProvider test_backup_restore_course_with_cw_provider
+     * @param string $crosswordtemplate Crossword template.
+     */
+    public function test_backup_restore_course_with_cw(string $crosswordtemplate) {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course();
+        $crosswordformdata = \test_question_maker::get_question_form_data('crossword', $crosswordtemplate);
+        $qgen = $this->getDataGenerator()->get_plugin_generator('core_question');
+        $qcat = $qgen->create_question_category(['contextid' => \context_course::instance($course->id)->id]);
+        $crosswordformdata->category = "{$qcat->id},{$qcat->contextid}";
+        $question = $qgen->create_question('crossword', null, (array) $crosswordformdata);
+        $cwquestion = \question_bank::load_question($question->id);
+        $this->backup_and_restore($course);
+        $this->assertEquals(2, $DB->count_records('question', ['name' => $crosswordformdata->name]));
+
+        // Delete the old course.
+        delete_course($course, false);
+
+        // Get new question.
+        $newquestion = $DB->get_records('question', ['name' => $crosswordformdata->name], 'id');
+        $this->assertEquals(1, count($newquestion));
+        $newcwquestion = \question_bank::load_question(array_pop($newquestion)->id);
+
+        $this->assertEquals($crosswordformdata->name, $newcwquestion->name);
+        $this->assertEquals($cwquestion->questiontext, $newcwquestion->questiontext);
+        $this->assertEquals($cwquestion->correctfeedback, $newcwquestion->correctfeedback);
+        $this->assertEquals($crosswordformdata->accentgradingtype, $newcwquestion->accentgradingtype);
+        $this->assertEqualsWithDelta($crosswordformdata->accentpenalty, $newcwquestion->accentpenalty,
+            \question_testcase::GRADE_DELTA);
+
+        for ($i = 0; $i < count($newcwquestion->answers); $i++) {
+            $this->assertEquals($cwquestion->answers[$i]->answer, $newcwquestion->answers[$i]->answer);
+            $this->assertEquals($cwquestion->answers[$i]->clue, $newcwquestion->answers[$i]->clue);
+            $this->assertEquals($cwquestion->answers[$i]->clueformat, $newcwquestion->answers[$i]->clueformat);
+            $this->assertEquals($cwquestion->answers[$i]->orientation, $newcwquestion->answers[$i]->orientation);
+            $this->assertEquals($cwquestion->answers[$i]->startrow, $newcwquestion->answers[$i]->startrow);
+            $this->assertEquals($cwquestion->answers[$i]->startcolumn, $newcwquestion->answers[$i]->startcolumn);
+            $this->assertEquals($cwquestion->answers[$i]->feedback, $newcwquestion->answers[$i]->feedback);
+            $this->assertEquals($cwquestion->answers[$i]->feedbackformat, $newcwquestion->answers[$i]->feedbackformat);
+        }
+    }
+
+    /**
+     * Data provider for test_backup_restore_course_with_cw().
+     *
+     * @coversNothing
+     * @return array
+     */
+    public function test_backup_restore_course_with_cw_provider(): array {
+
+        return [
+            'Normal crossword' => [
+                'template' => 'normal',
+            ],
+            'Crossword with accent grade type is strict' => [
+                'template' => 'not_accept_wrong_accents',
+            ],
+            'Crossword with accent grade type is penalty' => [
+                'template' => 'accept_wrong_accents_but_subtract_point',
+            ],
+            'Crossword with accent grade type is ignore' => [
+                'template' => 'accept_wrong_accents_but_not_subtract_point',
+            ],
+        ];
     }
 
     /**

@@ -22,8 +22,11 @@
  * @license  https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['accentedcharacters'] = 'Accented letters';
-$string['acceptwrongaccents'] = 'Just grade the letters and ignore any accents';
+$string['accentgradingignore'] = 'Just grade the letters and ignore any accents';
+$string['accentgradingpenalty'] = 'Partial mark if the letters are correct but one or more accents are wrong';
+$string['accentgradingstrict'] = 'Accented letters must completely match or the answer is wrong';
+$string['accentletters'] = 'Accented letters';
+$string['accentpenalty'] = 'Grade for answers with incorrect accents';
 $string['across'] = 'Across';
 $string['addmorewordblanks'] = 'Blanks for {no} more words';
 $string['answer'] = 'Answer';
@@ -32,17 +35,14 @@ $string['celltitle'] = 'Row {row}, Column {column}. {number} {orientation}. {clu
 $string['clue'] = 'Clue';
 $string['correctansweris'] = 'The correct answer is: {$a}';
 $string['correctanswersare'] = 'The correct answers are: {$a}';
-$string['deductmarksforwrongpunctuation'] = 'Partial mark if the letters are correct but one or more accents are wrong';
 $string['down'] = 'Down';
 $string['inputlabel'] = '{$a->number} {$a->orientation}. {$a->clue}, {$a->length} letter word';
 $string['mustbealphanumeric'] = 'The answer must be alphanumeric characters only';
 $string['notenoughwords'] = 'This type of question requires at least {$a} word';
 $string['numberofcolumns'] = 'Number of columns';
 $string['numberofrows'] = 'Number of rows';
-$string['mustmatchexactly'] = 'Accented letters must completely match or the answer is wrong';
 $string['orientation'] = 'Orientation';
 $string['overflowposition'] = 'The word start or end position is outside the defined grid size.';
-$string['penaltyforincorrectaccents'] = 'Grade for answers with incorrect accents';
 $string['pleaseananswerallparts'] = 'Please answer all parts of the question.';
 $string['pleaseenterclueandanswer'] = 'You must enter both answer and clue for word {$a}.';
 $string['pluginname'] = 'Crossword';

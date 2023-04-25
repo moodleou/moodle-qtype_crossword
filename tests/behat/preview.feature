@@ -267,10 +267,11 @@ Feature: Preview a Crossword question
     Then I should see "Correct feedback"
     And I should see "Answer 1: BRAZIL, Answer 2: PARIS, Answer 3: ITALY"
 
+  @javascript @_switch_window
   Scenario: When the answer option accept incorrect accents but subtracts point and user enters answer wrong accents.
     When I am on the "crossword-007" "core_question > preview" page logged in as teacher
-    And I set the field "Word 1" to "PATE"
-    And I enter unicode character "TÉLÉPHONE" in the crossword clue "Word 2"
+    And I set the field "1 Across. Des accompagnements à base de foie animal ?, 4 letter word" to "PATE"
+    And I enter unicode character "TÉLÉPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ?, 9 letter word"
     And I press "Submit and finish"
     Then I should see "Partially correct"
     And I should see "Mark 1.75 out of 2.00"
@@ -278,8 +279,8 @@ Feature: Preview a Crossword question
   @javascript @_switch_window
   Scenario: When the answer option accept incorrect accents and teacher enters answer wrong accents.
     When I am on the "crossword-008" "core_question > preview" page logged in as teacher
-    And I set the field "Word 1" to "PATE"
-    And I set the field "Word 2" to "TELEPHONE"
+    And I set the field "1 Across. Des accompagnements à base de foie animal ?, 4 letter word" to "PATE"
+    And I set the field "2 Down. Appareil utilisé pour passer des appels ?, 9 letter word" to "TELEPHONE"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Mark 2.00 out of 2.00"
@@ -287,8 +288,8 @@ Feature: Preview a Crossword question
   @javascript @_switch_window
   Scenario: The teacher enters the wrong accents when the answer option does not allow the wrong accents.
     When I am on the "crossword-009" "core_question > preview" page logged in as teacher
-    And I enter unicode character "PATE" in the crossword clue "Word 1"
-    And I enter unicode character "TELEPHONE" in the crossword clue "Word 2"
+    And I enter unicode character "PATE" in the crossword clue "1 Across. Des accompagnements à base de foie animal ?, 4 letter word"
+    And I enter unicode character "TELEPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ?, 9 letter word"
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
     And I should see "Mark 0.00 out of 2.00"
@@ -299,12 +300,12 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
     And I press "Start again with these options"
-    And I enter unicode character "PATE" in the crossword clue "Word 1"
-    And I enter unicode character "TALAPHONE" in the crossword clue "Word 2"
+    And I enter unicode character "PATE" in the crossword clue "1 Across. Des accompagnements à base de foie animal ?, 4 letter word"
+    And I enter unicode character "TALAPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ?, 9 letter word"
     And I press "Check"
     And I press "Try again"
-    And I enter unicode character "PATE" in the crossword clue "Word 1"
-    And I enter unicode character "TELEPHONE" in the crossword clue "Word 2"
+    And I enter unicode character "PATE" in the crossword clue "1 Across. Des accompagnements à base de foie animal ?, 4 letter word"
+    And I enter unicode character "TELEPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ?, 9 letter word"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
     And I should see "Mark 1.80 out of 2.00"
@@ -315,12 +316,12 @@ Feature: Preview a Crossword question
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
     And I press "Start again with these options"
-    And I enter unicode character "PATE" in the crossword clue "Word 1"
-    And I enter unicode character "TALAPHONE" in the crossword clue "Word 2"
+    And I enter unicode character "PATE" in the crossword clue "1 Across. Des accompagnements à base de foie animal ?, 4 letter word"
+    And I enter unicode character "TALAPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ?, 9 letter word"
     And I press "Check"
     And I press "Try again"
-    And I enter unicode character "PATE" in the crossword clue "Word 1"
-    And I enter unicode character "TELEPHONE" in the crossword clue "Word 2"
+    And I enter unicode character "PATE" in the crossword clue "1 Across. Des accompagnements à base de foie animal ?, 4 letter word"
+    And I enter unicode character "TELEPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ?, 9 letter word"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
     And I should see "Mark 1.30 out of 2.00"

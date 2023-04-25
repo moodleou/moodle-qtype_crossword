@@ -175,21 +175,22 @@ class qtype_crossword_edit_form extends question_edit_form {
         $mform->addElement('header', 'answeroptionsheader', get_string('answeroptions', 'qtype_crossword'));
         $mform->setExpanded('answeroptionsheader', 0);
         $optionsaccented = [
-            get_string('mustmatchexactly', 'qtype_crossword'),
-            get_string('deductmarksforwrongpunctuation', 'qtype_crossword'),
-            get_string('acceptwrongaccents', 'qtype_crossword'),
+            qtype_crossword::ACCENT_GRADING_STRICT => get_string('accentgradingstrict', 'qtype_crossword'),
+            qtype_crossword::ACCENT_GRADING_PENALTY => get_string('accentgradingpenalty', 'qtype_crossword'),
+            qtype_crossword::ACCENT_GRADING_IGNORE => get_string('accentgradingignore', 'qtype_crossword'),
         ];
-        $mform->addElement('select', 'accentedlettersoptions', get_string('accentedcharacters', 'qtype_crossword'),
+        $mform->addElement('select', 'accentgradingtype', get_string('accentletters', 'qtype_crossword'),
             $optionsaccented);
-        $mform->setDefault('accentedlettersoptions', $this->get_default_value('accentedlettersoptions', 0));
+        $mform->setDefault('accentgradingtype', $this->get_default_value('accentgradingtype',
+            qtype_crossword::ACCENT_GRADING_STRICT));
         $penaltyoptions = question_bank::fraction_options();
         // Remove None and 100%.
         unset($penaltyoptions['0.0']);
         unset($penaltyoptions['1.0']);
-        $mform->addElement('select', 'penaltyforincorrectaccents',
-            get_string('penaltyforincorrectaccents', 'qtype_crossword'), $penaltyoptions);
-        $mform->setDefault('penaltyforincorrectaccents', $this->get_default_value('penaltyforincorrectaccents',  0.5));
-        $mform->hideIf('penaltyforincorrectaccents', 'accentedlettersoptions', 'noteq', 1);
+        $mform->addElement('select', 'accentpenalty',
+            get_string('accentpenalty', 'qtype_crossword'), $penaltyoptions);
+        $mform->setDefault('accentpenalty', $this->get_default_value('accentpenalty',  0.5));
+        $mform->hideIf('accentpenalty', 'accentgradingtype', 'noteq', qtype_crossword::ACCENT_GRADING_PENALTY);
 
         // Call js to render preview section.
         $options = new stdClass();
@@ -198,7 +199,8 @@ class qtype_crossword_edit_form extends question_edit_form {
         $options->isPreview = true;
         $PAGE->requires->js_call_amd('qtype_crossword/crossword', 'preview', [$options]);
 
-        $this->add_per_answer_fields($mform, get_string('wordno', 'qtype_crossword', '{no}'), question_bank::fraction_options());
+        $this->add_per_answer_fields($mform, get_string('wordno', 'qtype_crossword', '{no}'),
+            question_bank::fraction_options());
         $mform->addHelpButton('words', 'words', 'qtype_crossword');
     }
 
@@ -293,8 +295,8 @@ class qtype_crossword_edit_form extends question_edit_form {
         if (!empty($question->options)) {
             $question->numrows = $question->options->numrows;
             $question->numcolumns = $question->options->numcolumns;
-            $question->accentedlettersoptions = $question->options->accentedlettersoptions;
-            $question->penaltyforincorrectaccents = $question->options->penaltyforincorrectaccents;
+            $question->accentgradingtype = $question->options->accentgradingtype;
+            $question->accentpenalty = $question->options->accentpenalty;
         }
         $question->answer = $answer;
         $question->clue = $clue;
