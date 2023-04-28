@@ -33,6 +33,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
 
     public function formulation_and_controls(question_attempt $qa,
         question_display_options $options): string {
+        /** @var qtype_crossword_question $question */
         $question = $qa->get_question();
         $response = $qa->get_last_qt_data();
         $data = [];
@@ -40,7 +41,6 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             get_string('across', 'qtype_crossword'),
             get_string('down', 'qtype_crossword')
         ];
-        $selected = 0;
         $binddata = [
             'colsNum' => $question->numcolumns + 3,
             'rowsNum' => $question->numrows + 3,
@@ -95,14 +95,12 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 $inputdata['attributes'] .= ' readonly=true';
             }
 
-            if (array_key_exists($fieldname, $response)) {
-                $selected = $response[$fieldname];
-            }
-
             // Calculate fraction.
-            $fraction = 0;
-            if ($selected !== 0) {
-                $fraction = \qtype_crossword\util::calculate_fraction_for_answer($question, $answer, $selected);
+            $responseword = $response[$fieldname] ?? '';
+            if ($responseword) {
+                $fraction = $question->calculate_fraction_for_answer($answer, $responseword);
+            } else {
+                $fraction = 0;
             }
 
             if ($options->correctness) {

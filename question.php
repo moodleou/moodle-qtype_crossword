@@ -195,6 +195,24 @@ class qtype_crossword_question extends question_graded_automatically {
     }
 
     /**
+     * Calculate fraction of answer.
+     *
+     * @param answer $answer One of the clues.
+     * @param string $responseword The the response given to that clue.
+     * @return float the fraction for that word.
+     */
+    public function calculate_fraction_for_answer(answer $answer, string $responseword): float {
+
+        if ($this->is_full_fraction($answer, $responseword)) {
+            return 1;
+        } else if ($this->is_partial_fraction($answer, $responseword)) {
+            return 1 - $this->accentpenalty;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * Filter out blank words from a response.
      *
      * @param array $response The answers list.

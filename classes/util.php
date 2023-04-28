@@ -57,28 +57,4 @@ class util {
     public static function remove_accent(string $string): string {
         return preg_replace('/\p{Mn}/u', '', self::safe_normalize($string, Normalizer::FORM_KD));
     }
-
-    /**
-     * Calculate fraction of answer.
-     *
-     * @param qtype_crossword_question $question The question object.
-     * @param answer $answer The answer object.
-     * @param string $inputanswer The inputanswer need to calculate.
-     * @return float The fraction value of the answer.
-     */
-    public static function calculate_fraction_for_answer(qtype_crossword_question $question, answer $answer,
-            string $inputanswer): float {
-        // Absolutely correct.
-        if ($question->is_full_fraction($answer, $inputanswer)) {
-            return 1;
-        }
-
-        // Partially correct.
-        if ($question->is_partial_fraction($answer, $inputanswer)) {
-            return 1 - $question->accentpenalty;
-        }
-
-        // Incorrect.
-        return 0;
-    }
 }
