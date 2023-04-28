@@ -269,4 +269,40 @@ class qtype_crossword extends question_type {
         $format->import_hints($question, $data, true, false, $format->get_format($question->questiontextformat));
         return $question;
     }
+
+    public function move_files($questionid, $oldcontextid, $newcontextid) {
+        global $DB;
+        $fs = get_file_storage();
+
+        parent::move_files($questionid, $oldcontextid, $newcontextid);
+
+        $words = $DB->get_records_menu('qtype_crossword_words',
+                ['questionid' => $questionid], 'id', 'id,1');
+        foreach ($words as $wordid => $notused) {
+            $fs->move_area_files_to_new_context($oldcontextid,
+                    $newcontextid, 'qtype_crossword', 'clue', $wordid);
+            $fs->move_area_files_to_new_context($oldcontextid,
+                    $newcontextid, 'qtype_crossword', 'feedback', $wordid);
+        }
+
+        $this->move_files_in_combined_feedback($questionid, $oldcontextid, $newcontextid);
+        $this->move_files_in_hints($questionid, $oldcontextid, $newcontextid);
+    }
+
+    protected function delete_files($questionid, $contextid) {
+        global $DB;
+        $fs = get_file_storage();
+
+        parent::delete_files($questionid, $contextid);
+
+        $words = $DB->get_records_menu('qtype_crossword_words',
+                ['questionid' => $questionid], 'id', 'id,1');
+        foreach ($words as $wordid => $notused) {
+            $fs->delete_area_files($contextid, 'qtype_crossword', 'clue', $wordid);
+            $fs->delete_area_files($contextid, 'qtype_crossword', 'feedback', $wordid);
+        }
+
+        $this->delete_files_in_combined_feedback($questionid, $contextid);
+        $this->delete_files_in_hints($questionid, $contextid);
+    }
 }

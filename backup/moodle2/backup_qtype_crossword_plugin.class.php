@@ -57,4 +57,11 @@ class backup_qtype_crossword_plugin extends backup_qtype_plugin {
 
         return $plugin;
     }
+
+    public static function get_qtype_fileareas() {
+        return [
+            'clue' => 'qtype_crossword_words',
+            'feedback' => 'qtype_crossword_words'
+        ];
+    }
 }
