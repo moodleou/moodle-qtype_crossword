@@ -139,28 +139,26 @@ class question_test extends \advanced_testcase {
     /**
      * Test function filter_answer.
      *
-     * @param array $answer Answerq list.
+     * @param array $response Data for a response.
      * @param int $expected Expected data.
      *
      * @covers \qtype_crossword_question::filter_answers
-     * @dataProvider filter_answers_provider
+     * @dataProvider remove_blank_words_from_response_testcases
      */
-    public function test_filter_answers(array $answer, int $expected) {
+    public function test_filter_answers(array $response, int $expectednumberofwords) {
         $this->resetAfterTest();
         $crossword = new \qtype_crossword_question();
-        $method = new \ReflectionMethod(\qtype_crossword_question::class, 'filter_answers');
+        $method = new \ReflectionMethod(\qtype_crossword_question::class, 'remove_blank_words_from_response');
         $method->setAccessible(true);
-        $result = $method->invoke($crossword, $answer);
-        $this->assertEquals($expected, count($result));
+        $this->assertCount($expectednumberofwords, $method->invoke($crossword, $response));
     }
 
     /**
      * Data provider for the test_filter_answers test.
      *
-     * @coversNothing
      * @return array
      */
-    public function filter_answers_provider(): array {
+    public function remove_blank_words_from_response_testcases(): array {
 
         return [
             'answer_valid_list' => [

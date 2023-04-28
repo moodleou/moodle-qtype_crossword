@@ -69,7 +69,7 @@ class answer {
     public function __construct(int $answerid, string $answer, string $clue, int $clueformat, string $orientation,
         string $startrow, string $startcolumn, ?string $feedback, ?int $feedbackformat) {
         $this->answerid = $answerid;
-        $this->answer = \qtype_crossword\util::safe_normalize($answer);
+        $this->answer = util::safe_normalize($answer);
         $this->clue = $clue;
         $this->clueformat = $clueformat;
         $this->orientation = $orientation;
@@ -83,25 +83,25 @@ class answer {
      * Check the correctness of the answer,
      * Remove the underscore character with a space before comparing it.
      *
-     * @param string $answer The answer need to be checked, maybe contain underscore characters.
+     * @param string $response The answer need to be checked, maybe contain underscore characters.
      * @return bool The result after check, True if correct.
      */
-    public function is_correct(string $answer): bool {
-        return $this->answer === str_replace('_', ' ', $answer);
+    public function is_correct(string $response): bool {
+        return $this->answer === str_replace('_', ' ', $response);
     }
 
     /**
-     * Check the input answer has the same letter but different accent,
+     * Check the input answer has the same letter but different accent, but is not completely right.
      *
-     * @param string $answer The answer need to be checked, maybe contain underscore characters.
+     * @param string $response The answer need to be checked, maybe contain underscore characters.
      * @return bool The result after check, True if only different accent.
      */
-    public function is_wrong_accents(string $answer): bool {
+    public function is_wrong_accents(string $response): bool {
 
-        if ($this->is_correct($answer)) {
+        if ($this->is_correct($response)) {
             return false;
         }
-        $answerinput = \qtype_crossword\util::remove_accent(str_replace('_', ' ', $answer));
+        $answerinput = \qtype_crossword\util::remove_accent(str_replace('_', ' ', $response));
         $answerdata = \qtype_crossword\util::remove_accent($this->answer);
 
         return $answerinput === $answerdata;

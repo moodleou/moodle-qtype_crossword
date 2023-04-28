@@ -51,7 +51,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         ];
         $data['questiontext'] = $question->format_questiontext($qa);
         foreach ($question->answers as $key => $answer) {
-            $orientation = 'across';
+            $orientation = $answer->orientation ? 'down' : 'across';
             $fieldname = 'sub' . $key;
             $length = core_text::strlen($answer->answer);
             $inputname = $qa->get_qt_field_name($fieldname);
@@ -73,10 +73,6 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                     'length' => $length
                 ]
             );
-
-            if ($answer->orientation) {
-                $orientation = 'down';
-            }
 
             $attributes = "name=$inputname id=$inputname maxlength=$length";
 
