@@ -76,8 +76,15 @@ class qtype_crossword_question extends question_graded_automatically {
 
     public function summarise_response(array $response): ?string {
         $responsewords = [];
-        foreach ($response as $responseword) {
-            $responsewords[] = str_replace('_', ' ', $responseword);
+        foreach ($this->answers as $key => $answer) {
+            $fieldname = $this->field($key);
+            if (array_key_exists($fieldname, $response)) {
+                $responseword = str_replace('_', ' ', $response[$fieldname]);
+                // If the answer is empty or only contain space. Display '-'.
+                $responseword = (empty($responseword) || core_text::strlen(trim($responseword)) === 0) ? '-' : $responseword;
+                // Get the correct answer position from the index key and convert to readable order.E.g: 0 -> 1).
+                $responsewords[] = $key + 1 . ') ' . $responseword;
+            }
         }
         if (empty($responsewords)) {
             return null;

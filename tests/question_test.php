@@ -468,4 +468,21 @@ class question_test extends \advanced_testcase {
             ],
         ];
     }
+
+    /**
+     * Show the summary response display in the response history table.
+     *
+     * @covers \qtype_crossword_question::summarise_response
+     */
+    public function test_summarise_response(): void {
+        $question = \test_question_maker::make_question('crossword');
+        $question->start_attempt(new question_attempt_step(), 1);
+
+        $this->assertEquals('1) BRAZIL; 3) ITALY', $question->summarise_response(
+            ['sub0' => 'BRAZIL', 'sub2' => 'ITALY'])
+        );
+        $this->assertEquals('1) BRAZIL; 2) -; 3) -', $question->summarise_response(
+            ['sub0' => 'BRAZIL', 'sub1' => '', 'sub2' => '__'])
+        );
+    }
 }
