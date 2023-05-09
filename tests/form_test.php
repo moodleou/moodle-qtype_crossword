@@ -36,16 +36,17 @@ require_once($CFG->dirroot . '/question/type/crossword/tests/helper.php');
  * @package qtype_crossword
  * @copyright 2022 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @covers \qtype_crossword_edit_form
  */
 class form_test extends \advanced_testcase {
 
     /**
      * Data provider for test_form_validation() test cases.
      *
-     * @coversNothing
      * @return array List of data sets (test cases)
      */
-    public function test_form_validation_provider(): array {
+    public function form_validation_testcases(): array {
         return [
             'Normal case' => [
                 [
@@ -193,7 +194,6 @@ class form_test extends \advanced_testcase {
     /**
      * Prepare test data.
      *
-     * @coversNothing
      * @return array List data $mform and $course.
      */
     public function prepare_test_data(): array {
@@ -228,8 +228,7 @@ class form_test extends \advanced_testcase {
     /**
      * Test editing form validation.
      *
-     * @dataProvider test_form_validation_provider
-     * @covers \validation
+     * @dataProvider form_validation_testcases
      * @param array $sampledata
      * @param array $expectederror
      */
@@ -285,8 +284,7 @@ class form_test extends \advanced_testcase {
      * @param array $option Option list.
      * @param array $expected Expected data.
      *
-     * @covers ::generate_alphabet_list
-     * @dataProvider generate_alphabet_list_provider
+     * @dataProvider generate_alphabet_list_testcases
      */
     public function test_generate_alphabet_list(array $option, array $expected) {
         list ($mform) = $this->prepare_test_data();
@@ -301,10 +299,9 @@ class form_test extends \advanced_testcase {
     /**
      * Data provider for the generate_alphabet_list test.
      *
-     * @coversNothing
      * @return array
      */
-    public function generate_alphabet_list_provider(): array {
+    public function generate_alphabet_list_testcases(): array {
 
         return [
             'Alphabet list from 1 to 26' => [
@@ -321,28 +318,26 @@ class form_test extends \advanced_testcase {
     }
 
     /**
-     * Test function check_correctness_answer.
+     * Test function validate_answer.
      *
      * @param array $data Data from provider.
-     * @covers ::check_correctness_answer
-     * @dataProvider check_correctness_answer_provider
+     * @dataProvider validate_answer_testcases
      */
-    public function test_check_correctness_answer(array $data) {
+    public function test_validate_answer(array $data) {
         list ($mform) = $this->prepare_test_data();
         $method = new \ReflectionMethod(\qtype_crossword_edit_form::class,
-            'check_correctness_answer');
+            'validate_answer');
         $method->setAccessible(true);
         $result = $method->invoke($mform, $data[0]);
         $this->assertEquals($data[1], $result);
     }
 
     /**
-     * Data provider for the check_correctness_answer test.
+     * Data provider for the validate_answer test.
      *
-     * @coversNothing
      * @return array
      */
-    public function check_correctness_answer_provider(): array {
+    public function validate_answer_testcases(): array {
 
         return [
             'Answer start with hyphen' => [

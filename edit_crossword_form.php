@@ -22,6 +22,8 @@
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use qtype_crossword\util;
+
 /**
  * Crossword question editing form definition.
  *
@@ -319,9 +321,9 @@ class qtype_crossword_edit_form extends question_edit_form {
             // Skip the invalid word.
             $clues[$i]['text'] = trim($clues[$i]['text']);
             // Normalize answer.
-            $answer = \qtype_crossword\util::safe_normalize(trim($answers[$i]));
+            $answer = util::safe_normalize(trim($answers[$i]));
             // Remove hyphen and space.
-            $answer = \qtype_crossword\util::remove_special_characters($answer);
+            $answer = util::remove_break_characters($answer);
             if ($clues[$i]['text'] === $answer) {
                 continue;
             }
@@ -344,7 +346,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             }
 
             // Check the correctness of the answer.
-            if (!(isset($errors["answer[$i]"])) && $errormessage = $this->check_correctness_answer($answers[$i])) {
+            if (!(isset($errors["answer[$i]"])) && $errormessage = $this->validate_answer($answers[$i])) {
                 $errors["answer[$i]"] = $errormessage;
             }
 
@@ -377,9 +379,9 @@ class qtype_crossword_edit_form extends question_edit_form {
      */
     private function check_word_length(array $data, int $iteral): bool {
         // Normalize answer.
-        $answer = \qtype_crossword\util::safe_normalize(trim($data['answer'][$iteral]));
+        $answer = util::safe_normalize(trim($data['answer'][$iteral]));
         // Remove hyphen and space.
-        $answer = \qtype_crossword\util::remove_special_characters($answer);
+        $answer = util::remove_break_characters($answer);
         $answerlength = core_text::strlen($answer);
         $orientation = (bool) $data['orientation'][$iteral];
         $griddata = range(3, 30);
@@ -412,9 +414,9 @@ class qtype_crossword_edit_form extends question_edit_form {
      */
     private function get_word_conflict(array $data, int $iteral, array &$except): array {
         // Normalize answer.
-        $answer1 = \qtype_crossword\util::safe_normalize(trim(core_text::strtolower($data['answer'][$iteral])));
+        $answer1 = util::safe_normalize(trim(core_text::strtolower($data['answer'][$iteral])));
         // Remove hyphen and space.
-        $answer1 = \qtype_crossword\util::remove_special_characters($answer1);
+        $answer1 = util::remove_break_characters($answer1);
         $positions = [];
         $startrow = $data['startrow'][$iteral] ?? null;
         $startcolumn = $data['startcolumn'][$iteral] ?? null;
@@ -433,9 +435,9 @@ class qtype_crossword_edit_form extends question_edit_form {
         // Compare the first word with another word.
         for ($i = count($data['answer']) - 1; $i >= 0; $i--) {
             // Normalize answer.
-            $answer2 = \qtype_crossword\util::safe_normalize(trim(core_text::strtolower($data['answer'][$i])));
+            $answer2 = util::safe_normalize(trim(core_text::strtolower($data['answer'][$i])));
             // Remove hyphen and space.
-            $answer2 = \qtype_crossword\util::remove_special_characters($answer2);
+            $answer2 = util::remove_break_characters($answer2);
             $clues = trim(core_text::strtolower($data['clue'][$i]['text']));
             // Skip invalid word.
             if ($answer2 === '' || $clues === '') {
@@ -630,7 +632,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @param string $answer The answer string need to be checked.
      * @return string Returns an error message if present and an empty string if not.
      */
-    private function check_correctness_answer(string $answer): string {
+    protected function validate_answer(string $answer): string {
         // Convert two-byte spaces to one-byte space.
         $answer = preg_replace('/ /', ' ', $answer);
         // Space are not allowed at the beginning or end.

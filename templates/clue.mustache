@@ -21,20 +21,20 @@
 
     Example context (json):
     {
-      "number": "",
-      "clue": "<p>Clue html content</p>",
-      "length": "",
-      "lengthClue": "",
+      "number": "1",
+      "clue": "<p>What this plugin is.</p>",
+      "lengthDisplay": "(8, 4)",
+      "length": 12,
       "value": "",
       "attributes": "id=q38:1_sub1",
       "feedbackimage": "",
-      "label": "label for accessibility",
+      "label": "1 across What this plugin is. Answer length 8, 4",
       "id": "q38:1_sub1",
       "orientation": 0,
       "startRow": 0,
       "startColumn": 0,
-      "feedback": "<p>feed back html content</p>",
-      "ignoreIndexes": ""
+      "feedback": "<p>fThis plugin is a question type.</p>",
+      "ignoreIndexes": "['space' => [8]]"
     }
 }}
 <div class="col-12 wrap-clue" data-questionid="{{number}}" data-startrow="{{startRow}}" data-ignoreindexes="{{ignoreIndexes}}"
@@ -42,7 +42,7 @@
     <div class="d-flex my-2">
         <div class="clue-id"><span>{{number}}</span></div>
         <div class="clue-content mr-1">{{{clue}}}</div>
-        <div class="clue-count ml-auto text-right text-nowrap">({{lengthClue}})</div>
+        <div class="clue-count text-nowrap">({{lengthDisplay}})</div>
     </div>
     <label class="accesshide" for="{{id}}">{{label}}</label>
     <input

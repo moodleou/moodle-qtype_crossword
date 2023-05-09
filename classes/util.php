@@ -49,12 +49,12 @@ class util {
     }
 
     /**
-     * Remove special characters from answer.
+     * Remove the work-break characters '-' and ' ' from an answer.
      *
-     * @param string Text need to be removed special characters.
-     * @return string Text has been processed.
+     * @param string Full answer.
+     * @return string Answer with just the letters remaining.
      */
-    public static function remove_special_characters(string $text): string {
+    public static function remove_break_characters(string $text): string {
         // Remove hyphen and space from text.
         return preg_replace('/-|\s/', '', $text);
     }

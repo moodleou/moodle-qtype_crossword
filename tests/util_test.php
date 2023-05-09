@@ -49,8 +49,8 @@ class util_test extends \qbehaviour_walkthrough_test_base {
      * @param string $string2 The second string need to compare.
      */
     public function test_safe_normalize(string $string1, string $string2): void {
-        $normalstring1 = \qtype_crossword\util::safe_normalize($string1);
-        $normalstring2 = \qtype_crossword\util::safe_normalize($string2);
+        $normalstring1 = util::safe_normalize($string1);
+        $normalstring2 = util::safe_normalize($string2);
         $this->assertEquals($normalstring1, $normalstring2);
     }
 
@@ -83,7 +83,7 @@ class util_test extends \qbehaviour_walkthrough_test_base {
      * @param string $missingaccent The string does not contain any accent characters.
      */
     public function test_remove_accent(string $containaccent, string $missingaccent): void {
-        $accentremovedstring = \qtype_crossword\util::remove_accent($containaccent);
+        $accentremovedstring = util::remove_accent($containaccent);
         $this->assertEquals($missingaccent, $accentremovedstring);
     }
 
@@ -115,26 +115,26 @@ class util_test extends \qbehaviour_walkthrough_test_base {
     }
 
     /**
-     * Test remove_special_characters function.
+     * Test remove_break_characters function.
      *
-     * @dataProvider test_remove_special_characters_provider
-     * @covers \qtype_crossword\util::remove_special_characters
+     * @dataProvider remove_break_characters_testcases
+     * @covers \qtype_crossword\util::remove_break_characters
      *
      * @param string $text The string need to change.
      * @param string $expected The expected text.
      */
-    public function test_remove_special_characters(string $text, string $expected): void {
-        $text = \qtype_crossword\util::remove_special_characters($text);
-        $this->assertEquals($text, $expected);
+    public function test_remove_break_characters(string $text, string $expected): void {
+        $text = util::remove_break_characters($text);
+        $this->assertEquals($expected, $text);
     }
 
     /**
-     * Data provider for test_remove_special_characters() test cases.
+     * Data provider for test_remove_break_characters.
      *
      * @coversNothing
      * @return array List of data sets (test cases)
      */
-    public function test_remove_special_characters_provider(): array {
+    public function remove_break_characters_testcases(): array {
         return [
             'Text with space' => [
                 'Los angeles',

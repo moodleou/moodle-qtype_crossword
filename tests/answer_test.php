@@ -75,15 +75,7 @@ class answer_test extends \advanced_testcase {
             ['3, 7-3', ['space' => [3], 'hyphen' => [11]]],
         ];
         foreach ($q->answers as $key => $answer) {
-            $answerhintdata = $answer->generate_answer_hint();
-            // Retrieve answer hint.
-            $answerhint = $answerhintdata[0];
-            // Retrieve special character (space, hyphen) index list.
-            $specialcharacterindexes = $answerhintdata[1];
-            // Check answer hint.
-            $this->assertEquals($answerhint, $expecteddata[$key][0]);
-            // Check index list.
-            $this->assertEquals($specialcharacterindexes, $expecteddata[$key][1]);
+            $this->assertEquals($expecteddata[$key], $answer->generate_answer_hint());
         }
     }
 }
