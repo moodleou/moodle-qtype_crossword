@@ -96,6 +96,42 @@ class question_test extends \advanced_testcase {
     }
 
     /**
+     * Test clear_wrong_from_response with accent.
+     *
+     * @dataProvider clear_wrong_from_response_with_accent
+     * @covers \qtype_crossword_question::clear_wrong_from_response
+     * @param string $template crosswword template name.
+     * @param array $responses submitted responses.
+     * @param array $expected Expected result.
+     */
+    public function test_clear_wrong_from_response_with_accent(string $template, array $responses, array $expected): void {
+        $question = \test_question_maker::make_question('crossword', $template);
+        $this->assertEquals($expected, $question->clear_wrong_from_response($responses));
+    }
+
+    /**
+     * Data provider for the test_clear_wrong_from_response.
+     *
+     * @coversNothing
+     * @return array
+     */
+    public function clear_wrong_from_response_with_accent(): array {
+
+        return [
+            'Ignore accent' => [
+                'accept_wrong_accents_but_not_subtract_point',
+                ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
+                ['sub0' => 'PATE', 'sub1' => 'TELEPHONE']
+            ],
+            'Partial correct answers with accent' => [
+                'accept_wrong_accents_but_subtract_point',
+                ['sub0' => 'PÂTÉ', 'sub1' => 'TELEPHONE'],
+                ['sub0' => 'PÂTÉ', 'sub1' => '']
+            ],
+        ];
+    }
+
+    /**
      * Test function is_gradable_response.
      *
      * @covers \qtype_crossword_question::is_gradable_response
