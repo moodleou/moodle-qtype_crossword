@@ -233,14 +233,13 @@ class qtype_crossword_question extends question_graded_automatically {
                     return true;
                 }
             }
-        }
-
-        if ($component == 'question' && in_array($filearea,
+        } else if ($component === 'question' && in_array($filearea,
                 ['correctfeedback', 'partiallycorrectfeedback', 'incorrectfeedback'])) {
             return $this->check_combined_feedback_file_access($qa, $options, $filearea, $args);
+        } else if ($component === 'question' && $filearea === 'hint') {
+            return $this->check_hint_file_access($qa, $options, $args);
+        } else {
+            return parent::check_file_access($qa, $options, $component, $filearea, $args, $forcedownload);
         }
-
-        return parent::check_file_access($qa, $options, $component, $filearea,
-            $args, $forcedownload);
     }
 }
