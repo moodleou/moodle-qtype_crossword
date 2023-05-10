@@ -154,7 +154,7 @@ class qtype_crossword_question extends question_graded_automatically {
 
     public function clear_wrong_from_response(array $response): array {
         foreach ($this->answers as $key => $answer) {
-            if (isset($response[$this->field($key)]) && !$answer->is_correct($response[$this->field($key)])) {
+            if (isset($response[$this->field($key)]) && !$this->is_full_fraction($answer, $response[$this->field($key)])) {
                 $response[$this->field($key)] = '';
             }
         }
