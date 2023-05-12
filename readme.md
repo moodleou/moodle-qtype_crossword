@@ -1,14 +1,14 @@
 # Crossword question type
 
-A first working version of a crossword question type, currently in beta.
+A crossword question type for Moodle.
 
 
 ## Installation and set-up
 
 ### Install from the plugins database
 
-We hope this question type will be published at https://moodle.org/plugins/qtype_crossword
-once it has been approved.
+Install from the Moodle plugins database https://moodle.org/plugins/qtype_crossword
+in the normal way.
 
 
 ### Install using git
