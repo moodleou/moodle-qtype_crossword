@@ -34,7 +34,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I set the field "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" to "BRAZIL"
     And I set the field "2 Down. Eiffel Tower is located in? Answer length 5" to "PARIS"
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "ITALY"
@@ -49,7 +49,7 @@ Feature: Preview a Crossword question
     And "//img[contains(@src,'question/clue') and contains(@src,'clueimg.jpg')]" "xpath_element" should exist
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I set the field "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" to "BRAZIL"
     And I set the field "2 Down. Eiffel Tower is located in? Answer length 5" to "PARIS"
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "ITALY"
@@ -73,7 +73,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I set the field "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" to "BRAZIL"
     And I set the field "2 Down. Eiffel Tower is located in? Answer length 5" to "PARIS"
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "NANNO"
@@ -86,7 +86,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I set the field "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" to "LONDON"
     And I set the field "2 Down. Eiffel Tower is located in? Answer length 5" to "HANOI"
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "NANNO"
@@ -125,7 +125,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-002" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "回答一" in the crossword clue "1 Down. 线索 1 Answer length 3"
     And I enter unicode character "回答两个" in the crossword clue "2 Across. 线索 2 Answer length 4"
     And I enter unicode character "回答三" in the crossword clue "3 Down. 线索 3 Answer length 3"
@@ -138,7 +138,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-002" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "回答一" in the crossword clue "1 Down. 线索 1 Answer length 3"
     And I enter unicode character "回答二" in the crossword clue "2 Across. 线索 2 Answer length 4"
     And I enter unicode character "回答三" in the crossword clue "3 Down. 线索 3 Answer length 3"
@@ -151,7 +151,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-002" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "回答四" in the crossword clue "1 Down. 线索 1 Answer length 3"
     And I enter unicode character "回答五" in the crossword clue "2 Across. 线索 2 Answer length 4"
     And I enter unicode character "回答六" in the crossword clue "3 Down. 线索 3 Answer length 3"
@@ -164,7 +164,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-003" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "Amélie" in the crossword clue "1 Across. Answer contains letter é has codepoint \u00e9 Answer length 6"
     And I enter unicode character "Amélie" in the crossword clue "2 Down. Answer contains letter é has codepoint \u0065\u0301 Answer length 6"
     And I press "Submit and finish"
@@ -176,7 +176,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-003" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "Amélie" in the crossword clue "1 Across. Answer contains letter é has codepoint \u00e9 Answer length 6"
     And I enter unicode character "Améliz" in the crossword clue "2 Down. Answer contains letter é has codepoint \u0065\u0301 Answer length 6"
     And I press "Submit and finish"
@@ -188,7 +188,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-003" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "Amelie" in the crossword clue "1 Across. Answer contains letter é has codepoint \u00e9 Answer length 6"
     And I enter unicode character "Amelie" in the crossword clue "2 Down. Answer contains letter é has codepoint \u0065\u0301 Answer length 6"
     And I press "Submit and finish"
@@ -200,7 +200,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-005" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I set the field "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" to "BRAZIL"
     And I set the field "2 Down. Eiffel Tower is located in? Answer length 5" to "PARIT"
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "ITALY"
@@ -215,7 +215,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I set the field "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" to "BRAZIL"
     And I set the field "2 Down. Eiffel Tower is located in? Answer length 5" to "  RIS"
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "ITALY"
@@ -230,7 +230,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-006" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     Then I should see "(5, 12)"
     And I should see "(6, 5)"
     And I should see "(3, 7-3)"
@@ -240,7 +240,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-001" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     # BRAZIL
     And I enter character "B" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" in position "1"
     And I enter character "R" in the crossword clue using mobile input "1 Across. where is the Christ the Redeemer statue located in? Answer length 6" in position "2"
@@ -296,7 +296,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-008" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "PATE" in the crossword clue "1 Across. Des accompagnements à base de foie animal ? Answer length 4"
     And I enter unicode character "TALAPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ? Answer length 9"
     And I press "Check"
@@ -312,7 +312,7 @@ Feature: Preview a Crossword question
     When I am on the "crossword-007" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
-    And I press "Start again with these options"
+    And I press "id_saverestart"
     And I enter unicode character "PATE" in the crossword clue "1 Across. Des accompagnements à base de foie animal ? Answer length 4"
     And I enter unicode character "TALAPHONE" in the crossword clue "2 Down. Appareil utilisé pour passer des appels ? Answer length 9"
     And I press "Check"

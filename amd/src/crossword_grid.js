@@ -100,15 +100,9 @@ export class CrosswordGrid extends CrosswordQuestion {
             let answerLength = answer.length;
             let realLength = answerLength + words[i].startcolumn;
             let allowLength = parseInt(colsNum);
-            let invalidWord = words[i].clue.trim() === '';
             // Add more columns and row for preview.
             row++;
             column++;
-
-            if (!invalidWord) {
-                invalidWord = this.isContainSpecialCharacters(answer) ||
-                    this.checkCorrectnessAnswer(words[i].answer);
-            }
 
             if (words[i].orientation) {
                 realLength = answerLength + words[i].startrow;
@@ -140,6 +134,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                 }
                 const letter = answer[j].toUpperCase().trim() ?? '';
                 const contentEl = squareEl.querySelector('span.word-content');
+                let isInvalidLetter = this.isContainSpecialCharacters(letter);
                 if (!contentEl) {
                     let spanEl = document.createElement('span');
                     spanEl.className = 'word-content';
@@ -149,13 +144,13 @@ export class CrosswordGrid extends CrosswordQuestion {
                     let text = '';
                     const innerText = contentEl.innerText;
                     if (innerText.search(letter) < 0) {
+                        isInvalidLetter = true;
                         text = innerText + ' | ' + letter;
-                        squareEl.style.backgroundColor = previewSetting.conflictColor;
                         contentEl.innerText = text;
                     }
                 }
 
-                if (invalidWord || realLength > allowLength) {
+                if (realLength > allowLength || isInvalidLetter) {
                     squareEl.style.backgroundColor = previewSetting.conflictColor;
                 }
 

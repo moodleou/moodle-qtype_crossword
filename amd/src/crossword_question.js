@@ -172,20 +172,6 @@ export class CrosswordQuestion {
     }
 
     /**
-     * Check the correctness of the answer using defined rules.
-     *
-     * @param {String} answer The answer string need to be check.
-     * @return {Boolean} True if the answer is invalid.
-     */
-    checkCorrectnessAnswer(answer) {
-        // The rules:
-        // 1. Answers cannot have spaces or huphen at the beginning or end.
-        // 2. The answer does not allow more than 1 contiguous space/hyphen.
-        // 3. The answer does not allow spaces and hyphens next to each other.
-        return /(^\s|^-|\s$|-$|-{2}|\s{2}|\s-|-\s)/gm.test(answer);
-    }
-
-    /**
      * Generate underscore letter by length.
      *
      * @param {Number} length Expected length.
