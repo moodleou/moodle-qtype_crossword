@@ -61,9 +61,9 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $feedback = '';
             if ($options->generalfeedback) {
                 $feedback = $question->format_text($answer->feedback, $answer->feedbackformat,
-                    $qa, 'question', 'feedback', $answer->answerid);
+                    $qa, 'qtype_crossword', 'feedback', $answer->answerid);
             }
-            $clue = $question->format_text($answer->clue, $answer->clueformat, $qa, 'question', 'clue', $answer->answerid);
+            $clue = $question->format_text($answer->clue, $answer->clueformat, $qa, 'qtype_crossword', 'clue', $answer->answerid);
             $label = get_string(
                 'inputlabel',
                 'qtype_crossword',
