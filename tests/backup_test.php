@@ -171,6 +171,23 @@ class backup_test extends \restore_date_testcase {
                 ],
                 'version' => 3,
             ],
+            'crossword with image files in clue,feedback' => [
+                'filename' => 'crossword with image files in clue,feedback.mbz',
+                'coursefullname' => 'Crossword in Quiz with image files in editor fields',
+                'courseshortname' => 'cwwf',
+                'questionname' => 'Crossword with image files',
+                'words' => [
+                    [
+                        'clue' => 'Clue with image',
+                        'clueformat' => FORMAT_HTML,
+                        'feedback' => 'Feedback with image',
+                        'feedbackformat' => FORMAT_HTML,
+                        'answer' => 'AAA',
+                        'hasfile' => true,
+                    ],
+                ],
+                'version' => 4,
+            ],
         ];
     }
 
@@ -208,10 +225,21 @@ class backup_test extends \restore_date_testcase {
         // Verify question exist after restore and question word options is correct.
         $this->assertEquals($questionname, $q->name);
         $count = 0;
+        $fs = get_file_storage();
         foreach ($q->options->words as $word) {
-            $this->assertEquals($expectedwords[$count]['clue'], $word->clue);
+            if (isset($expectedwords[$count]['hasfile'])) {
+                // Need to use contain since we don't know the expected url of the files.
+                $this->assertStringContainsString($expectedwords[$count]['clue'], $word->clue);
+                $this->assertStringContainsString($expectedwords[$count]['feedback'], $word->feedback);
+                $this->assertInstanceOf('stored_file',
+                    $fs->get_file($q->contextid, 'qtype_crossword', 'clue', $word->id, '/', '200.gif'));
+                $this->assertInstanceOf('stored_file',
+                    $fs->get_file($q->contextid, 'qtype_crossword', 'feedback', $word->id, '/', 'test.PNG'));
+            } else {
+                $this->assertEquals($expectedwords[$count]['clue'], $word->clue);
+                $this->assertEquals($expectedwords[$count]['feedback'], $word->feedback);
+            }
             $this->assertEquals($expectedwords[$count]['clueformat'], $word->clueformat);
-            $this->assertEquals($expectedwords[$count]['feedback'], $word->feedback);
             $this->assertEquals($expectedwords[$count]['feedbackformat'], $word->feedbackformat);
             $this->assertEquals($expectedwords[$count]['answer'], $word->answer);
             $count++;

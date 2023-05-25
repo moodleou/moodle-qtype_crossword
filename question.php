@@ -234,7 +234,7 @@ class qtype_crossword_question extends question_graded_automatically {
     public function check_file_access($qa, $options, $component, $filearea,
         $args, $forcedownload) {
 
-        if ($component === 'question' && ($filearea === 'clue' || $filearea === 'feedback')) {
+        if ($component === 'qtype_crossword' && ($filearea === 'clue' || $filearea === 'feedback')) {
             foreach ($qa->get_question(false)->answers as $answer) {
                 if ((int)$answer->answerid === (int)$args[0]) {
                     return true;

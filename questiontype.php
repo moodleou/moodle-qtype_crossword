@@ -150,12 +150,12 @@ class qtype_crossword extends question_type {
             $word->answer = trim(mb_strtoupper($question->answer[$i]));
             if (isset($question->feedback[$i])) {
                 $word->feedback = $this->import_or_save_files($question->feedback[$i],
-                    $context, 'question', 'feedback', $word->id);
+                    $context, 'qtype_crossword', 'feedback', $word->id);
                 $word->feedbackformat = $question->feedback[$i]['format'];
             }
             if (isset($question->clue[$i])) {
                 $word->clue = $this->import_or_save_files($question->clue[$i],
-                    $context, 'question', 'clue', $word->id);
+                    $context, 'qtype_crossword', 'clue', $word->id);
                 $word->clueformat = $question->clue[$i]['format'];
             }
             $word->orientation = $question->orientation[$i];
@@ -170,8 +170,8 @@ class qtype_crossword extends question_type {
                 return $word->id;
             }, $oldwords);
             list($idssql, $idsparams) = $DB->get_in_or_equal($ids, SQL_PARAMS_QM);
-            $fs->delete_area_files_select($context->id, 'question', 'feedback', "id $idssql", $idsparams);
-            $fs->delete_area_files_select($context->id, 'question', 'clue', "id $idssql", $idsparams);
+            $fs->delete_area_files_select($context->id, 'qtype_crossword', 'feedback', "id $idssql", $idsparams);
+            $fs->delete_area_files_select($context->id, 'qtype_crossword', 'clue', "id $idssql", $idsparams);
             $DB->delete_records_select('qtype_crossword_words', "id $idssql", $idsparams);
         }
         $options = $DB->get_record('qtype_crossword_options', ['questionid' => $question->id]);

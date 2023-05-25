@@ -261,7 +261,7 @@ class qtype_crossword_edit_form extends question_edit_form {
                 $clue[$key]['text'] = file_prepare_draft_area(
                     $cluedraftitemid,
                     $this->context->id,
-                    'question',
+                    'qtype_crossword',
                     'clue',
                     $itemid,
                     $this->fileoptions,
@@ -277,7 +277,7 @@ class qtype_crossword_edit_form extends question_edit_form {
                 $feedback[$key]['text'] = file_prepare_draft_area(
                     $feedbackdraftitemid,
                     $this->context->id,
-                    'question',
+                    'qtype_crossword',
                     'feedback',
                     $itemid,
                     $this->fileoptions,

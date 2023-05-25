@@ -46,7 +46,7 @@ Feature: Preview a Crossword question
   Scenario: Preview a Crossword question with sample image.
     When I am on the "crossword-004" "core_question > preview" page logged in as teacher
     And "//img[contains(@src,'question/questiontext') and contains(@src,'questiontextimg.jpg')]" "xpath_element" should exist
-    And "//img[contains(@src,'question/clue') and contains(@src,'clueimg.jpg')]" "xpath_element" should exist
+    And "//img[contains(@src,'qtype_crossword/clue') and contains(@src,'clueimg.jpg')]" "xpath_element" should exist
     And I expand all fieldsets
     And I set the field "How questions behave" to "Immediate feedback"
     And I press "id_saverestart"
