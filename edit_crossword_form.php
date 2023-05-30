@@ -93,12 +93,12 @@ class qtype_crossword_edit_form extends question_edit_form {
 
         // Add clue field.
         $repeated[] = $mform->createElement('editor', 'clue',
-            get_string('clue', 'qtype_crossword'), ['rows' => 1], $this->editoroptions);
+            get_string('clue', 'qtype_crossword'), ['rows' => 2], $this->editoroptions);
         $mform->setType('clue', PARAM_RAW);
 
         // Add feedback field.
         $repeated[] = $mform->createElement('editor', 'feedback',
-            get_string('feedback', 'question'), ['rows' => 1], $this->editoroptions);
+            get_string('feedback', 'question'), ['rows' => 2], $this->editoroptions);
         $mform->setType('feedback', PARAM_RAW);
 
         $wordsoptions = 'words';
