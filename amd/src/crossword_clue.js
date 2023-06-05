@@ -78,8 +78,14 @@ export class CrosswordClue extends CrosswordQuestion {
             const wordNumber = e.target.closest('.wrap-clue').dataset.questionid;
             const wordObj = words.find(o => o.number === parseInt(wordNumber));
             let startIndex = e.target.selectionStart;
-            if (startIndex >= word.length) {
-                startIndex = word.length - 1;
+            // Check if the answer fields is clicked.
+            const isClicked = startIndex === e.target.selectionEnd;
+            const previousIndex = startIndex - 1;
+            // Check if the previous character contains hyphen or space.
+            const isContainSpecialCharacter = ['-', ' '].includes(e.target.value.charAt(previousIndex));
+            if (!isContainSpecialCharacter && isClicked) {
+                startIndex = (previousIndex < 0) ? 0 : previousIndex;
+                e.target.setSelectionRange(startIndex, startIndex);
             }
             // Based on the selected letter index on the answer index,
             // we will find the corresponding crossword cell index.
