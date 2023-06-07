@@ -77,6 +77,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
+        $cw->generalfeedback = '';
         $answerslist = [
             (object) [
                 'id' => 1,
