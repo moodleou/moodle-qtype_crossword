@@ -57,6 +57,11 @@ class qtype_crossword_edit_form extends question_edit_form {
         $mform->addElement('submit', 'updateform', get_string('updateform', 'qtype_crossword'));
         $mform->registerNoSubmitButton('updateform');
 
+        // Remove required rule for question text.
+        unset($mform->_rules['questiontext']);
+        $key = array_search('questiontext', $mform->_required);
+        unset($mform->_required[$key]);
+
         $this->set_current_grid_setting();
         $this->add_question_section($mform);
 
