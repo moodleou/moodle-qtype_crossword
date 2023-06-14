@@ -112,6 +112,11 @@ export class CrosswordClue extends CrosswordQuestion {
 
         el.addEventListener('keypress', (e) => {
             e.preventDefault();
+            // On mobile devices, the Backspace key may trigger the keypress event when the user uses Input Method Editor.
+            // Therefore, we need to prevent this behavior.
+            if (e.key === this.BACKSPACE) {
+                return;
+            }
             this.handleInsertedCharacterToElement(e, e.key);
         });
 
@@ -126,14 +131,8 @@ export class CrosswordClue extends CrosswordQuestion {
             const {wordNumber} = this.options;
             const selection = evt.target.selectionStart;
             let key = evt.data.normalize('NFKC');
-            let currentSelection = startSelection;
             evt.target.setSelectionRange(selection, selection);
-            key.split('').forEach(char => {
-                const result = this.handleTypingData(evt, wordNumber, word, currentSelection, char);
-                if (result) {
-                    currentSelection++;
-                }
-            });
+            this.insertCharacters(evt, key, wordNumber, word, startSelection);
         });
 
         el.addEventListener('keyup', (event) => {
@@ -154,9 +153,6 @@ export class CrosswordClue extends CrosswordQuestion {
                 if (gEl) {
                     this.toggleHighlight(word, gEl);
                 }
-            }
-            if (key === this.DELETE || key === this.BACKSPACE) {
-                this.handleAndSyncDeletedStringToElement(target, value);
             }
 
             if (key === this.END || key === this.HOME || key === this.ARROW_UP || key === this.ARROW_DOWN) {
@@ -324,10 +320,16 @@ export class CrosswordClue extends CrosswordQuestion {
             return;
         }
         let startIndex = target.selectionStart;
-        const selectionLength = word.length - value.length;
+        let selectionLength = word.length - value.length;
+        // When the user enters characters using an Input Method Editor, sometimes they may exceed the maximum length allowed.
+        // We need to reset it to prevent obtaining a negative number.
+        if (selectionLength < 0) {
+            selectionLength = 0;
+        }
         const underScore = this.makeUnderscore(selectionLength);
         // Insert underscore to deleted string.
-        target.value = [value.slice(0, startIndex), underScore, value.slice(startIndex)].join('');
+        // We need to ensure that the value does not exceed the maximum allowed length.
+        target.value = [value.slice(0, startIndex), underScore, value.slice(startIndex)].join('').slice(0, word.length);
         // In case the user deletes the entire answer we need to update the crossword grid.
         this.syncLettersByText(target.value, false);
         this.syncFocusCellAndInput(target, startIndex);
@@ -347,6 +349,27 @@ export class CrosswordClue extends CrosswordQuestion {
         if (value === '') {
             return;
         }
-        this.handleTypingData(event, wordNumber, word, startIndex, value);
+        event.target.setSelectionRange(startIndex, startIndex);
+        this.insertCharacters(event, value, wordNumber, word, startIndex);
+    }
+
+    /**
+     * When the user enters characters using an Input Method Editor (IME),
+     * the input value can consist of multiple characters instead of just one. Therefore, we need to loop through them and
+     * insert them into the answer input.
+     *
+     * @param {Object} event Event data.
+     * @param {String} value The characters we are inserted to the clue input.
+     * @param {Number} wordNumber The word number.
+     * @param {Object} word The word object.
+     * @param {Number} currentSelection The position of cursor.
+     */
+    insertCharacters(event, value, wordNumber, word, currentSelection) {
+        value.split('').forEach(char => {
+            const result = this.handleTypingData(event, wordNumber, word, currentSelection, char);
+            if (result) {
+                currentSelection++;
+            }
+        });
     }
 }

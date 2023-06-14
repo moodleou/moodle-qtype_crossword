@@ -605,6 +605,11 @@ export class CrosswordGrid extends CrosswordQuestion {
 
         inputEl.addEventListener('keypress', (e) => {
             e.preventDefault();
+            // On mobile devices, the Backspace key may trigger the keypress event when the user uses Input Method Editor.
+            // Therefore, we need to prevent this behavior.
+            if (e.key === this.BACKSPACE) {
+                return false;
+            }
             this.handleInsertTextEventForGridInput(e, e.key);
             return true;
         });
