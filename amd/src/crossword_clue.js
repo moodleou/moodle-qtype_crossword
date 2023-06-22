@@ -105,7 +105,9 @@ export class CrosswordClue extends CrosswordQuestion {
         });
 
         el.addEventListener('input', (e) => {
-            if (e.inputType === 'deleteContentBackward') {
+            // Handling the event when the user selects the backspace or delete button.
+            if (e.inputType === 'deleteContentBackward' ||
+                    e.inputType === 'deleteContentForward') {
                 this.handleAndSyncDeletedStringToElement(e.target, e.target.value);
             }
         });
