@@ -383,5 +383,14 @@ export class CrosswordClue extends CrosswordQuestion {
             // We have to increase the selection index until we encounter a valid letter (excluding special characters).
             currentSelection++;
         }
+        requestAnimationFrame(() => {
+            // If the current selection is a special character,
+            // we need to increase the selection index to find the next valid character.
+            if (ignoreIndexes.includes(currentSelection)) {
+                currentSelection++;
+            }
+            // Set the selection range.
+            event.target.setSelectionRange(currentSelection, currentSelection);
+        });
     }
 }
