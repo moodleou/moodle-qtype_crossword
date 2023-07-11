@@ -630,23 +630,28 @@ export class CrosswordGrid extends CrosswordQuestion {
                 if (!gEl) {
                     return false;
                 }
-                const letterIndex = parseInt(gEl.dataset.letterindex);
-                let index = 0;
+                let letterIndex = parseInt(gEl.dataset.letterindex);
                 for (let char of chars) {
                     if (this.replaceText(char) === '') {
                         continue;
                     }
-                    const cellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex + index).pop() ?? null;
+                    // Retrieve the next valid cell and its corresponding character index.
+                    const [charIndex, cellEl] = this.findTheClosestCell(wordNumber, wordObj, letterIndex);
                     // Interact with clue.
                     if (cellEl) {
+                        letterIndex = charIndex;
                         cellEl.querySelector('text.crossword-cell-text').innerHTML = char;
                         this.bindDataToClueInput(cellEl, char);
-                        cellEl.dispatchEvent(new Event('click'));
-                        index++;
+                        // Make sure not to click when a cell is already focused.
+                        if (!cellEl.querySelector('.crossword-cell-focussed')) {
+                            cellEl.dispatchEvent(new Event('click'));
+                        }
+                        // Increment to the next letter index.
+                        letterIndex++;
                     }
                 }
 
-                const nextCellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex + chars.length).pop() ?? null;
+                const nextCellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex).pop() ?? null;
                 if (nextCellEl) {
                     nextCellEl.dispatchEvent(new Event('click'));
                 }
