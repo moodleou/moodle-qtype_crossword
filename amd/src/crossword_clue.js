@@ -368,11 +368,20 @@ export class CrosswordClue extends CrosswordQuestion {
      * @param {Number} currentSelection The position of cursor.
      */
     insertCharacters(event, value, wordNumber, word, currentSelection) {
-        value.split('').forEach(char => {
-            const result = this.handleTypingData(event, wordNumber, word, currentSelection, char);
-            if (result) {
-                currentSelection++;
+        // Retrieve the special character index of word.
+        // e.g: Answer is: A-B-C, so the list special character index is: [1,3].
+        const ignoreIndexes = this.getIgnoreIndexByAnswerNumber(wordNumber);
+        const chars = value.split('');
+        // If the current selection index is greater than the word length or
+        // if we have already handled all the characters, we need to stop the loop.
+        while (currentSelection < word.length && chars.length !== 0) {
+            // Skip handling special characters.
+            if (!ignoreIndexes.includes(currentSelection)) {
+                // Handle each character.
+                this.handleTypingData(event, wordNumber, word, currentSelection, chars.shift());
             }
-        });
+            // We have to increase the selection index until we encounter a valid letter (excluding special characters).
+            currentSelection++;
+        }
     }
 }
