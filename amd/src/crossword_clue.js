@@ -98,6 +98,7 @@ export class CrosswordClue extends CrosswordQuestion {
         el.addEventListener('focus', (e) => {
             e.target.dispatchEvent(new Event('click'));
         });
+
         el.addEventListener('beforeinput', (e) => {
             if (e.inputType === 'insertText' && e.data) {
                 this.handleInsertedCharacterToElement(e, e.data);

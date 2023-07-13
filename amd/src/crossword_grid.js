@@ -562,26 +562,46 @@ export class CrosswordGrid extends CrosswordQuestion {
     handleInsertTextEventForGridInput(event, value) {
         const {wordNumber, words} = this.options;
         const inputEl = event.target;
-        const code = inputEl.dataset.code;
+        let code = inputEl.dataset.code;
         const upperText = value.toUpperCase();
         if (this.replaceText(value) === '') {
             return;
         }
-        // Filter value.
-        if (code) {
+        // If a letter is entered using an IME keyboard, it may contain multiple characters.
+        // Therefore, we need to split it into an array and loop through it to handle each character.
+        let chars = upperText.split('');
+        let letterIndex;
+        const wordObj = words.find(word => word.number === parseInt(wordNumber));
+        for (let char of chars) {
+            // Find the text element in the g element based on the code.
             const textEl = this.options.crosswordEl.querySelector(`g[data-code='${code}'] text.crossword-cell-text`);
-            if (!textEl) {
+            if (!textEl || this.replaceText(char) === '') {
+                continue;
+            }
+            // Set character into text element in grid.
+            textEl.innerHTML = char;
+            if (!letterIndex) {
+                // Set the letter index based on the text element for the first time.
+                letterIndex = parseInt(textEl.closest('g').dataset.letterindex);
+            }
+            // When the answer contains special characters, the next `charIndex` will not be equal to `letterIndex + 1`.
+            // For example, if the answer is "A-B-C", when attempting to display the answer in the clue input,
+            // it will be shown as "_ - _ - _", the letter index will be 0(A), 1(-), 2(B), 3(-), 4(C),
+            // but in the grid, only three cells will be shown with letter indices:
+            // 0 (A), 2 (B), and 4 (C) (special characters are not counted).
+            // Therefore, when the user enters the cell for the first letter in the grid (letter index 0),
+            // the next cell will have a letter index of 2.
+            const [charIndex, nextCellEl] = this.findTheClosestCell(wordNumber, wordObj, letterIndex + 1);
+            // Assign a new letter to the clue input.
+            this.bindDataToClueInput(textEl.closest('g'), char);
+            if (!nextCellEl) {
                 return;
             }
-            textEl.innerHTML = upperText;
-            const letterIndex = parseInt(textEl.closest('g').dataset.letterindex);
-            const wordObj = words.find(word => word.number === parseInt(wordNumber));
-            const nextCellEl = this.findTheClosestCell(wordNumber, wordObj, letterIndex + 1).pop() ?? null;
-            // Interact with clue.
-            this.bindDataToClueInput(textEl.closest('g'), value);
-            if (nextCellEl) {
-                nextCellEl.dispatchEvent(new Event('click'));
-            }
+            // Update code.
+            code = nextCellEl.dataset.code;
+            // Update `letterIndex`.
+            letterIndex = charIndex;
+            nextCellEl.dispatchEvent(new Event('click'));
         }
     }
 
@@ -595,12 +615,12 @@ export class CrosswordGrid extends CrosswordQuestion {
         if (readonly) {
             return;
         }
-        inputEl.addEventListener('input', (e) => {
-            e.preventDefault();
-            if (e.inputType === 'insertText') {
+
+        // Handle IME input.
+        inputEl.addEventListener('beforeinput', (e) => {
+            if (e.inputType === 'insertText' && e.data) {
                 this.handleInsertTextEventForGridInput(e, e.data);
             }
-            return true;
         });
 
         inputEl.addEventListener('keypress', (e) => {
