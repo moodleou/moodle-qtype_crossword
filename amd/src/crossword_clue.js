@@ -124,8 +124,18 @@ export class CrosswordClue extends CrosswordQuestion {
         });
 
         el.addEventListener('compositionstart', (evt) => {
-            const selection = evt.target.selectionStart;
-            startSelection = selection;
+            startSelection = evt.target.selectionStart;
+            // The steps below fix the issue when the user selects all the value of the input text,
+            // and then enters a letter from the IME keyboard. In this case, we should only remove
+            // the first letter of the selected value instead of removing all of them.
+            // To achieve this, we will follow these steps:
+            // 1. Retrieve the current value of the input.
+            let value = evt.target.value.split('');
+            // 2. Remove a letter of the input value based on the letter index.
+            value.splice(startSelection, 1);
+            // 3. Set the updated value back to the input text.
+            evt.target.value = value.join('');
+            evt.target.setSelectionRange(startSelection, startSelection);
         });
 
         el.addEventListener('compositionend', (evt) => {
