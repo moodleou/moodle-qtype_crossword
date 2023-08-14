@@ -64,6 +64,7 @@ $string['wordno'] = 'Word {$a}';
 $string['words'] = 'Words';
 $string['words_help'] = 'Please set at least one word and its matching clue, and define its direction and start position. Remember that the words are numbered in the grid according to their order in this section.';
 $string['wrongadjacentcharacter'] = 'Two or more consecutive new word breaks detected. Please use a maximum of one between individual words. Note that this does not limit the number of new words in the answer itself.';
+$string['wronganswernumbering'] = 'Answer numbering for each direction must be unique.';
 $string['wrongintersection'] = 'The letter at the intersection of two words do not match. The word cannot be placed here.';
 $string['wrongpositionhyphencharacter'] = 'Please do not add a hyphen before or after the last alphanumeric character.';
 $string['wrongpositionspacecharacter'] = 'Please do not add a space before or after the last alphanumeric character.';

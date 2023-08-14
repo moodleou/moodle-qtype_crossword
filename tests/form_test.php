@@ -187,6 +187,31 @@ class form_test extends \advanced_testcase {
                     'answer[1]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 2),
                     'clue[0]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 1),
                 ]
+            ],
+            'Ensure a unique answer number for each orientation.' => [
+                [
+                    'noanswers' => 3,
+                    'answer' => [
+                        'ABC', 'ACB', 'ABC'
+                    ],
+                    'clue' => [
+                        ['text' => 'Clue A', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue B', 'format' => FORMAT_HTML],
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                    ],
+                    'orientation' => [
+                        0, 1, 0
+                    ],
+                    'startrow' => [
+                        0, 0, 0
+                    ],
+                    'startcolumn' => [
+                        0, 0, 0
+                    ],
+                ],
+                [
+                    'answer[2]' => get_string('wronganswernumbering', 'qtype_crossword'),
+                ]
             ]
         ];
     }

@@ -365,6 +365,11 @@ class qtype_crossword_edit_form extends question_edit_form {
                     }
                 }
             }
+
+            if (!isset($errors["answer[$i]"]) && !$this->check_unique_answer_number($data, $i) &&
+                    $clues[$i]['text'] !== '') {
+                $errors["answer[$i]"] = get_string('wronganswernumbering', 'qtype_crossword');
+            }
         }
 
         if ($answercount < 1) {
@@ -372,6 +377,26 @@ class qtype_crossword_edit_form extends question_edit_form {
         }
 
         return $errors;
+    }
+
+    /**
+     * Verify whether the 'answer number' for this orientation already exists.
+     *
+     * @param array $data The question data.
+     * @param int $index The index for question data.
+     * @return bool
+     */
+    private function check_unique_answer_number(array $data, int $index): bool {
+        for ($i = 0; $i < $index; $i++) {
+            if ($data['startrow'][$index] === $data['startrow'][$i] &&
+                $data['startcolumn'][$index] === $data['startcolumn'][$i] &&
+                $data['orientation'][$index] === $data['orientation'][$i]
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

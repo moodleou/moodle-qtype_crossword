@@ -89,6 +89,7 @@ export class CrosswordGrid extends CrosswordQuestion {
      */
     addCell() {
         let {words, previewSetting, rowsNum, colsNum} = this.options;
+        const orientationMarks = ['→', '↓'];
         // Don't draw empty words.
         if (words.length === 0) {
             return;
@@ -111,6 +112,7 @@ export class CrosswordGrid extends CrosswordQuestion {
 
             for (let j = 0; j < answer.length; j++) {
                 const number = i + 1;
+                let isInvalidLetter = false;
                 const squareEl = document.querySelector('.grid-row:nth-child(' + row + ') .grid-square:nth-child(' + column + ')');
                 if (!squareEl) {
                     continue;
@@ -121,20 +123,24 @@ export class CrosswordGrid extends CrosswordQuestion {
 
                 if (j === 0) {
                     const labelEl = squareEl.querySelector('.word-label');
+                    const labelText = 'W' + (words[i]?.no ?? number) + (orientationMarks[words[i].orientation]);
                     if (!labelEl) {
                         let spanEl = document.createElement('span');
-                        spanEl.className = 'word-label';
-                        spanEl.innerText = words[i]?.no ?? number;
+                        spanEl.className = 'word-label text-left';
+                        spanEl.innerText = labelText;
                         squareEl.append(spanEl);
                     } else {
                         let label = labelEl.innerText;
-                        label += ', ' + words[i]?.no ?? number;
+                        isInvalidLetter = label.includes(orientationMarks[words[i].orientation]);
+                        label += ', ' + labelText;
                         labelEl.innerText = label;
                     }
                 }
                 const letter = answer[j].toUpperCase().trim() ?? '';
                 const contentEl = squareEl.querySelector('span.word-content');
-                let isInvalidLetter = this.isContainSpecialCharacters(letter);
+                if (!isInvalidLetter) {
+                    isInvalidLetter = this.isContainSpecialCharacters(letter);
+                }
                 if (!contentEl) {
                     let spanEl = document.createElement('span');
                     spanEl.className = 'word-content';
