@@ -82,8 +82,12 @@ class qtype_crossword_question extends question_graded_automatically {
                 $responseword = str_replace('_', ' ', $response[$fieldname]);
                 // If the answer is empty or only contain space. Display '-'.
                 $responseword = (empty($responseword) || core_text::strlen(trim($responseword)) === 0) ? '-' : $responseword;
-                // Get the correct answer position from the index key and convert to readable order.E.g: 0 -> 1).
-                $responsewords[] = $key + 1 . ') ' . $responseword;
+                // Get the correct answer position from the index key and convert to readable order.E.g: Across 1: ABC).
+                $orientation = get_string('across', 'qtype_crossword');
+                if ($answer->orientation) {
+                    $orientation = get_string('down', 'qtype_crossword');
+                }
+                $responsewords[] = $orientation . ' ' . $answer->answernumber . ': ' . $responseword;
             }
         }
         if (empty($responsewords)) {

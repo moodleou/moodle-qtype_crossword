@@ -82,18 +82,6 @@ class qtype_crossword_test_helper extends question_test_helper {
             (object) [
                 'id' => 1,
                 'questionid' => 1,
-                'clue' => 'where is the Christ the Redeemer statue located in?',
-                'clueformat' => FORMAT_HTML,
-                'answer' => 'BRAZIL',
-                'startcolumn' => 0,
-                'startrow' => 1,
-                'orientation' => 0,
-                'feedback' => 'This is correct answer',
-                'feedbackformat' => FORMAT_HTML,
-            ],
-            (object) [
-                'id' => 2,
-                'questionid' => 1,
                 'clue' => 'Eiffel Tower is located in?',
                 'clueformat' => FORMAT_HTML,
                 'answer' => 'PARIS',
@@ -102,6 +90,20 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 1,
+            ],
+            (object) [
+                'id' => 2,
+                'questionid' => 1,
+                'clue' => 'where is the Christ the Redeemer statue located in?',
+                'clueformat' => FORMAT_HTML,
+                'answer' => 'BRAZIL',
+                'startcolumn' => 0,
+                'startrow' => 1,
+                'orientation' => 0,
+                'feedback' => 'This is correct answer',
+                'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 2,
             ],
             (object) [
                 'id' => 3,
@@ -114,6 +116,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 0,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 3,
             ],
         ];
 
@@ -128,6 +131,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 $answer->startcolumn,
                 $answer->feedback,
                 $answer->feedbackformat,
+                $answer->answernumber,
             );
         }
         return $cw;
@@ -145,14 +149,14 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
         $fromform->penalty = 1;
         $fromform->defaultmark = 1;
-        $fromform->answer = ['BRAZIL', 'PARIS', 'ITALY'];
+        $fromform->answer = ['PARIS', 'BRAZIL', 'ITALY'];
         $fromform->clue = [
             [
-                'text' => 'where is the Christ the Redeemer statue located in?',
+                'text' => 'Eiffel Tower is located in?',
                 'format' => FORMAT_HTML
             ],
             [
-                'text' => 'Eiffel Tower is located in?',
+                'text' => 'where is the Christ the Redeemer statue located in?',
                 'format' => FORMAT_HTML
             ],
             [
@@ -160,9 +164,9 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'format' => FORMAT_HTML
             ],
         ];
-        $fromform->orientation = [0, 1, 0];
-        $fromform->startrow = [1, 0, 3];
-        $fromform->startcolumn = [0, 2, 2];
+        $fromform->orientation = [1, 0, 0];
+        $fromform->startrow = [0, 1, 3];
+        $fromform->startcolumn = [2, 0, 2];
         $fromform->numrows = 5;
         $fromform->numcolumns = 7;
         $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
@@ -193,9 +197,9 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'format' => FORMAT_HTML
             ],
         ];
-        $fromform->clue[0]['text'] = 'where is the Christ the Redeemer statue located in?' .
+        $fromform->clue[0]['text'] = 'Eiffel Tower is located in?' .
             '<img src="@@PLUGINFILE@@/clueimg.jpg" />';
-        $fromform->feedback[0]['text'] = 'where is the Christ the Redeemer statue located in?' .
+        $fromform->feedback[0]['text'] = 'Eiffel Tower is located in?' .
             '<img src="@@PLUGINFILE@@/feedback.jpg" />';
         return $fromform;
     }
@@ -224,14 +228,15 @@ class qtype_crossword_test_helper extends question_test_helper {
             (object) [
                 'id' => 1,
                 'questionid' => 2,
-                'clue' => '线索 1',
+                'clue' => '线索 3',
                 'clueformat' => FORMAT_HTML,
-                'answer' => '回答一',
-                'startcolumn' => 0,
-                'startrow' => 2,
+                'answer' => '回答三',
+                'startcolumn' => 1,
+                'startrow' => 1,
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 1,
             ],
             (object) [
                 'id' => 2,
@@ -244,18 +249,20 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 0,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 2,
             ],
             (object) [
                 'id' => 3,
                 'questionid' => 2,
-                'clue' => '线索 3',
+                'clue' => '线索 1',
                 'clueformat' => FORMAT_HTML,
-                'answer' => '回答三',
-                'startcolumn' => 1,
-                'startrow' => 1,
+                'answer' => '回答一',
+                'startcolumn' => 0,
+                'startrow' => 2,
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 2,
             ],
         ];
 
@@ -270,6 +277,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 $answer->startcolumn,
                 $answer->feedback,
                 $answer->feedbackformat,
+                $answer->answernumber,
             );
         }
         return $cw;
@@ -287,7 +295,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
         $fromform->penalty = 1;
         $fromform->defaultmark = 1;
-        $fromform->answer = ['回答一', '回答两个', '回答三'];
+        $fromform->answer = ['回答三', '回答两个', '回答一'];
         $fromform->clue = [
             [
                 'text' => '线索 1',
@@ -336,18 +344,6 @@ class qtype_crossword_test_helper extends question_test_helper {
             (object) [
                 'id' => 1,
                 'questionid' => 2,
-                'clue' => 'Answer contains letter é has codepoint \u00e9',
-                'clueformat' => FORMAT_HTML,
-                'answer' => 'Amélie',
-                'startcolumn' => 0,
-                'startrow' => 3,
-                'orientation' => 0,
-                'feedback' => '',
-                'feedbackformat' => FORMAT_HTML,
-            ],
-            (object) [
-                'id' => 2,
-                'questionid' => 2,
                 'clue' => 'Answer contains letter é has codepoint \u0065\u0301',
                 'clueformat' => FORMAT_HTML,
                 'answer' => 'Amélie',
@@ -356,6 +352,20 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 1,
+            ],
+            (object) [
+                'id' => 2,
+                'questionid' => 2,
+                'clue' => 'Answer contains letter é has codepoint \u00e9',
+                'clueformat' => FORMAT_HTML,
+                'answer' => 'Amélie',
+                'startcolumn' => 0,
+                'startrow' => 3,
+                'orientation' => 0,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 2,
             ],
         ];
 
@@ -370,6 +380,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 $answer->startcolumn,
                 $answer->feedback,
                 $answer->feedbackformat,
+                $answer->answernumber
             );
         }
         return $cw;
@@ -482,14 +493,15 @@ class qtype_crossword_test_helper extends question_test_helper {
             (object) [
                 'id' => 1,
                 'questionid' => 1,
-                'clue' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
+                'clue' => 'Engineer, computer scientist and inventor of the World Wide Web?',
                 'clueformat' => FORMAT_HTML,
-                'answer' => 'DAVID ATTENBOROUGH',
-                'startcolumn' => 0,
-                'startrow' => 1,
-                'orientation' => 0,
+                'answer' => 'TIM BERNERS-LEE',
+                'startcolumn' => 3,
+                'startrow' => 0,
+                'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 1
             ],
             (object) [
                 'id' => 2,
@@ -502,18 +514,20 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 2
             ],
             (object) [
                 'id' => 3,
                 'questionid' => 1,
-                'clue' => 'Engineer, computer scientist and inventor of the World Wide Web?',
+                'clue' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
                 'clueformat' => FORMAT_HTML,
-                'answer' => 'TIM BERNERS-LEE',
-                'startcolumn' => 3,
-                'startrow' => 0,
-                'orientation' => 1,
+                'answer' => 'DAVID ATTENBOROUGH',
+                'startcolumn' => 0,
+                'startrow' => 1,
+                'orientation' => 0,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 3
             ],
         ];
 
@@ -528,6 +542,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 $answer->startcolumn,
                 $answer->feedback,
                 $answer->feedbackformat,
+                $answer->answernumber,
             );
         }
         return $cw;
@@ -545,10 +560,10 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
         $fromform->penalty = 1;
         $fromform->defaultmark = 1;
-        $fromform->answer = ['DAVID ATTENBOROUGH', 'GORDON BROWN', 'TIM BERNERS-LEE'];
+        $fromform->answer = ['TIM BERNERS-LEE', 'GORDON BROWN', 'DAVID ATTENBOROUGH'];
         $fromform->clue = [
             [
-                'text' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
+                'text' => 'Engineer, computer scientist and inventor of the World Wide Web?',
                 'format' => FORMAT_HTML
             ],
             [
@@ -556,13 +571,13 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'format' => FORMAT_HTML
             ],
             [
-                'text' => 'Engineer, computer scientist and inventor of the World Wide Web?',
+                'text' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
                 'format' => FORMAT_HTML
             ],
         ];
-        $fromform->orientation = [0, 1, 1];
-        $fromform->startrow = [1, 0, 0];
-        $fromform->startcolumn = [0, 11, 3];
+        $fromform->orientation = [1, 1, 0];
+        $fromform->startrow = [0, 0, 1];
+        $fromform->startcolumn = [3, 11, 0];
         $fromform->numrows = 13;
         $fromform->numcolumns = 17;
         $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
@@ -613,6 +628,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 0,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 1,
             ],
             (object) [
                 'id' => 2,
@@ -625,6 +641,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 2,
             ],
         ];
 
@@ -639,6 +656,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 $answer->startcolumn,
                 $answer->feedback,
                 $answer->feedbackformat,
+                $answer->answernumber,
             );
         }
         return $cw;

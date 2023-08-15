@@ -356,7 +356,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                     // If it's the first cell of word.
                     // Draw word number.
                     if (parseInt(key) === 0) {
-                        g = this.appendCellNumber(g, position, word.number);
+                        g = this.appendCellNumber(g, position, word.wordNumber);
                     }
                     g.append(textEl);
                     // Add event for cell.
@@ -371,13 +371,10 @@ export class CrosswordGrid extends CrosswordQuestion {
                     if (parseInt(key) !== 0) {
                         continue;
                     }
-                    if (existingNumberElement) {
-                        // Append word number, if this cell is existed another one.
-                        existingNumberElement.append(', ' + word.number);
-                    } else {
+                    if (!existingNumberElement) {
                         // Create new word number.
                         g = existingRectElement.closest('g');
-                        this.appendCellNumber(g, position, word.number);
+                        this.appendCellNumber(g, position, word.wordNumber);
                     }
                 }
             }

@@ -73,24 +73,24 @@ class question_test extends \advanced_testcase {
                 []
             ],
             'Partial correct answers' => [
-                ['sub0' => 'BRZIL', 'sub1' => 'PARI', 'sub2' => 'ITALY'],
+                ['sub0' => 'PARI', 'sub1' => 'BRZIL', 'sub2' => 'ITALY'],
                 ['sub2' => 'ITALY', 'sub0' => '', 'sub1' => '']
             ],
             'Correct answers is not in ordered' => [
-                ['sub1' => 'PARIS', 'sub0' => 'BRAZIL', 'sub2' => 'ITALY'],
-                ['sub1' => 'PARIS', 'sub0' => 'BRAZIL', 'sub2' => 'ITALY']
+                ['sub1' => 'BRAZIL', 'sub0' => 'PARIS', 'sub2' => 'ITALY'],
+                ['sub1' => 'BRAZIL', 'sub0' => 'PARIS', 'sub2' => 'ITALY']
             ],
             'Correct answers is in ordered' => [
-                ['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY'],
-                ['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY']
+                ['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY'],
+                ['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY']
             ],
             'Not completed answers' => [
-                ['sub1' => 'PARIS', 'sub2' => 'ITALY'],
-                ['sub1' => 'PARIS', 'sub2' => 'ITALY']
+                ['sub1' => 'BRAZIL', 'sub2' => 'ITALY'],
+                ['sub1' => 'BRAZIL', 'sub2' => 'ITALY']
             ],
             'Not completed and incorrect answer' => [
-                ['sub1' => 'PARIS', 'sub2' => 'ITALI'],
-                ['sub1' => 'PARIS', 'sub2' => '']
+                ['sub1' => 'BRAZIL', 'sub2' => 'ITALI'],
+                ['sub1' => 'BRAZIL', 'sub2' => '']
             ]
         ];
     }
@@ -169,7 +169,7 @@ class question_test extends \advanced_testcase {
      */
     public function test_get_correct_response() {
         $question = \test_question_maker::make_question('crossword');
-        $this->assertEquals(['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY'], $question->get_correct_response());
+        $this->assertEquals(['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY'], $question->get_correct_response());
     }
 
     /**
@@ -514,11 +514,11 @@ class question_test extends \advanced_testcase {
         $question = \test_question_maker::make_question('crossword');
         $question->start_attempt(new question_attempt_step(), 1);
 
-        $this->assertEquals('1) BRAZIL; 3) ITALY', $question->summarise_response(
-            ['sub0' => 'BRAZIL', 'sub2' => 'ITALY'])
+        $this->assertEquals('Down 1: PARIS; Across 3: ITALY', $question->summarise_response(
+            ['sub0' => 'PARIS', 'sub2' => 'ITALY'])
         );
-        $this->assertEquals('1) BRAZIL; 2) -; 3) -', $question->summarise_response(
-            ['sub0' => 'BRAZIL', 'sub1' => '', 'sub2' => '__'])
+        $this->assertEquals('Down 1: PARIS; Across 2: -; Across 3: -', $question->summarise_response(
+            ['sub0' => 'PARIS', 'sub1' => '', 'sub2' => '__'])
         );
     }
 }

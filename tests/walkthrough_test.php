@@ -70,7 +70,7 @@ class walkthrough_test extends \qbehaviour_walkthrough_test_base {
             $this->get_does_not_contain_validation_error_expectation());
 
         // Save a correct answer.
-        $this->process_submission(['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY']);
+        $this->process_submission(['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY']);
         // Now submit all and finish.
         $this->finish();
 
@@ -114,7 +114,7 @@ class walkthrough_test extends \qbehaviour_walkthrough_test_base {
             $this->get_does_not_contain_validation_error_expectation());
 
         // Save a correct answer.
-        $this->process_submission(['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY']);
+        $this->process_submission(['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY']);
         // Now submit all and finish.
         $this->finish();
 

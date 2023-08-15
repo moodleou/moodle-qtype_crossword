@@ -150,4 +150,135 @@ class util_test extends \qbehaviour_walkthrough_test_base {
             ],
         ];
     }
+
+    /**
+     * Test rearrange_answers function.
+     *
+     * @dataProvider ordered_answers_provider
+     * @covers \qtype_crossword\util::rearrange_answers
+     * @param array $orderedanswers The ordered answers list.
+     */
+    public function test_rearrange_answers(array $orderedanswers): void {
+        // We have three answers with position:
+        // A1 Down: ACB (1, 0)
+        // A2 Down: BBC (1, 1)
+        // A3 Across: ABC (0, 0).
+        $answersdata = [
+            [
+                'id' => 1,
+                'answer' => 'CBC',
+                'clue' => 'Clue CBC',
+                'clueformat' => 1,
+                'orientation' => 0,
+                'startrow' => 1,
+                'startcolumn' => 0,
+                'feedback' => 'Feedback',
+                'feedbackformat' => 1,
+            ],
+            [
+                'id' => 2,
+                'answer' => 'BBC',
+                'clue' => 'Clue BBC',
+                'clueformat' => 1,
+                'orientation' => 1,
+                'startrow' => 1,
+                'startcolumn' => 1,
+                'feedback' => 'Feedback',
+                'feedbackformat' => 1,
+            ],
+            [
+                'id' => 3,
+                'answer' => 'ACB',
+                'clue' => 'Clue ACB',
+                'clueformat' => 1,
+                'orientation' => 1,
+                'startrow' => 0,
+                'startcolumn' => 0,
+                'feedback' => 'Feedback',
+                'feedbackformat' => 1,
+            ]
+        ];
+
+        // We will order the answer based on startcolumn and startrow. So, the order list will be:
+        // A3 Across: ABC (0, 0)
+        // A1 Down: ACB (1, 0)
+        // A2 Down: BBC (1, 1).
+        $orderdanswers = util::rearrange_answers($answersdata);
+        $this->assertEquals($orderedanswers, $orderdanswers);
+    }
+
+    /**
+     * Test update_answer_list function.
+     *
+     * @dataProvider ordered_answers_provider
+     * @covers \qtype_crossword\util::update_answer_list
+     * @param array $orderedanswers The ordered answers list.
+     */
+    public function test_update_answer_list(array $orderedanswers): void {
+        $newanswers = util::update_answer_list($orderedanswers);
+
+        for ($i = 0; $i < count($orderedanswers); $i++) {
+            $answer = new \qtype_crossword\answer(
+                $orderedanswers[$i]['id'],
+                $orderedanswers[$i]['answer'],
+                $orderedanswers[$i]['clue'],
+                $orderedanswers[$i]['clueformat'],
+                $orderedanswers[$i]['orientation'],
+                $orderedanswers[$i]['startrow'],
+                $orderedanswers[$i]['startcolumn'],
+                $orderedanswers[$i]['feedback'],
+                $orderedanswers[$i]['feedbackformat'],
+                $i + 1,
+            );
+            $this->assertEquals($newanswers[$i], $answer);
+        }
+    }
+
+    /**
+     * Data provider return ordered answer list.
+     *
+     * @coversNothing
+     * @return array Ordered answer list.
+     */
+    public function ordered_answers_provider(): array {
+        return [
+            'Ordered answer list' => [
+                [
+                    [
+                        'id' => 3,
+                        'answer' => 'ACB',
+                        'clue' => 'Clue ACB',
+                        'clueformat' => 1,
+                        'orientation' => 1,
+                        'startrow' => 0,
+                        'startcolumn' => 0,
+                        'feedback' => 'Feedback',
+                        'feedbackformat' => 1,
+                    ],
+                    [
+                        'id' => 1,
+                        'answer' => 'CBC',
+                        'clue' => 'Clue CBC',
+                        'clueformat' => 1,
+                        'orientation' => 0,
+                        'startrow' => 1,
+                        'startcolumn' => 0,
+                        'feedback' => 'Feedback',
+                        'feedbackformat' => 1,
+                    ],
+                    [
+                        'id' => 2,
+                        'answer' => 'BBC',
+                        'clue' => 'Clue BBC',
+                        'clueformat' => 1,
+                        'orientation' => 1,
+                        'startrow' => 1,
+                        'startcolumn' => 1,
+                        'feedback' => 'Feedback',
+                        'feedbackformat' => 1,
+                    ]
+                ]
+            ]
+        ];
+    }
 }

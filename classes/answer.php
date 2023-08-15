@@ -54,6 +54,9 @@ class answer {
     /** @var int The feedback format. E.g: FORMAT_HTML */
     public $feedbackformat;
 
+    /** @var int The `number` assigned to the answer, intended for display within the grid. */
+    public $answernumber;
+
     /**
      * Answer constructor.
      * @param int $answerid
@@ -65,9 +68,10 @@ class answer {
      * @param string $startcolumn
      * @param null|string $feedback
      * @param null|int $feedbackformat
+     * @param int $answernumber
      */
     public function __construct(int $answerid, string $answer, string $clue, int $clueformat, string $orientation,
-        string $startrow, string $startcolumn, ?string $feedback, ?int $feedbackformat) {
+        string $startrow, string $startcolumn, ?string $feedback, ?int $feedbackformat, int $answernumber) {
         $this->answerid = $answerid;
         $this->answer = util::safe_normalize($answer);
         $this->clue = $clue;
@@ -77,6 +81,7 @@ class answer {
         $this->startcolumn = $startcolumn;
         $this->feedback = $feedback;
         $this->feedbackformat = $feedbackformat;
+        $this->answernumber = $answernumber;
     }
 
     /**

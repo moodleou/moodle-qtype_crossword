@@ -117,7 +117,8 @@ export class CrosswordQuestion {
             const length = parseInt(el.dataset.length);
             const orientation = parseInt(el.dataset.orientation);
             const clue = el.dataset.clue;
-            return {number, startRow, startColumn, length, orientation, clue};
+            const wordNumber = el.dataset.wordnumber;
+            return {number, startRow, startColumn, length, orientation, clue, wordNumber};
         }).sort((clueA, clueB) => clueA.number - clueB.number);
     }
 
@@ -432,7 +433,7 @@ export class CrosswordQuestion {
                         const data = {
                             row: word.startRow + 1,
                             column: word.startColumn + letterIndex + 1,
-                            number: word.number,
+                            number: word.wordNumber,
                             orientation: orientation[word.orientation],
                             clue: word.clue,
                             letter: letterIndex + 1,

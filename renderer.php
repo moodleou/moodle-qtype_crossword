@@ -68,7 +68,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 'inputlabel',
                 'qtype_crossword',
                 (object) [
-                    'number' => $number,
+                    'number' => $answer->answernumber,
                     'orientation' => $orientationvalue[$answer->orientation],
                     'clue' => html_to_text($clue, 0, false),
                     'length' => $lengthdisplay,
@@ -91,6 +91,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 'startRow' => (int) $answer->startrow,
                 'startColumn' => (int) $answer->startcolumn,
                 'ignoreIndexes' => json_encode($ignoreindex),
+                'wordNumber' => $answer->answernumber
             ];
 
             if ($options->readonly) {
@@ -132,8 +133,13 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         $question = $qa->get_question();
         $right = [];
         foreach ($question->answers as $ansid => $ans) {
-            $right[] = $question->make_html_inline($question->format_text($ans->answer, 1,
+            $answer = $question->make_html_inline($question->format_text($ans->answer, 1,
                 $qa, 'question', 'answer', $ansid));
+            $right[] = [
+                'answer' => $answer,
+                'orientation' => $ans->orientation,
+                'answernumber' => $ans->answernumber,
+            ];
         }
         return $this->correct_choices($right);
     }
@@ -152,7 +158,11 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         }
 
         foreach ($right as $key => $value) {
-            $stringright .= get_string('answer', 'qtype_crossword') . ' ' . ($key + 1) .': '. $value;
+            $orientation = get_string('across', 'qtype_crossword');
+            if ($value['orientation']) {
+                $orientation = get_string('down', 'qtype_crossword');
+            }
+            $stringright .= $orientation . ' ' . $value['answernumber'] . ': ' . $value['answer'];
             if ($key !== count($right) - 1) {
                 $stringright .= ', ';
             }

@@ -26,6 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/questionlib.php');
 
+use qtype_crossword\util;
+
 /**
  * Class that represents a crossword question type.
  *
@@ -211,19 +213,26 @@ class qtype_crossword extends question_type {
     protected function initialise_question_instance($question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
         $this->initialise_combined_feedback($question, $questiondata, true);
+        $answers = [];
         foreach ($questiondata->options->words as $answer) {
-            $question->answers[] = new \qtype_crossword\answer(
-                $answer->id,
-                $answer->answer,
-                $answer->clue,
-                $answer->clueformat,
-                $answer->orientation,
-                $answer->startrow,
-                $answer->startcolumn,
-                $answer->feedback,
-                $answer->feedbackformat,
-                );
+            $answers[] = [
+                'id' => $answer->id,
+                'answer' => $answer->answer,
+                'clue' => $answer->clue,
+                'clueformat' => $answer->clueformat,
+                'orientation' => $answer->orientation,
+                'startrow' => $answer->startrow,
+                'startcolumn' => $answer->startcolumn,
+                'feedback' => $answer->feedback,
+                'feedbackformat' => $answer->feedbackformat,
+            ];
         }
+
+        // We will rearrange the list of answers based on their positions.
+        $answers = util::rearrange_answers($answers);
+        // Based on the given list of answers, we will create list of answer objects,
+        // each containing an 'answer number'.
+        $question->answers = util::update_answer_list($answers);
         $question->numrows = (int) $questiondata->options->numrows;
         $question->numcolumns = (int) $questiondata->options->numcolumns;
         $question->accentgradingtype = $questiondata->options->accentgradingtype;

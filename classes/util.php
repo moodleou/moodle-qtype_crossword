@@ -68,4 +68,70 @@ class util {
     public static function remove_accent(string $string): string {
         return preg_replace('/\p{Mn}/u', '', self::safe_normalize($string, Normalizer::FORM_KD));
     }
+
+    /**
+     * We will rearrange each answer based on its position,
+     * and then sort them according to their 'startcolumn' and 'startrow' values.
+     * The answer result will be arranged in a position top-to-bottom and left-to-right order.
+     *
+     * @param array $answers The answers list.
+     * @return array Ordered answers list.
+     */
+    public static function rearrange_answers(array $answers): array {
+        // We will sort the array of answers based on their row and column positions.
+        // For example, if the answers contain the following answer with their corresponding positions
+        // [startRowIndex, startColumnIndex]: A[2, 3], B[1, 3], C[0, 1], D[0, 0].
+        // The result will be arranged in a position top-to-bottom and left-to-right order:
+        // D[0, 0], C[0, 1], B[1, 3], A[2, 3].
+        usort($answers, function($preanswer, $nextanswer) {
+            $rowdifference = $preanswer['startrow'] - $nextanswer['startrow'];
+            if ($rowdifference !== 0) {
+                return $rowdifference;
+            }
+            return $preanswer['startcolumn'] - $nextanswer['startcolumn'];
+        });
+
+        return $answers;
+    }
+
+    /**
+     * Identify the `answer number` and then generate a new list of answer objects.
+     *
+     * @param array $answers The answers list.
+     * @return array New answers list object.
+     */
+    public static function update_answer_list(array $answers): array {
+        $answernumber = 0;
+        $tmparray = [];
+        $answerresponse = [];
+
+        // Determine the answer number.
+        for ($i = 0; $i < count($answers); $i++) {
+            $answer = $answers[$i];
+            // Set the unique index based on the starting row and starting column.
+            $index = "r{$answer['startrow']}c{$answer['startcolumn']}";
+            // If the answer's starting row and starting column points are duplicated,
+            // the answer number will not be incremented.
+            if (!isset($tmparray[$index])) {
+                ++$answernumber;
+                $tmparray[$index] = $answernumber;
+            }
+
+            // Parse the answer into the answer object and then append the answer number to it.
+            $answerresponse[] = new \qtype_crossword\answer(
+                $answer['id'],
+                $answer['answer'],
+                $answer['clue'],
+                $answer['clueformat'],
+                $answer['orientation'],
+                $answer['startrow'],
+                $answer['startcolumn'],
+                $answer['feedback'],
+                $answer['feedbackformat'],
+                $answernumber,
+            );
+        }
+
+        return $answerresponse;
+    }
 }

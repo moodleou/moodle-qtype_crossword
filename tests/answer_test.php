@@ -53,10 +53,10 @@ class answer_test extends \advanced_testcase {
     public function test_is_correct_provider(): array {
         return [
             'Normal case' => [
-                ['DAVID ATTENBOROUGH', 'GORDON BROWN', 'TIM BERNERS-LEE']
+                ['TIM BERNERS-LEE', 'GORDON BROWN', 'DAVID ATTENBOROUGH']
             ],
             'With Underscore' => [
-                ['DAVID_ATTENBOROUGH', 'GORDON_BROWN', 'TIM_BERNERS-LEE']
+                ['TIM_BERNERS-LEE', 'GORDON_BROWN', 'DAVID_ATTENBOROUGH']
             ]
         ];
     }
@@ -70,9 +70,9 @@ class answer_test extends \advanced_testcase {
         // Create a normal crossword question.
         $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_and_space');
         $expecteddata = [
-            ['5, 12', ['space' => [5]]],
-            ['6, 5', ['space' => [6]]],
             ['3, 7-3', ['space' => [3], 'hyphen' => [11]]],
+            ['6, 5', ['space' => [6]]],
+            ['5, 12', ['space' => [5]]],
         ];
         foreach ($q->answers as $key => $answer) {
             $this->assertEquals($expecteddata[$key], $answer->generate_answer_hint());

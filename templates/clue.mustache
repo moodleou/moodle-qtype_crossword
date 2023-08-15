@@ -34,13 +34,14 @@
       "startRow": 0,
       "startColumn": 0,
       "feedback": "<p>fThis plugin is a question type.</p>",
-      "ignoreIndexes": "['space' => [8]]"
+      "ignoreIndexes": "['space' => [8]]",
+      "wordNumber": ""
     }
 }}
 <div class="col-12 wrap-clue" data-questionid="{{number}}" data-startrow="{{startRow}}" data-ignoreindexes="{{ignoreIndexes}}"
-    data-startcolumn="{{startColumn}}" data-length="{{length}}" data-orientation="{{orientation}}" data-clue="{{clue}}">
+    data-startcolumn="{{startColumn}}" data-length="{{length}}" data-orientation="{{orientation}}" data-clue="{{clue}}" data-wordnumber="{{wordNumber}}">
     <div class="d-flex my-2">
-        <div class="clue-id"><span>{{number}}</span></div>
+        <div class="clue-id"><span>{{wordNumber}}</span></div>
         <div class="clue-content mr-1">{{{clue}}}</div>
         <div class="clue-count text-nowrap">({{lengthDisplay}})</div>
     </div>
