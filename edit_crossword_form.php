@@ -62,7 +62,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         $key = array_search('questiontext', $mform->_required);
         unset($mform->_required[$key]);
 
-        $this->set_current_grid_setting();
+        $this->determine_current_grid_size();
         $this->add_question_section($mform);
 
         $this->add_combined_feedback_fields(true);
@@ -136,11 +136,11 @@ class qtype_crossword_edit_form extends question_edit_form {
     }
 
     /**
-     * Set the grid size.
+     * Determine the current grid size of the question being edited.
      *
-     * @return void
+     * This is based on any submitted data, the question being edited, and defaults.
      */
-    protected function set_current_grid_setting(): void {
+    protected function determine_current_grid_size(): void {
         $numrowsindex = optional_param('numrows', -1, PARAM_INT);
         $numcolumnsindex = optional_param('numcolumns', -1, PARAM_INT);
 
@@ -159,10 +159,9 @@ class qtype_crossword_edit_form extends question_edit_form {
     /**
      * Add the question elements.
      *
-     * @param object $mform The form being built.
-     * @return void.
+     * @param MoodleQuickForm $mform The form being built.
      */
-    protected function add_question_section(object $mform): void {
+    protected function add_question_section(MoodleQuickForm $mform): void {
         global $PAGE;
 
         if ($this->numcolumns < 1 || $this->numrows < 1) {
@@ -214,10 +213,10 @@ class qtype_crossword_edit_form extends question_edit_form {
     /**
      * Add coordinates for cells.
      *
-     * @param object $mform The form being built.
+     * @param MoodleQuickForm $mform The form being built.
      * @return array Elements rows index and columns index.
      */
-    protected function add_coordinates_input(object $mform): array {
+    protected function add_coordinates_input(MoodleQuickForm $mform): array {
         $numberrange = range(1, 100);
         $repeated = [];
 
@@ -235,7 +234,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         return $repeated;
     }
 
-    protected function data_preprocessing($question): object {
+    protected function data_preprocessing($question): stdClass {
         $question = parent::data_preprocessing($question);
         $question = $this->data_preprocessing_combined_feedback($question, true);
         $question = $this->data_preprocessing_hints($question, true, true);
@@ -246,10 +245,10 @@ class qtype_crossword_edit_form extends question_edit_form {
     /**
      * Custom question data for words.
      *
-     * @param object $question The question object.
-     * @return object The custom question object.
+     * @param stdClass $question The question object.
+     * @return stdClass The updated question object.
      */
-    private function data_preprocessing_words(object $question): object {
+    protected function data_preprocessing_words(stdClass $question): stdClass {
         $answer = [];
         $clue = [];
         $orientation = [];
@@ -346,7 +345,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             }
 
             // Check answer length.
-            if (!(isset($errors["answer[$i]"]) || $this->check_word_length($data, $i))) {
+            if (!(isset($errors["answer[$i]"]) || $this->validate_word_fits_in_grid($data, $i))) {
                 $errors["answer[$i]"] = get_string('overflowposition', 'qtype_crossword');
             }
 
@@ -358,7 +357,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             if (!isset($errors["answer[$i]"])) {
                 $except[] = $i;
                 // Find conflicting words.
-                $positions = $this->get_word_conflict($data, $i, $except);
+                $positions = $this->find_conflicting_overlapping_letters($data, $i, $except);
                 if ($positions) {
                     foreach ($positions as $position) {
                         $errors["answer[$position]"] = get_string('wrongintersection', 'qtype_crossword');
@@ -366,9 +365,12 @@ class qtype_crossword_edit_form extends question_edit_form {
                 }
             }
 
-            if (!isset($errors["answer[$i]"]) && !$this->check_unique_answer_number($data, $i) &&
-                    $clues[$i]['text'] !== '') {
-                $errors["answer[$i]"] = get_string('wronganswernumbering', 'qtype_crossword');
+            if (!isset($errors["answer[$i]"]) && $clues[$i]['text'] !== '') {
+                $clashingclueindex = $this->find_earlier_overlapping_words($data, $i);
+                if ($clashingclueindex !== null) {
+                    $errors["answer[$i]"] = get_string('wrongoverlappingwords', 'qtype_crossword',
+                            s($answers[$clashingclueindex]));
+                }
             }
         }
 
@@ -380,43 +382,43 @@ class qtype_crossword_edit_form extends question_edit_form {
     }
 
     /**
-     * Verify whether the 'answer number' for this orientation already exists.
+     * Check whether any of the words above this one start in the same place and direction.
      *
-     * @param array $data The question data.
-     * @param int $index The index for question data.
-     * @return bool
+     * @param array $data The question data being validated.
+     * @param int $index The clue/word we are validating now.
+     * @return int|null an index smaller than $index if there is a clash, else 0.
      */
-    private function check_unique_answer_number(array $data, int $index): bool {
+    protected function find_earlier_overlapping_words(array $data, int $index): ?int {
         for ($i = 0; $i < $index; $i++) {
             if ($data['startrow'][$index] === $data['startrow'][$i] &&
                 $data['startcolumn'][$index] === $data['startcolumn'][$i] &&
                 $data['orientation'][$index] === $data['orientation'][$i]
             ) {
-                return false;
+                return $i;
             }
         }
 
-        return true;
+        return null;
     }
 
     /**
      * Check word length with grid's size.
      *
-     * @param array $data The question data.
-     * @param int $iteral The iteral.
+     * @param array $data the form data being validated.
+     * @param int $index the index of the word to validate.
      *
      * @return bool
      */
-    private function check_word_length(array $data, int $iteral): bool {
+    protected function validate_word_fits_in_grid(array $data, int $index): bool {
         // Normalize answer.
-        $answer = util::safe_normalize(trim($data['answer'][$iteral]));
+        $answer = util::safe_normalize(trim($data['answer'][$index]));
         // Remove hyphen and space.
         $answer = util::remove_break_characters($answer);
         $answerlength = core_text::strlen($answer);
-        $orientation = (bool) $data['orientation'][$iteral];
+        $orientation = (bool) $data['orientation'][$index];
         $griddata = range(3, 30);
-        $startrow = $data['startrow'][$iteral] ?? null;
-        $startcolumn = $data['startcolumn'][$iteral] ?? null;
+        $startrow = $data['startrow'][$index] ?? null;
+        $startcolumn = $data['startcolumn'][$index] ?? null;
 
         if (is_null($startrow) || is_null($startcolumn)) {
             return false;
@@ -436,31 +438,31 @@ class qtype_crossword_edit_form extends question_edit_form {
     /**
      * Get conflict words.
      *
-     * @param array $data The question data.
-     * @param int $iteral The iterated.
+     * @param array $data the form data being validated.
+     * @param int $index the index of the word to validate.
      * @param array $except The except list.
      *
      * @return array The conflict positions.
      */
-    private function get_word_conflict(array $data, int $iteral, array &$except): array {
+    protected function find_conflicting_overlapping_letters(array $data, int $index, array &$except): array {
         // Normalize answer.
-        $answer1 = util::safe_normalize(trim(core_text::strtolower($data['answer'][$iteral])));
+        $answer1 = util::safe_normalize(trim(core_text::strtolower($data['answer'][$index])));
         // Remove hyphen and space.
         $answer1 = util::remove_break_characters($answer1);
         $positions = [];
-        $startrow = $data['startrow'][$iteral] ?? null;
-        $startcolumn = $data['startcolumn'][$iteral] ?? null;
+        $startrow = $data['startrow'][$index] ?? null;
+        $startcolumn = $data['startcolumn'][$index] ?? null;
 
         if (is_null($startrow) || is_null($startcolumn)) {
             return $positions;
         }
 
         // Get the coordinates of the first word.
-        $line1 = $this->detect_word_coordinate(
+        $line1 = $this->calculate_word_coordinates(
             $startrow,
             $startcolumn,
             $answer1,
-            $data['orientation'][$iteral]
+            $data['orientation'][$index]
         );
         // Compare the first word with another word.
         for ($i = count($data['answer']) - 1; $i >= 0; $i--) {
@@ -479,7 +481,7 @@ class qtype_crossword_edit_form extends question_edit_form {
                 continue;
             }
             // Get the word's coordinates .
-            $line2 = $this->detect_word_coordinate(
+            $line2 = $this->calculate_word_coordinates(
                 $data['startrow'][$i],
                 $data['startcolumn'][$i],
                 $answer2,
@@ -487,12 +489,12 @@ class qtype_crossword_edit_form extends question_edit_form {
             );
             $lines = array_merge($line1, $line2);
             // Get intersect point between 2 lines.
-            if ($intersects = $this->get_intersect_points($lines, $data['orientation'][$iteral])) {
+            if ($intersects = $this->get_intersect_points($lines, $data['orientation'][$index])) {
                 foreach ($intersects as $intersect) {
-                    if ($data['orientation'][$iteral]) {
-                        $character1 = core_text::substr($answer1, $intersect[1] - $data['startrow'][$iteral], 1) ?? '';
+                    if ($data['orientation'][$index]) {
+                        $character1 = core_text::substr($answer1, $intersect[1] - $data['startrow'][$index], 1) ?? '';
                     } else {
-                        $character1 = core_text::substr($answer1, $intersect[0] - $data['startcolumn'][$iteral], 1) ?? '';
+                        $character1 = core_text::substr($answer1, $intersect[0] - $data['startcolumn'][$index], 1) ?? '';
                     }
 
                     if ($data['orientation'][$i]) {
@@ -502,10 +504,10 @@ class qtype_crossword_edit_form extends question_edit_form {
                     }
                     // Compare letters.
                     if ($character1 !== $character2) {
-                        if ($i > $iteral) {
+                        if ($i > $index) {
                             $positions[] = $i;
                         } else {
-                            $positions[] = $iteral;
+                            $positions[] = $index;
                         }
                     }
                 }
@@ -516,16 +518,15 @@ class qtype_crossword_edit_form extends question_edit_form {
 
     /**
      * Retrieve the coordinate of word.
-     * It's an array contains the coordinates of this word.
      *
      * @param string $startrow The row index data.
      * @param string $startcolumn The column index data.
      * @param string $answer The answer data.
      * @param string $orientation The orientation. True-ish = down.
      *
-     * @return array The coordinate data [x1, y1, x2, y2].
+     * @return array The coordinate of the start and end of the word, [x1, y1, x2, y2].
      */
-    private function detect_word_coordinate(string $startrow, string $startcolumn, string $answer, string $orientation): array {
+    protected function calculate_word_coordinates(string $startrow, string $startcolumn, string $answer, string $orientation): array {
         $x1 = (int) $startcolumn;
         $y1 = (int) $startrow;
         // Get answer length.
@@ -548,7 +549,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @param string $orientation The orientation. True-ish = down.
      * @return array The list intersection points.
      */
-    private function get_intersect_points(array $lines, string $orientation): array {
+    protected function get_intersect_points(array $lines, string $orientation): array {
         list ($x1, $y1, $x2, $y2, $x3, $y3, $x4, $y4) = $lines;
 
         // Check if the first coordinate is the point.
@@ -606,7 +607,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      *
      * @return array The list intersection points.
      */
-    private function find_multi_intersect_points(array $lines, string $orientation): array {
+    protected function find_multi_intersect_points(array $lines, string $orientation): array {
         list ($x1, $y1, $x2, $y2, $x3, $y3, $x4, $y4) = $lines;
         // Lines are coincident.
         $points = [];
@@ -638,7 +639,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * In case index number higher than 25,
      * we will add one letter before the current one like Excel: AA, AB, AC, AD, AE etc.
      */
-    private function generate_alphabet_list(int $start, int $length): array {
+    protected function generate_alphabet_list(int $start, int $length): array {
         $range = range('A', 'Z');
         if ($length <= 26) {
             return array_slice($range, $start, $length);

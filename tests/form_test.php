@@ -210,7 +210,7 @@ class form_test extends \advanced_testcase {
                     ],
                 ],
                 [
-                    'answer[2]' => get_string('wronganswernumbering', 'qtype_crossword'),
+                    'answer[2]' => get_string('wrongoverlappingwords', 'qtype_crossword', 'ABC'),
                 ]
             ]
         ];
