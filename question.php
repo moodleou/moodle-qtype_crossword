@@ -68,8 +68,8 @@ class qtype_crossword_question extends question_graded_automatically {
 
     public function get_correct_response(): ?array {
         $response = [];
-        for ($i = 0; $i < count($this->answers); $i++) {
-            $response[$this->field($i)] = $this->answers[$i]->answer;
+        foreach ($this->answers as $key => $answer) {
+            $response[$this->field($key)] = $answer->answer;
         }
         return $response;
     }

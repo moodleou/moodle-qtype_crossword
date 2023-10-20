@@ -40,7 +40,7 @@ Feature: Preview a Crossword question
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "ITALY"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
-    And I should see "Down 1: PARIS, Across 2: BRAZIL, Across 3: ITALY"
+    And I should see "1 Down: PARIS; 2 Across: BRAZIL; 3 Across: ITALY"
 
   @javascript
   Scenario: Preview a Crossword question with sample image.
@@ -79,7 +79,7 @@ Feature: Preview a Crossword question
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "NANNO"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
-    And I should see " Down 1: PARIS, Across 2: BRAZIL, Across 3: ITALY"
+    And I should see "1 Down: PARIS; 2 Across: BRAZIL; 3 Across: ITALY"
 
   @javascript
   Scenario: Preview a Crossword question and submit an incorrect response.
@@ -92,7 +92,7 @@ Feature: Preview a Crossword question
     And I set the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" to "NANNO"
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
-    And I should see "Down 1: PARIS, Across 2: BRAZIL, Across 3: ITALY"
+    And I should see "1 Down: PARIS; 2 Across: BRAZIL; 3 Across: ITALY"
 
   @javascript
   Scenario: Deleting characters from input clue area.
@@ -131,7 +131,7 @@ Feature: Preview a Crossword question
     And I enter unicode character "回答两个" in the crossword clue "2 Across. 线索 2 Answer length 4"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
-    And I should see "Down 1: 回答一, Down 2: 回答三, Across 2: 回答两个"
+    And I should see "1 Down: 回答一; 2 Down: 回答三; 2 Across: 回答两个"
 
   @javascript
   Scenario: Preview a Crossword question with unicode UTF-8 answer and submit a partially correct response.
@@ -144,7 +144,7 @@ Feature: Preview a Crossword question
     And I enter unicode character "回答二" in the crossword clue "2 Across. 线索 2 Answer length 4"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
-    And I should see "Down 1: 回答一, Down 2: 回答三, Across 2: 回答两个"
+    And I should see "1 Down: 回答一; 2 Down: 回答三; 2 Across: 回答两个"
 
   @javascript
   Scenario: Preview a Crossword question with unicode UTF-8 answer and submit an incorrect response.
@@ -157,7 +157,7 @@ Feature: Preview a Crossword question
     And I enter unicode character "回答五" in the crossword clue "2 Across. 线索 2 Answer length 4"
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
-    And I should see "Down 1: 回答一, Down 2: 回答三, Across 2: 回答两个"
+    And I should see "1 Down: 回答一; 2 Down: 回答三; 2 Across: 回答两个"
 
   @javascript
   Scenario: Preview a Crossword question has two same answers but different code point and submit a correct response.
@@ -169,7 +169,7 @@ Feature: Preview a Crossword question
     And I enter unicode character "Amélie" in the crossword clue "2 Across. Answer contains letter é has codepoint \u00e9 Answer length 6"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
-    And I should see "Down 1: AMÉLIE, Across 2: AMÉLIE"
+    And I should see "1 Down: AMÉLIE; 2 Across: AMÉLIE"
 
   @javascript
   Scenario: Preview a Crossword question has two same answers but different code point and submit a partially correct response.
@@ -181,7 +181,7 @@ Feature: Preview a Crossword question
     And I enter unicode character "Amélie" in the crossword clue "2 Across. Answer contains letter é has codepoint \u00e9 Answer length 6"
     And I press "Submit and finish"
     Then I should see "Partially correct feedback."
-    And I should see "Down 1: AMÉLIE, Across 2: AMÉLIE"
+    And I should see "1 Down: AMÉLIE; 2 Across: AMÉLIE"
 
   @javascript
   Scenario: Preview a Crossword question has two same answers but different code point and submit an incorrect response.
@@ -193,7 +193,7 @@ Feature: Preview a Crossword question
     And I enter unicode character "Amelie" in the crossword clue "2 Across. Answer contains letter é has codepoint \u00e9 Answer length 6"
     And I press "Submit and finish"
     Then I should see "Incorrect feedback."
-    And I should see "Down 1: AMÉLIE, Across 2: AMÉLIE"
+    And I should see "1 Down: AMÉLIE; 2 Across: AMÉLIE"
 
   @javascript
   Scenario: Preview a Crossword question with clear incorrect responses option.
@@ -262,7 +262,7 @@ Feature: Preview a Crossword question
     And I enter character "Y" in the crossword clue using mobile input "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" in position "5"
     And I press "Submit and finish"
     Then I should see "Correct feedback"
-    And I should see "Down 1: PARIS, Across 2: BRAZIL, Across 3: ITALY"
+    And I should see "1 Down: PARIS; 2 Across: BRAZIL; 3 Across: ITALY"
 
   @javascript
   Scenario: When the answer option accept incorrect accents but subtracts point and user enters answer wrong accents.

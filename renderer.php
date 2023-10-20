@@ -130,51 +130,10 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
     }
 
     public function correct_response(question_attempt $qa): string {
+        /** @var qtype_crossword_question $question */
         $question = $qa->get_question();
-        $right = [];
-        foreach ($question->answers as $ansid => $ans) {
-            $answer = $question->make_html_inline($question->format_text($ans->answer, 1,
-                $qa, 'question', 'answer', $ansid));
-            $right[] = [
-                'answer' => $answer,
-                'orientation' => $ans->orientation,
-                'answernumber' => $ans->answernumber,
-            ];
-        }
-        return $this->correct_choices($right);
-    }
-
-    /**
-     * Function returns string based on number of correct answers
-     * @param array $right An Array of correct responses to the current question
-     * @return string based on number of correct responses
-     */
-    protected function correct_choices(array $right): ?string {
-        // Return appropriate string for single/multiple correct answer(s).
-        $stringright = '';
-
-        if (count($right) < 1) {
-            return '';
-        }
-
-        foreach ($right as $key => $value) {
-            $orientation = get_string('across', 'qtype_crossword');
-            if ($value['orientation']) {
-                $orientation = get_string('down', 'qtype_crossword');
-            }
-            $stringright .= $orientation . ' ' . $value['answernumber'] . ': ' . $value['answer'];
-            if ($key !== count($right) - 1) {
-                $stringright .= ', ';
-            }
-        }
-
-        if (count($right) === 1) {
-            return get_string('correctansweris', 'qtype_crossword',
-                $stringright);
-        }
-
-        return get_string('correctanswersare', 'qtype_crossword',
-            $stringright);
+        return get_string('correctanswer', 'qtype_crossword',
+            $question->summarise_response($question->get_correct_response()));
     }
 
     protected function num_parts_correct(question_attempt $qa): ?string {
