@@ -78,20 +78,16 @@ class qtype_crossword_question extends question_graded_automatically {
         $responsewords = [];
         foreach ($this->answers as $key => $answer) {
             $fieldname = $this->field($key);
-            if (array_key_exists($fieldname, $response)) {
-                $responseword = str_replace('_', ' ', $response[$fieldname]);
-                // If the answer is empty or only contain space. Display '-'.
-                $responseword = (empty($responseword) || core_text::strlen(trim($responseword)) === 0) ? '-' : $responseword;
-                // Get the correct answer position from the index key and convert to readable order.E.g: Across 1: ABC).
-                $orientation = get_string('across', 'qtype_crossword');
-                if ($answer->orientation) {
-                    $orientation = get_string('down', 'qtype_crossword');
-                }
-                $responsewords[] = $orientation . ' ' . $answer->answernumber . ': ' . $responseword;
+            $responseword = str_replace('_', ' ', $response[$fieldname] ?? '');
+            // If the answer is empty or only contain space. Display '-'.
+            if (trim($responseword) === '') {
+                $responseword = get_string('missingresponse', 'qtype_crossword');
             }
-        }
-        if (empty($responsewords)) {
-            return null;
+            $responsewords[] = get_string('answerwithnumber', 'qtype_crossword', [
+                'number' => $answer->answernumber,
+                'orientation' => get_string($answer->orientation ? 'down' : 'across', 'qtype_crossword'),
+                'response' => $responseword,
+            ]);
         }
         return implode('; ', $responsewords);
     }

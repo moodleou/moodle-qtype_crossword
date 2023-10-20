@@ -514,10 +514,10 @@ class question_test extends \advanced_testcase {
         $question = \test_question_maker::make_question('crossword');
         $question->start_attempt(new question_attempt_step(), 1);
 
-        $this->assertEquals('Down 1: PARIS; Across 3: ITALY', $question->summarise_response(
+        $this->assertEquals('1 Down: PARIS; 2 Across: -; 3 Across: ITALY', $question->summarise_response(
             ['sub0' => 'PARIS', 'sub2' => 'ITALY'])
         );
-        $this->assertEquals('Down 1: PARIS; Across 2: -; Across 3: -', $question->summarise_response(
+        $this->assertEquals('1 Down: PARIS; 2 Across: -; 3 Across: -', $question->summarise_response(
             ['sub0' => 'PARIS', 'sub1' => '', 'sub2' => '__'])
         );
     }
