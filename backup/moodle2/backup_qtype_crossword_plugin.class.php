@@ -38,15 +38,17 @@ class backup_qtype_crossword_plugin extends backup_qtype_plugin {
         $plugin->add_child($pluginwrapper);
 
         // Now create the qtype own structures.
+        // phpcs:disable NormalizedArrays.Arrays.CommaAfterLast.MissingMultiLine
         $crossword = new backup_nested_element('crossword', ['id'], ['correctfeedback',
             'correctfeedbackformat', 'numrows', 'numcolumns', 'accentgradingtype', 'accentpenalty',
             'partiallycorrectfeedback', 'partiallycorrectfeedbackformat',
             'incorrectfeedback', 'incorrectfeedbackformat', 'shownumcorrect']);
+        // phpcs:enable
 
         // Define the elements.
         $words = new backup_nested_element('words');
-        $word = new backup_nested_element('word', ['id'], ['answer', 'clue', 'clueformat', 'orientation', 'startrow',
-            'startcolumn', 'feedback', 'feedbackformat']);
+        $word = new backup_nested_element('word', ['id'],
+            ['answer', 'clue', 'clueformat', 'orientation', 'startrow', 'startcolumn', 'feedback', 'feedbackformat']);
         $words->add_child($word);
         $pluginwrapper->add_child($crossword);
         $pluginwrapper->add_child($words);
@@ -61,7 +63,7 @@ class backup_qtype_crossword_plugin extends backup_qtype_plugin {
     public static function get_qtype_fileareas() {
         return [
             'clue' => 'qtype_crossword_words',
-            'feedback' => 'qtype_crossword_words'
+            'feedback' => 'qtype_crossword_words',
         ];
     }
 }

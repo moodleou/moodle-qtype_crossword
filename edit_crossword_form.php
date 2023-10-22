@@ -81,7 +81,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             get_string('orientation', 'qtype_crossword'),
             [
                 get_string('across', 'qtype_crossword'),
-                get_string('down', 'qtype_crossword')
+                get_string('down', 'qtype_crossword'),
             ],
             null
         );
@@ -526,7 +526,12 @@ class qtype_crossword_edit_form extends question_edit_form {
      *
      * @return array The coordinate of the start and end of the word, [x1, y1, x2, y2].
      */
-    protected function calculate_word_coordinates(string $startrow, string $startcolumn, string $answer, string $orientation): array {
+    protected function calculate_word_coordinates(
+        string $startrow,
+        string $startcolumn,
+        string $answer,
+        string $orientation
+    ): array {
         $x1 = (int) $startcolumn;
         $y1 = (int) $startrow;
         // Get answer length.

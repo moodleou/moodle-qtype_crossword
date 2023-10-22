@@ -33,7 +33,7 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
         // We used get_recommended_name() so this works.
         $elements = [
             'qtype_crossword' => '/crossword',
-            'qtype_crossword_word' => '/words/word'
+            'qtype_crossword_word' => '/words/word',
         ];
 
         foreach ($elements as $elename => $path) {

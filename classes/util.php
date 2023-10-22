@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace qtype_crossword;
+
 use Normalizer;
-use \qtype_crossword_question;
+
 /**
  * Static utilities.
  *

@@ -100,7 +100,7 @@ class question_type_test extends \question_testcase {
                                 'startcolumn' => 0,
                                 'feedback' => '<b>Feedback data</b>',
                                 'feedbackformat' => FORMAT_PLAIN,
-                            ] ,
+                            ],
                             (object)[
                                 'id' => 2,
                                 'questionid' => 8862,
@@ -110,7 +110,7 @@ class question_type_test extends \question_testcase {
                                 'orientation' => 0,
                                 'startrow' => 1,
                                 'startcolumn' => 0,
-                            ] ,
+                            ],
                             (object)[
                                 'id' => 2,
                                 'questionid' => 8862,
@@ -120,8 +120,8 @@ class question_type_test extends \question_testcase {
                                 'orientation' => 0,
                                 'startrow' => 2,
                                 'startcolumn' => 0,
-                            ] ,
-                        ]
+                            ],
+                        ],
                     ],
                 'hints' => [
                     (object)[
@@ -130,7 +130,7 @@ class question_type_test extends \question_testcase {
                         'hint' => 'Hint 1',
                         'hintformat' => FORMAT_HTML,
                         'shownumcorrect' => 0,
-                        'clearwrong' => 0
+                        'clearwrong' => 0,
                     ],
                     (object)[
                         'id' => 2,
@@ -138,14 +138,14 @@ class question_type_test extends \question_testcase {
                         'hint' => 'Hint 2',
                         'hintformat' => FORMAT_HTML,
                         'shownumcorrect' => 1,
-                        'clearwrong' => 1
+                        'clearwrong' => 1,
                     ],
                 ],
                 'returnurl' => '/question/edit.php?courseid=35&cat=1299%2C2005&recurse=1&showhidden=1&qbshowtext=0',
                 'makecopy' => 0,
                 'courseid' => '35',
                 'inpopup' => 0,
-                'contextid' => 91
+                'contextid' => 91,
             ];
 
         $exporter = new \qformat_xml();

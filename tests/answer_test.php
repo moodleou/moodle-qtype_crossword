@@ -33,10 +33,10 @@ class answer_test extends \advanced_testcase {
     /**
      * Test is_correct function.
      *
-     * @dataProvider test_is_correct_provider
+     * @dataProvider is_correct_test_provider
      * @covers \qtype_crossword_question::is_correct
      */
-    public function test_is_correct(array $answerdata) {
+    public function test_is_correct(array $answerdata): void {
         // Create a normal crossword question.
         $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_and_space');
         foreach ($q->answers as $key => $answer) {
@@ -47,17 +47,16 @@ class answer_test extends \advanced_testcase {
     /**
      * Data provider for test_is_correct() test cases.
      *
-     * @coversNothing
      * @return array List of data sets (test cases)
      */
-    public function test_is_correct_provider(): array {
+    public static function is_correct_test_provider(): array {
         return [
             'Normal case' => [
-                ['TIM BERNERS-LEE', 'GORDON BROWN', 'DAVID ATTENBOROUGH']
+                ['TIM BERNERS-LEE', 'GORDON BROWN', 'DAVID ATTENBOROUGH'],
             ],
             'With Underscore' => [
-                ['TIM_BERNERS-LEE', 'GORDON_BROWN', 'DAVID_ATTENBOROUGH']
-            ]
+                ['TIM_BERNERS-LEE', 'GORDON_BROWN', 'DAVID_ATTENBOROUGH'],
+            ],
         ];
     }
 
@@ -66,7 +65,7 @@ class answer_test extends \advanced_testcase {
      *
      * @covers \qtype_crossword_question::generate_answer_hint
      */
-    public function test_generate_answer_hint() {
+    public function test_generate_answer_hint(): void {
         // Create a normal crossword question.
         $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_and_space');
         $expecteddata = [

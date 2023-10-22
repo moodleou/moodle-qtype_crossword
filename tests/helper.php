@@ -43,10 +43,12 @@ class qtype_crossword_test_helper extends question_test_helper {
      * @return array The test question array.
      */
     public function get_test_questions(): array {
+        // phpcs:disable NormalizedArrays.Arrays.CommaAfterLast.MissingMultiLine
         return ['normal', 'unicode', 'different_codepoint', 'sampleimage',
             'clear_incorrect_response', 'normal_with_hyphen_and_space',
             'not_accept_wrong_accents', 'accept_wrong_accents_but_subtract_point',
             'accept_wrong_accents_but_not_subtract_point'];
+        // phpcs:enable
     }
 
     /**
@@ -153,15 +155,15 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->clue = [
             [
                 'text' => 'Eiffel Tower is located in?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => 'where is the Christ the Redeemer statue located in?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => 'Where is the Leaning Tower of Pisa?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
         ];
         $fromform->orientation = [1, 0, 0];
@@ -177,24 +179,30 @@ class qtype_crossword_test_helper extends question_test_helper {
     /**
      * Makes a normal crossword question with a sample image in question text.
      *
-     * @return qtype_crossword_question
+     * @return stdClass
      */
-    public function get_crossword_question_form_data_sampleimage() {
+    public function get_crossword_question_form_data_sampleimage(): stdClass {
         $fromform = $this->get_crossword_question_form_data_normal();
-        $fromform->correctfeedback = ['text' => 'Correct feedback <img src="@@PLUGINFILE@@/correctfbimg.jpg" />',
-            'format' => FORMAT_HTML];
-        $fromform->partiallycorrectfeedback = ['text' => 'Partially correct feedback. <img src="@@PLUGINFILE@@/partialfbimg.jpg"',
-            'format' => FORMAT_HTML];
-        $fromform->incorrectfeedback = ['text' => 'Incorrect feedback. <img src="@@PLUGINFILE@@/incorrectfbimg.jpg"',
-            'format' => FORMAT_HTML];
+        $fromform->correctfeedback = [
+            'text' => 'Correct feedback <img src="@@PLUGINFILE@@/correctfbimg.jpg" />',
+            'format' => FORMAT_HTML,
+        ];
+        $fromform->partiallycorrectfeedback = [
+            'text' => 'Partially correct feedback. <img src="@@PLUGINFILE@@/partialfbimg.jpg"',
+            'format' => FORMAT_HTML,
+        ];
+        $fromform->incorrectfeedback = [
+            'text' => 'Incorrect feedback. <img src="@@PLUGINFILE@@/incorrectfbimg.jpg"',
+            'format' => FORMAT_HTML,
+        ];
         $fromform->questiontext = [
             'text' => 'Cross word question text with sample image <img src="@@PLUGINFILE@@/questiontextimg.jpg" />',
-            'format' => FORMAT_HTML
+            'format' => FORMAT_HTML,
         ];
         $fromform->feedback = [
             [
                 'text' => 'where is the Christ the Redeemer statue located in? <img src="@@PLUGINFILE@@/feedback.jpg" />',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
         ];
         $fromform->clue[0]['text'] = 'Eiffel Tower is located in?' .
@@ -299,15 +307,15 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->clue = [
             [
                 'text' => '线索 1',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => '线索 2',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => '线索 3',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
         ];
         $fromform->orientation = [1, 0, 1];
@@ -380,7 +388,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 $answer->startcolumn,
                 $answer->feedback,
                 $answer->feedbackformat,
-                $answer->answernumber
+                $answer->answernumber,
             );
         }
         return $cw;
@@ -402,11 +410,11 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->clue = [
             [
                 'text' => 'Answer contains letter é has codepoint \u00e9',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => 'Answer contains letter é has codepoint \u0065\u0301',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
         ];
         $fromform->orientation = [0, 1];
@@ -432,7 +440,7 @@ class qtype_crossword_test_helper extends question_test_helper {
     /**
      * Get a crossword with the clear incorrect response options.
      *
-     * @return qtype_crossword_question
+     * @return stdClass
      */
     public function get_crossword_question_form_data_clear_incorrect_response() {
         $fromform = $this->get_crossword_question_form_data_normal();
@@ -443,7 +451,7 @@ class qtype_crossword_test_helper extends question_test_helper {
      * Retrieve the context object.
      * @param \context $context the current context.
      *
-     * @return object The context object.
+     * @return question_edit_contexts The context object.
      */
     public static function question_edit_contexts(\context $context): object {
         if (class_exists('\core_question\local\bank\question_edit_contexts')) {
@@ -501,7 +509,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
-                'answernumber' => 1
+                'answernumber' => 1,
             ],
             (object) [
                 'id' => 2,
@@ -514,7 +522,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 1,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
-                'answernumber' => 2
+                'answernumber' => 2,
             ],
             (object) [
                 'id' => 3,
@@ -527,7 +535,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'orientation' => 0,
                 'feedback' => '',
                 'feedbackformat' => FORMAT_HTML,
-                'answernumber' => 3
+                'answernumber' => 3,
             ],
         ];
 
@@ -564,15 +572,15 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->clue = [
             [
                 'text' => 'Engineer, computer scientist and inventor of the World Wide Web?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => 'Former Prime Minister of the United Kingdom?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
         ];
         $fromform->orientation = [1, 1, 0];
@@ -678,11 +686,11 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->clue = [
             [
                 'text' => 'Des accompagnements à base de foie animal ?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
             [
                 'text' => 'Appareil utilisé pour passer des appels ?',
-                'format' => FORMAT_HTML
+                'format' => FORMAT_HTML,
             ],
         ];
         $fromform->orientation = [0, 1];

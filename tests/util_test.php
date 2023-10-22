@@ -42,7 +42,7 @@ class util_test extends \qbehaviour_walkthrough_test_base {
     /**
      * Test safe_normalize function.
      *
-     * @dataProvider test_safe_normalize_provider
+     * @dataProvider safe_normalize_test_provider
      * @covers \qtype_crossword\util::safe_normalize
      *
      * @param string $string1 The first string need to compare.
@@ -57,26 +57,25 @@ class util_test extends \qbehaviour_walkthrough_test_base {
     /**
      * Data provider for test_safe_normalize() test cases.
      *
-     * @coversNothing
      * @return array List of data sets (test cases)
      */
-    public function test_safe_normalize_provider(): array {
+    public static function safe_normalize_test_provider(): array {
         return [
             'Normal case' => [
                 'Hanoi',
-                'Hanoi'
+                'Hanoi',
             ],
             'Same character but different representation code' => [
                 'Amélie',
-                'Amélie'
-            ]
+                'Amélie',
+            ],
         ];
     }
 
     /**
      * Test remove_accent function.
      *
-     * @dataProvider test_remove_accent_provider
+     * @dataProvider remove_accent_test_provider
      * @covers \qtype_crossword\util::remove_accent
      *
      * @param string $containaccent The string contain accent characters.
@@ -90,26 +89,25 @@ class util_test extends \qbehaviour_walkthrough_test_base {
     /**
      * Data provider for test_remove_accent() test cases.
      *
-     * @coversNothing
      * @return array List of data sets (test cases)
      */
-    public function test_remove_accent_provider(): array {
+    public static function remove_accent_test_provider(): array {
         return [
             'Normal case' => [
                 'Hanoi',
-                'Hanoi'
+                'Hanoi',
             ],
             'One wrong accent' => [
                 'médecin',
-                'medecin'
+                'medecin',
             ],
             'Two wrong accent' => [
                 'pâté',
-                'pate'
+                'pate',
             ],
             'Three wrong accent' => [
                 'téléphoné',
-                'telephone'
+                'telephone',
             ],
         ];
     }
@@ -134,7 +132,7 @@ class util_test extends \qbehaviour_walkthrough_test_base {
      * @coversNothing
      * @return array List of data sets (test cases)
      */
-    public function remove_break_characters_testcases(): array {
+    public static function remove_break_characters_testcases(): array {
         return [
             'Text with space' => [
                 'Los angeles',
@@ -196,7 +194,7 @@ class util_test extends \qbehaviour_walkthrough_test_base {
                 'startcolumn' => 0,
                 'feedback' => 'Feedback',
                 'feedbackformat' => 1,
-            ]
+            ],
         ];
 
         // We will order the answer based on startcolumn and startrow. So, the order list will be:
@@ -237,10 +235,9 @@ class util_test extends \qbehaviour_walkthrough_test_base {
     /**
      * Data provider return ordered answer list.
      *
-     * @coversNothing
      * @return array Ordered answer list.
      */
-    public function ordered_answers_provider(): array {
+    public static function ordered_answers_provider(): array {
         return [
             'Ordered answer list' => [
                 [
@@ -276,9 +273,9 @@ class util_test extends \qbehaviour_walkthrough_test_base {
                         'startcolumn' => 1,
                         'feedback' => 'Feedback',
                         'feedbackformat' => 1,
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 }

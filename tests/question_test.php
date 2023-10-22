@@ -38,7 +38,7 @@ class question_test extends \advanced_testcase {
      *
      * @covers \qtype_crossword_question::is_complete_response
      */
-    public function test_is_complete_response() {
+    public function test_is_complete_response(): void {
         $question = \test_question_maker::make_question('crossword');
 
         $this->assertFalse($question->is_complete_response([]));
@@ -62,36 +62,35 @@ class question_test extends \advanced_testcase {
     /**
      * Data provider for the test_clear_wrong_from_response.
      *
-     * @coversNothing
      * @return array
      */
-    public function clear_wrong_from_response_provider(): array {
+    public static function clear_wrong_from_response_provider(): array {
 
         return [
             'Empty answer' => [
                 [],
-                []
+                [],
             ],
             'Partial correct answers' => [
                 ['sub0' => 'PARI', 'sub1' => 'BRZIL', 'sub2' => 'ITALY'],
-                ['sub2' => 'ITALY', 'sub0' => '', 'sub1' => '']
+                ['sub2' => 'ITALY', 'sub0' => '', 'sub1' => ''],
             ],
             'Correct answers is not in ordered' => [
                 ['sub1' => 'BRAZIL', 'sub0' => 'PARIS', 'sub2' => 'ITALY'],
-                ['sub1' => 'BRAZIL', 'sub0' => 'PARIS', 'sub2' => 'ITALY']
+                ['sub1' => 'BRAZIL', 'sub0' => 'PARIS', 'sub2' => 'ITALY'],
             ],
             'Correct answers is in ordered' => [
                 ['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY'],
-                ['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY']
+                ['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY'],
             ],
             'Not completed answers' => [
                 ['sub1' => 'BRAZIL', 'sub2' => 'ITALY'],
-                ['sub1' => 'BRAZIL', 'sub2' => 'ITALY']
+                ['sub1' => 'BRAZIL', 'sub2' => 'ITALY'],
             ],
             'Not completed and incorrect answer' => [
                 ['sub1' => 'BRAZIL', 'sub2' => 'ITALI'],
-                ['sub1' => 'BRAZIL', 'sub2' => '']
-            ]
+                ['sub1' => 'BRAZIL', 'sub2' => ''],
+            ],
         ];
     }
 
@@ -112,21 +111,20 @@ class question_test extends \advanced_testcase {
     /**
      * Data provider for the test_clear_wrong_from_response.
      *
-     * @coversNothing
      * @return array
      */
-    public function clear_wrong_from_response_with_accent(): array {
+    public static function clear_wrong_from_response_with_accent(): array {
 
         return [
             'Ignore accent' => [
                 'accept_wrong_accents_but_not_subtract_point',
                 ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
-                ['sub0' => 'PATE', 'sub1' => 'TELEPHONE']
+                ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
             ],
             'Partial correct answers with accent' => [
                 'accept_wrong_accents_but_subtract_point',
                 ['sub0' => 'PÂTÉ', 'sub1' => 'TELEPHONE'],
-                ['sub0' => 'PÂTÉ', 'sub1' => '']
+                ['sub0' => 'PÂTÉ', 'sub1' => ''],
             ],
         ];
     }
@@ -136,7 +134,7 @@ class question_test extends \advanced_testcase {
      *
      * @covers \qtype_crossword_question::is_gradable_response
      */
-    public function test_is_gradable_response() {
+    public function test_is_gradable_response(): void {
         $question = \test_question_maker::make_question('crossword');
 
         $this->assertFalse($question->is_gradable_response([]));
@@ -151,7 +149,7 @@ class question_test extends \advanced_testcase {
      * @covers \qtype_crossword_question::grade_response
      * @dataProvider grading_provider
      */
-    public function test_grading(array $answeroptions) {
+    public function test_grading(array $answeroptions): void {
         $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
         $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
         $question->accentpenalty = $answeroptions['options']['accentpenalty'];
@@ -167,7 +165,7 @@ class question_test extends \advanced_testcase {
      *
      * @covers \qtype_crossword_question::get_correct_response
      */
-    public function test_get_correct_response() {
+    public function test_get_correct_response(): void {
         $question = \test_question_maker::make_question('crossword');
         $this->assertEquals(['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY'], $question->get_correct_response());
     }
@@ -181,7 +179,7 @@ class question_test extends \advanced_testcase {
      * @covers \qtype_crossword_question::filter_answers
      * @dataProvider remove_blank_words_from_response_testcases
      */
-    public function test_filter_answers(array $response, int $expectednumberofwords) {
+    public function test_filter_answers(array $response, int $expectednumberofwords): void {
         $this->resetAfterTest();
         $crossword = new \qtype_crossword_question();
         $method = new \ReflectionMethod(\qtype_crossword_question::class, 'remove_blank_words_from_response');
@@ -194,21 +192,21 @@ class question_test extends \advanced_testcase {
      *
      * @return array
      */
-    public function remove_blank_words_from_response_testcases(): array {
+    public static function remove_blank_words_from_response_testcases(): array {
 
         return [
             'answer_valid_list' => [
                 ['sub0' => 'BRAZIL', 'sub1' => 'PARIS', 'sub2' => 'ITALY'],
-                3
+                3,
             ],
             'answer_invalid_list_with_underscore' => [
                 ['sub0' => 'BRAZIL', 'sub1' => '____', 'sub2' => 'IT_LY'],
-                2
+                2,
             ],
             'answer_invalid_list_with_empty_string' => [
                 ['sub0' => '', 'sub1' => '', 'sub2' => ''],
-                0
-            ]
+                0,
+            ],
         ];
     }
 
@@ -219,7 +217,7 @@ class question_test extends \advanced_testcase {
      * @covers \qtype_crossword_question::get_num_parts_right
      * @dataProvider grading_provider
      */
-    public function test_get_num_parts_right(array $answeroptions) {
+    public function test_get_num_parts_right(array $answeroptions): void {
         $this->resetAfterTest();
         $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
         $question->start_attempt(new question_attempt_step(), 1);
@@ -239,7 +237,7 @@ class question_test extends \advanced_testcase {
      * @covers \qtype_crossword_question::get_num_parts_partial
      * @dataProvider grading_provider
      */
-    public function test_get_num_parts_partial(array $answeroptions) {
+    public function test_get_num_parts_partial(array $answeroptions): void {
         $this->resetAfterTest();
         $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
         $question->start_attempt(new question_attempt_step(), 1);
@@ -258,14 +256,14 @@ class question_test extends \advanced_testcase {
      * @covers \qtype_crossword_question::is_full_fraction
      * @dataProvider grading_provider
      */
-    public function is_full_fraction(array $answeroptions) {
+    public function is_full_fraction(array $answeroptions): void {
         $this->resetAfterTest();
         $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
         $question->start_attempt(new question_attempt_step(), 1);
         $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
         $question->accentpenalty = $answeroptions['options']['accentpenalty'];
-        foreach ($answeroptions['answers'] as $answer) {
-            $numanswerspartial = $question->is_full_fraction($answer);
+        foreach ($answeroptions['answers'] as $answerdata) {
+            $numanswerspartial = $question->is_full_fraction($answerdata);
             $this->assertEquals($answer['numpartialanswer'], $numanswerspartial);
         }
     }
@@ -273,10 +271,9 @@ class question_test extends \advanced_testcase {
     /**
      * Data provider for the get_num_parts_right and grading test.
      *
-     * @coversNothing
      * @return array
      */
-    public function grading_provider(): array {
+    public static function grading_provider(): array {
 
         return [
             'Answer options not accepts wrong accented' => [
@@ -378,7 +375,7 @@ class question_test extends \advanced_testcase {
     /**
      * Test calculate_fraction_for_answer function.
      *
-     * @dataProvider test_calculate_fraction_for_answer_provider
+     * @dataProvider calculate_fraction_for_answer_test_provider
      * @covers \qtype_crossword\util::calculate_fraction_for_answer
      *
      * @param array $inputoptions List input options. It contains accent options
@@ -401,10 +398,9 @@ class question_test extends \advanced_testcase {
     /**
      * Data provider for test_calculate_fraction_for_answer_for_answer() test cases.
      *
-     * @coversNothing
      * @return array List of data sets (test cases).
      */
-    public function test_calculate_fraction_for_answer_provider(): array {
+    public static function calculate_fraction_for_answer_test_provider(): array {
         return [
             'Wrong accents are not accepted and the answers are absolutely correct.' => [
                 'inputoptions' => [

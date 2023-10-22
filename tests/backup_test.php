@@ -75,10 +75,9 @@ class backup_test extends \restore_date_testcase {
     /**
      * Data provider for test_cw_backup_data().
      *
-     * @coversNothing
      * @return array
      */
-    public function test_cw_backup_data_provider(): array {
+    public static function backup_test_data_provider(): array {
 
         return [
             'before upgrade feedback column' => [
@@ -92,22 +91,22 @@ class backup_test extends \restore_date_testcase {
                         'clueformat' => FORMAT_HTML,
                         'feedback' => null,
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'BRAZIL'
+                        'answer' => 'BRAZIL',
                     ],
                     [
                         'clue' => 'Eiffel Tower is located in?',
                         'clueformat' => FORMAT_HTML,
                         'feedback' => null,
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'PARIS'
+                        'answer' => 'PARIS',
                     ],
                     [
                         'clue' => 'Where is the Leaning Tower of Pisa?',
                         'clueformat' => FORMAT_HTML,
                         'feedback' => null,
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'ITALY'
-                    ]
+                        'answer' => 'ITALY',
+                    ],
                 ],
                 'version' => 4,
             ],
@@ -122,22 +121,22 @@ class backup_test extends \restore_date_testcase {
                         'clueformat' => FORMAT_HTML,
                         'feedback' => '<p dir="ltr" style="text-align: left;">You are correct.</p>',
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'BRAZIL'
+                        'answer' => 'BRAZIL',
                     ],
                     [
                         'clue' => '<p>Eiffel Tower is located in?</p>',
                         'clueformat' => FORMAT_HTML,
                         'feedback' => '<p dir="ltr" style="text-align: left;">You are correct.<br></p>',
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'PARIS'
+                        'answer' => 'PARIS',
                     ],
                     [
                         'clue' => '<p>Where is the Leaning Tower of Pisa?</p>',
                         'clueformat' => FORMAT_HTML,
                         'feedback' => '<p dir="ltr" style="text-align: left;">You are correct.<br></p>',
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'ITALY'
-                    ]
+                        'answer' => 'ITALY',
+                    ],
                 ],
                 'version' => 4,
             ],
@@ -152,22 +151,22 @@ class backup_test extends \restore_date_testcase {
                         'clueformat' => FORMAT_HTML,
                         'feedback' => null,
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'BRAZIL'
+                        'answer' => 'BRAZIL',
                     ],
                     [
                         'clue' => 'Eiffel Tower is located in?',
                         'clueformat' => FORMAT_HTML,
                         'feedback' => null,
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'PARIS'
+                        'answer' => 'PARIS',
                     ],
                     [
                         'clue' => 'Where is the Leaning Tower of Pisa?',
                         'clueformat' => FORMAT_HTML,
                         'feedback' => null,
                         'feedbackformat' => FORMAT_HTML,
-                        'answer' => 'ITALY'
-                    ]
+                        'answer' => 'ITALY',
+                    ],
                 ],
                 'version' => 3,
             ],
@@ -194,7 +193,7 @@ class backup_test extends \restore_date_testcase {
     /**
      * Test crossword old backup data
      *
-     * @dataProvider test_cw_backup_data_provider
+     * @dataProvider backup_test_data_provider
      * @param string $filename file name of the backup file.
      * @param string $coursefullname course full name.
      * @param string $courseshortname course short name
@@ -250,10 +249,10 @@ class backup_test extends \restore_date_testcase {
     /**
      * Test backup/restore question type crossword.
      *
-     * @dataProvider test_backup_restore_course_with_cw_provider
+     * @dataProvider backup_restore_course_with_cw_test_provider
      * @param string $crosswordtemplate Crossword template.
      */
-    public function test_backup_restore_course_with_cw(string $crosswordtemplate) {
+    public function test_backup_restore_course_with_cw(string $crosswordtemplate): void {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -298,10 +297,9 @@ class backup_test extends \restore_date_testcase {
     /**
      * Data provider for test_backup_restore_course_with_cw().
      *
-     * @coversNothing
      * @return array
      */
-    public function test_backup_restore_course_with_cw_provider(): array {
+    public static function backup_restore_course_with_cw_test_provider(): array {
 
         return [
             'Normal crossword' => [

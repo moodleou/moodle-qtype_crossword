@@ -39,7 +39,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         $data = [];
         $orientationvalue = [
             get_string('across', 'qtype_crossword'),
-            get_string('down', 'qtype_crossword')
+            get_string('down', 'qtype_crossword'),
         ];
         $binddata = [
             'colsNum' => $question->numcolumns + 3,
@@ -47,7 +47,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             'isPreview' => false,
             'title' => get_string('celltitle', 'qtype_crossword'),
             'orientation' => $orientationvalue,
-            'readonly' => false
+            'readonly' => false,
         ];
         $data['questiontext'] = $question->format_questiontext($qa);
         foreach ($question->answers as $key => $answer) {
@@ -91,7 +91,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
                 'startRow' => (int) $answer->startrow,
                 'startColumn' => (int) $answer->startcolumn,
                 'ignoreIndexes' => json_encode($ignoreindex),
-                'wordNumber' => $answer->answernumber
+                'wordNumber' => $answer->answernumber,
             ];
 
             if ($options->readonly) {

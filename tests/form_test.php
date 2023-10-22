@@ -46,173 +46,127 @@ class form_test extends \advanced_testcase {
      *
      * @return array List of data sets (test cases)
      */
-    public function form_validation_testcases(): array {
+    public static function form_validation_testcases(): array {
         return [
             'Normal case' => [
                 [
                     'noanswers' => 3,
-                    'answer' => [
-                        'BRAZIL', 'PARIS', 'ITALY'
-                    ],
+                    'answer' => ['BRAZIL', 'PARIS', 'ITALY'],
                     'clue' => [
                         ['text' => 'where is the Christ the Redeemer statue located in?', 'format' => FORMAT_HTML],
                         ['text' => 'Eiffel Tower is located in?', 'format' => FORMAT_HTML],
-                        ['text' => 'Where is the Leaning Tower of Pisa?', 'format' => FORMAT_HTML]
+                        ['text' => 'Where is the Leaning Tower of Pisa?', 'format' => FORMAT_HTML],
                     ],
-                    'orientation' => [
-                        0, 1, 0
-                    ],
-                    'startrow' => [
-                        1, 0, 3
-                    ],
-                    'startcolumn' => [
-                        0, 2, 2
-                    ],
-                ], []
+                    'orientation' => [0, 1, 0],
+                    'startrow' => [1, 0, 3],
+                    'startcolumn' => [0, 2, 2],
+                ],
+                [],
             ],
             'The letter at the intersection of two words do not match' => [
                 [
                     'noanswers' => 3,
-                    'answer' => [
-                        'AAA', 'BBB', 'CCC'
-                    ],
+                    'answer' => ['AAA', 'BBB', 'CCC'],
                     'clue' => [
                         ['text' => 'Clue A', 'format' => FORMAT_HTML],
                         ['text' => 'Clue B', 'format' => FORMAT_HTML],
-                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML],
                     ],
-                    'orientation' => [
-                        0, 0, 0
-                    ],
-                    'startrow' => [
-                        0, 0, 0
-                    ],
-                    'startcolumn' => [
-                        0, 0, 0
-                    ],
+                    'orientation' => [0, 0, 0],
+                    'startrow' => [0, 0, 0],
+                    'startcolumn' => [0, 0, 0],
                 ],
                 [
                     'answer[1]' => get_string('wrongintersection', 'qtype_crossword'),
-                    'answer[2]' => get_string('wrongintersection', 'qtype_crossword')
-                ]
+                    'answer[2]' => get_string('wrongintersection', 'qtype_crossword'),
+                ],
             ],
             'Requires at least 1 word' => [
                 [
                     'noanswers' => 3,
-                    'answer' => [
-                        '', '', ''
-                    ],
+                    'answer' => ['', '', ''],
                     'clue' => [
                         ['text' => '', 'format' => FORMAT_HTML],
                         ['text' => '', 'format' => FORMAT_HTML],
-                        ['text' => '', 'format' => FORMAT_HTML]
+                        ['text' => '', 'format' => FORMAT_HTML],
                     ],
-                    'orientation' => [
-                        0, 0, 0
-                    ],
-                    'startrow' => [
-                        0, 0, 0
-                    ],
-                    'startcolumn' => [
-                        0, 0, 0
-                    ],
-                ], ['answer[0]' => get_string('notenoughwords', 'qtype_crossword', 1)]
+                    'orientation' => [0, 0, 0],
+                    'startrow' => [0, 0, 0],
+                    'startcolumn' => [0, 0, 0],
+                ],
+                [
+                    'answer[0]' => get_string('notenoughwords', 'qtype_crossword', 1),
+                ],
             ],
             'The word start or end position is outside the defined grid size' => [
                 [
                     'noanswers' => 3,
-                    'answer' => [
-                        'Toolongtext', 'BBB', 'CCC'
-                    ],
+                    'answer' => ['Toolongtext', 'BBB', 'CCC'],
                     'clue' => [
                         ['text' => 'Clue A', 'format' => FORMAT_HTML],
                         ['text' => 'Clue B', 'format' => FORMAT_HTML],
-                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML],
                     ],
-                    'orientation' => [
-                        0, 0, 0
-                    ],
-                    'startrow' => [
-                        0, 1, 2
-                    ],
-                    'startcolumn' => [
-                        0, 0, 0
-                    ],
-                ], ['answer[0]' => get_string('overflowposition', 'qtype_crossword')]
+                    'orientation' => [0, 0, 0],
+                    'startrow' => [0, 1, 2],
+                    'startcolumn' => [0, 0, 0],
+                ],
+                [
+                    'answer[0]' => get_string('overflowposition', 'qtype_crossword'),
+                ],
             ],
             'The answer must be alphanumeric characters only' => [
                 [
                     'noanswers' => 3,
-                    'answer' => [
-                        'Speci@al char*', 'BBB', 'CCC'
-                    ],
+                    'answer' => ['Speci@al char*', 'BBB', 'CCC'],
                     'clue' => [
                         ['text' => 'Clue A', 'format' => FORMAT_HTML],
                         ['text' => 'Clue B', 'format' => FORMAT_HTML],
-                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML],
                     ],
-                    'orientation' => [
-                        0, 0, 0
-                    ],
-                    'startrow' => [
-                        0, 1, 2
-                    ],
-                    'startcolumn' => [
-                        0, 0, 0
-                    ],
-                ], ['answer[0]' => get_string('mustbealphanumeric', 'qtype_crossword')]
+                    'orientation' => [0, 0, 0],
+                    'startrow' => [0, 1, 2],
+                    'startcolumn' => [0, 0, 0],
+                ],
+                [
+                    'answer[0]' => get_string('mustbealphanumeric', 'qtype_crossword'),
+                ],
             ],
             'The word must have both clues and answers' => [
                 [
                     'noanswers' => 3,
-                    'answer' => [
-                        'AAA', '', 'CCC'
-                    ],
+                    'answer' => ['AAA', '', 'CCC'],
                     'clue' => [
                         ['text' => '', 'format' => FORMAT_HTML],
                         ['text' => 'Clue B', 'format' => FORMAT_HTML],
-                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML],
                     ],
-                    'orientation' => [
-                        0, 0, 0
-                    ],
-                    'startrow' => [
-                        0, 1, 2
-                    ],
-                    'startcolumn' => [
-                        0, 0, 0
-                    ],
+                    'orientation' => [0, 0, 0],
+                    'startrow' => [0, 1, 2],
+                    'startcolumn' => [0, 0, 0],
                 ],
                 [
                     'answer[1]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 2),
                     'clue[0]' => get_string('pleaseenterclueandanswer', 'qtype_crossword', 1),
-                ]
+                ],
             ],
             'Ensure a unique answer number for each orientation.' => [
                 [
                     'noanswers' => 3,
-                    'answer' => [
-                        'ABC', 'ACB', 'ABC'
-                    ],
+                    'answer' => ['ABC', 'ACB', 'ABC'],
                     'clue' => [
                         ['text' => 'Clue A', 'format' => FORMAT_HTML],
                         ['text' => 'Clue B', 'format' => FORMAT_HTML],
-                        ['text' => 'Clue C', 'format' => FORMAT_HTML]
+                        ['text' => 'Clue C', 'format' => FORMAT_HTML],
                     ],
-                    'orientation' => [
-                        0, 1, 0
-                    ],
-                    'startrow' => [
-                        0, 0, 0
-                    ],
-                    'startcolumn' => [
-                        0, 0, 0
-                    ],
+                    'orientation' => [0, 1, 0],
+                    'startrow' => [0, 0, 0],
+                    'startcolumn' => [0, 0, 0],
                 ],
                 [
                     'answer[2]' => get_string('wrongoverlappingwords', 'qtype_crossword', 'ABC'),
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -265,20 +219,20 @@ class form_test extends \advanced_testcase {
             'name' => 'Test combined with varnumeric',
             'questiontext' => [
                 'text' => 'Test crossword qtype',
-                'format' => 1
+                'format' => 1,
             ],
             'generalfeedback' => [
                 'text' => '',
-                'format' => 1
+                'format' => 1,
             ],
             'partiallycorrectfeedback' => [
                 'text' => 'Your answer is partially correct.',
-                'format' => 1
+                'format' => 1,
             ],
             'shownumcorrect' => 1,
             'incorrectfeedback' => [
                 'text' => 'Your answer is incorrect.',
-                'format' => 1
+                'format' => 1,
             ],
             'numcolumns' => 5,
             'numrows' => 7,
@@ -311,7 +265,7 @@ class form_test extends \advanced_testcase {
      *
      * @dataProvider generate_alphabet_list_testcases
      */
-    public function test_generate_alphabet_list(array $option, array $expected) {
+    public function test_generate_alphabet_list(array $option, array $expected): void {
         list ($mform) = $this->prepare_test_data();
         list ($start, $end) = $option;
         $method = new \ReflectionMethod(\qtype_crossword_edit_form::class,
@@ -326,20 +280,21 @@ class form_test extends \advanced_testcase {
      *
      * @return array
      */
-    public function generate_alphabet_list_testcases(): array {
-
+    public static function generate_alphabet_list_testcases(): array {
+        // phpcs:disable NormalizedArrays.Arrays.CommaAfterLast.MissingMultiLine
         return [
             'Alphabet list from 1 to 26' => [
                 [0, 26],
                 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-                    'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+                    'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
             ],
             'Alphabet list from 1 to 30' => [
                 [0, 30],
                 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-                    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD']
+                    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD'],
             ],
         ];
+        // phpcs:enable
     }
 
     /**
@@ -348,7 +303,7 @@ class form_test extends \advanced_testcase {
      * @param array $data Data from provider.
      * @dataProvider validate_answer_testcases
      */
-    public function test_validate_answer(array $data) {
+    public function test_validate_answer(array $data): void {
         list ($mform) = $this->prepare_test_data();
         $method = new \ReflectionMethod(\qtype_crossword_edit_form::class,
             'validate_answer');
@@ -362,7 +317,7 @@ class form_test extends \advanced_testcase {
      *
      * @return array
      */
-    public function validate_answer_testcases(): array {
+    public static function validate_answer_testcases(): array {
 
         return [
             'Answer start with hyphen' => [
