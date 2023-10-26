@@ -175,7 +175,8 @@ class qtype_crossword_edit_form extends question_edit_form {
         $mform->addElement('button', 'refresh', get_string('preview', 'qtype_crossword'), ['disabled' => 'disabled']);
 
         // Add preview section.
-        $mform->addElement('html', '<div class="crossword-contain mx-3" id="crossword"></div>');
+        $mform->addElement('html', '<div class="crossword-contain mx-3" data-label="' .
+            get_string('wordlabel', 'qtype_crossword') . '" id="crossword"></div>');
 
         // Add answer options.
         $mform->addElement('header', 'answeroptionsheader', get_string('answeroptions', 'qtype_crossword'));

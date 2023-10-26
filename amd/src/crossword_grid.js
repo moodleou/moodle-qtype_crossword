@@ -88,7 +88,8 @@ export class CrosswordGrid extends CrosswordQuestion {
      * Add each cell into table.
      */
     addCell() {
-        let {words, previewSetting, rowsNum, colsNum} = this.options;
+        let {words, previewSetting, rowsNum, colsNum, crosswordEl} = this.options;
+        let labelPlaceholder = crosswordEl.dataset.label;
         const orientationMarks = ['→', '↓'];
         // Don't draw empty words.
         if (words.length === 0) {
@@ -123,7 +124,14 @@ export class CrosswordGrid extends CrosswordQuestion {
 
                 if (j === 0) {
                     const labelEl = squareEl.querySelector('.word-label');
-                    const labelText = 'W' + (words[i]?.no ?? number) + (orientationMarks[words[i].orientation]);
+                    const labelParams = {
+                        number: words[i]?.no ?? number,
+                        orientation: orientationMarks[words[i].orientation],
+                    };
+                    let labelText = labelPlaceholder;
+                    for (let index in labelParams) {
+                        labelText = labelText.replace(`{${index}}`, labelParams[index]);
+                    }
                     if (!labelEl) {
                         let spanEl = document.createElement('span');
                         spanEl.className = 'word-label text-left';
