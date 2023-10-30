@@ -23,6 +23,7 @@
 
 import {CrosswordQuestion} from 'qtype_crossword/crossword_question';
 import {CrosswordClue} from './crossword_clue';
+import {get_string as getString} from 'core/str';
 
 export class CrosswordGrid extends CrosswordQuestion {
 
@@ -87,9 +88,8 @@ export class CrosswordGrid extends CrosswordQuestion {
     /**
      * Add each cell into table.
      */
-    addCell() {
-        let {words, previewSetting, rowsNum, colsNum, crosswordEl} = this.options;
-        let labelPlaceholder = crosswordEl.dataset.label;
+    async addCell() {
+        let {words, previewSetting, rowsNum, colsNum} = this.options;
         const orientationMarks = ['→', '↓'];
         // Don't draw empty words.
         if (words.length === 0) {
@@ -128,10 +128,7 @@ export class CrosswordGrid extends CrosswordQuestion {
                         number: words[i]?.no ?? number,
                         orientation: orientationMarks[words[i].orientation],
                     };
-                    let labelText = labelPlaceholder;
-                    for (let index in labelParams) {
-                        labelText = labelText.replace(`{${index}}`, labelParams[index]);
-                    }
+                    const labelText = await getString('wordlabel', 'qtype_crossword', labelParams);
                     if (!labelEl) {
                         let spanEl = document.createElement('span');
                         spanEl.className = 'word-label text-left';
