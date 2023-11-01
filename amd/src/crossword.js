@@ -21,7 +21,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import {CrosswordGrid} from 'qtype_crossword/crossword_grid';
-
+import {get_string as getString} from 'core/str';
 /**
  * Get list of words object from moodle form to display in the preview section.
  *
@@ -108,6 +108,9 @@ export const attempt = (options) => {
  */
 export const preview = (options) => {
     const element = document.querySelector(options.element);
+    // Fetch the word label string with sample data and cache it to speed up future processes.
+    getString('wordlabel', 'qtype_crossword',
+        {number: 0, orientation: '→'});
     if (element) {
         element.removeAttribute('disabled');
         element.addEventListener('click', function(event) {

@@ -256,20 +256,24 @@ class question_test extends \advanced_testcase {
      * @covers \qtype_crossword_question::is_full_fraction
      * @dataProvider grading_provider
      */
-    public function is_full_fraction(array $answeroptions): void {
+    public function test_is_full_fraction(array $answeroptions): void {
         $this->resetAfterTest();
         $question = \test_question_maker::make_question('crossword', 'not_accept_wrong_accents');
         $question->start_attempt(new question_attempt_step(), 1);
         $question->accentgradingtype = $answeroptions['options']['accentgradingtype'];
         $question->accentpenalty = $answeroptions['options']['accentpenalty'];
-        foreach ($answeroptions['answers'] as $answerdata) {
-            $numanswerspartial = $question->is_full_fraction($answerdata);
-            $this->assertEquals($answer['numpartialanswer'], $numanswerspartial);
+        foreach ($answeroptions['answers'] as $answers) {
+            $index = 0;
+            foreach ($answers['answers'] as $answer) {
+                $result = $question->is_full_fraction($question->answers[$index], $answer);
+                $this->assertEquals($answers['expected'][$index], $result);
+                $index++;
+            }
         }
     }
 
     /**
-     * Data provider for the get_num_parts_right and grading test.
+     * Data provider for the get_num_parts_right, grading test and is_full_fraction.
      *
      * @return array
      */
@@ -281,6 +285,7 @@ class question_test extends \advanced_testcase {
                     'answers' => [
                         'Answer is absolutely correct' => [
                             'answers' => ['sub0' => 'PÂTÉ', 'sub1' => 'TÉLÉPHONE'],
+                            'expected' => [true, true],
                             'numrightanswer' => 2,
                             'numpartialanswer' => 0,
                             'fraction' => 1,
@@ -288,6 +293,7 @@ class question_test extends \advanced_testcase {
                         ],
                         'Answers with incorrect accents' => [
                             'answers' => ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
+                            'expected' => [false, false],
                             'numrightanswer' => 0,
                             'numpartialanswer' => 0,
                             'fraction' => 0,
@@ -295,6 +301,7 @@ class question_test extends \advanced_testcase {
                         ],
                         'Answers are wrong' => [
                             'answers' => ['sub0' => 'PETE', 'sub1' => 'TALAPHONE'],
+                            'expected' => [false, false],
                             'numrightanswer' => 0,
                             'numpartialanswer' => 0,
                             'fraction' => 0,
@@ -312,6 +319,7 @@ class question_test extends \advanced_testcase {
                     'answers' => [
                         'Answer is absolutely correct' => [
                             'answers' => ['sub0' => 'PÂTÉ', 'sub1' => 'TÉLÉPHONE'],
+                            'expected' => [true, true],
                             'numrightanswer' => 2,
                             'numpartialanswer' => 0,
                             'fraction' => 1,
@@ -319,6 +327,7 @@ class question_test extends \advanced_testcase {
                         ],
                         'Answers with incorrect accents' => [
                             'answers' => ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
+                            'expected' => [false, false],
                             'numrightanswer' => 0,
                             'numpartialanswer' => 2,
                             'fraction' => 0.9,
@@ -326,6 +335,7 @@ class question_test extends \advanced_testcase {
                         ],
                         'Answers are wrong' => [
                             'answers' => ['sub0' => 'PETE', 'sub1' => 'TALAPHONE'],
+                            'expected' => [false, false],
                             'numrightanswer' => 0,
                             'numpartialanswer' => 0,
                             'fraction' => 0,
@@ -343,6 +353,7 @@ class question_test extends \advanced_testcase {
                     'answers' => [
                         'Answer is absolutely correct' => [
                             'answers' => ['sub0' => 'PÂTÉ', 'sub1' => 'TÉLÉPHONE'],
+                            'expected' => [true, true],
                             'numrightanswer' => 2,
                             'numpartialanswer' => 0,
                             'fraction' => 1,
@@ -350,6 +361,7 @@ class question_test extends \advanced_testcase {
                         ],
                         'Answers with incorrect accents' => [
                             'answers' => ['sub0' => 'PATE', 'sub1' => 'TELEPHONE'],
+                            'expected' => [true, true],
                             'numrightanswer' => 2,
                             'numpartialanswer' => 0,
                             'fraction' => 1,
@@ -357,6 +369,7 @@ class question_test extends \advanced_testcase {
                         ],
                         'Answers are wrong' => [
                             'answers' => ['sub0' => 'PETE', 'sub1' => 'TALAPHONE'],
+                            'expected' => [false, false],
                             'numrightanswer' => 0,
                             'numpartialanswer' => 0,
                             'fraction' => 0,
