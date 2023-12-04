@@ -218,9 +218,7 @@ class backup_test extends \restore_date_testcase {
                 $filename, $coursefullname, $courseshortname);
         // Assume there is only one crossword question in the DB after restore.
         $questionid = $DB->get_field('question', 'id', ['qtype' => 'crossword'], MUST_EXIST);
-        $q = \question_bank::load_question($questionid);
-        $qtype = new qtype_crossword();
-        $qtype->get_question_options($q);
+        $q = \question_bank::load_question_data($questionid);
         // Verify question exist after restore and question word options is correct.
         $this->assertEquals($questionname, $q->name);
         $count = 0;

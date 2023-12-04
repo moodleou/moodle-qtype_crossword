@@ -48,6 +48,19 @@ class qtype_crossword_question extends question_graded_automatically {
     /** @var float The penalty mark for each incorrect accents. */
     public $accentpenalty;
 
+    /** @var string Feedback for any correct response. */
+    public $correctfeedback;
+    /** @var int format of $correctfeedback. */
+    public $correctfeedbackformat;
+    /** @var string Feedback for any partially correct response. */
+    public $partiallycorrectfeedback;
+    /** @var int format of $partiallycorrectfeedback. */
+    public $partiallycorrectfeedbackformat;
+    /** @var string Feedback for any incorrect response. */
+    public $incorrectfeedback;
+    /** @var int format of $incorrectfeedback. */
+    public $incorrectfeedbackformat;
+
     /**
      * Answer field name.
      *
