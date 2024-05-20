@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Essay question type upgrade code.
+ * Cross word question type upgrade code.
  *
- * @package    qtype
- * @subpackage crossword
+ * @package    qtype_crossword
  * @copyright  2022 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

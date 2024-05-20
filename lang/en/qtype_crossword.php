@@ -37,7 +37,6 @@ $string['clue'] = 'Clue';
 $string['correctanswer'] = 'Correct answer: {$a}';
 $string['down'] = 'Down';
 $string['inputlabel'] = '{$a->number} {$a->orientation}. {$a->clue} Answer length {$a->length}';
-$string['wordlabel'] = 'W{$a->number}{$a->orientation}';
 $string['missingresponse'] = '-';
 $string['mustbealphanumeric'] = 'The answer must be alphanumeric characters only';
 $string['notenoughwords'] = 'This type of question requires at least {$a} word';
@@ -63,6 +62,7 @@ $string['wordhdrhelper_help'] = '<p>As the crossword is generated from the word 
 <p>Most characters are supported in this question type, from A-Z, 0-9, diacritics and currency symbols etc. Any curly quotation marks or apostrophes will be converted or interpreted as \'straight\' versions for ease of input and auto-marking.</p>
 <p>Add more words by selecting the \'Blanks for 3 more words\' button. Any blank words will be removed when the question is saved.</p>';
 $string['wordno'] = 'Word {$a}';
+$string['wordlabel'] = 'W{$a->number}{$a->orientation}';
 $string['words'] = 'Words';
 $string['words_help'] = 'Please set at least one word and its matching clue, and define its direction and start position. Remember that the words are numbered in the grid according to their order in this section.';
 $string['wrongadjacentcharacter'] = 'Two or more consecutive new word breaks detected. Please use a maximum of one between individual words. Note that this does not limit the number of new words in the answer itself.';
@@ -70,5 +70,5 @@ $string['wrongintersection'] = 'The letter at the intersection of two words do n
 $string['wrongoverlappingwords'] = 'There cannot be two words starting in the same place, in the same direction. This clue starts in the same place as "{$a}" above.';
 $string['wrongpositionhyphencharacter'] = 'Please do not add a hyphen before or after the last alphanumeric character.';
 $string['wrongpositionspacecharacter'] = 'Please do not add a space before or after the last alphanumeric character.';
-$string['yougotnright'] = '{$a->num} of your answers are correct.';
 $string['yougot1right'] = '1 of your answers is correct.';
+$string['yougotnright'] = '{$a->num} of your answers are correct.';

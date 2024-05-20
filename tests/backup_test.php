@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/question/type/crossword/tests/helper.php');
  * @covers \restore_qtype_crossword_plugin
  * @covers \backup_qtype_crossword_plugin
  */
-class backup_test extends \restore_date_testcase {
+final class backup_test extends \restore_date_testcase {
 
     /**
      * Load required libraries

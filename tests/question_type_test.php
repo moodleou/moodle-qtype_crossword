@@ -37,7 +37,7 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @copyright 2022 The Open University
  * @license  https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class question_type_test extends \question_testcase {
+final class question_type_test extends \question_testcase {
     /** @var \qtype_crossword instance of the question type class to test. */
     protected $qtype;
 
