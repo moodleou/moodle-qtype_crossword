@@ -74,12 +74,18 @@ export class CrosswordClue extends CrosswordQuestion {
             return;
         }
         el.addEventListener('click', (e) => {
-            const {words} = this.options;
-            const wordNumber = e.target.closest('.wrap-clue').dataset.questionid;
-            const wordObj = words.find(o => o.number === parseInt(wordNumber));
+            // This regex matches strings that only contain space and underscores.
+            // That mean user has not fill any word.
+            const blankAnswer = /^[ _-]+$/.test(e.target.value);
+            const isCursorAtTheEnd = e.target.selectionEnd === e.target.value.length;
             let startIndex = e.target.selectionStart;
             // Check if the answer fields is clicked.
             const isClicked = startIndex === e.target.selectionEnd;
+            // Cursor will move to the start of the clue field if the input is blank.
+            if (blankAnswer && isCursorAtTheEnd && isClicked) {
+                startIndex = 0;
+            }
+
             const previousIndex = startIndex - 1;
             // Check if the previous character contains hyphen or space.
             const isContainSpecialCharacter = ['-', ' '].includes(e.target.value.charAt(previousIndex));
@@ -87,8 +93,12 @@ export class CrosswordClue extends CrosswordQuestion {
                 startIndex = (previousIndex < 0) ? 0 : previousIndex;
                 e.target.setSelectionRange(startIndex, startIndex);
             }
+
             // Based on the selected letter index on the answer index,
             // we will find the corresponding crossword cell index.
+            const {words} = this.options;
+            const wordNumber = e.target.closest('.wrap-clue').dataset.questionid;
+            const wordObj = words.find(o => o.number === parseInt(wordNumber));
             startIndex = this.findCellIndexFromAnswerIndex(wordObj, startIndex);
             this.focusCellByStartIndex(startIndex, word);
             this.focusClue();
