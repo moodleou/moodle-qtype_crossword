@@ -39,7 +39,7 @@ require_once($CFG->dirroot . '/question/type/crossword/tests/helper.php');
  *
  * @covers \qtype_crossword_edit_form
  */
-class form_test extends \advanced_testcase {
+final class form_test extends \advanced_testcase {
 
     /**
      * Data provider for test_form_validation() test cases.

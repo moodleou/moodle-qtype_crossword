@@ -38,16 +38,16 @@ use qtype_crossword\util;
  */
 class qtype_crossword extends question_type {
 
-    /** @const array The word fields list */
+    /** @var array The word fields list */
     private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'startrow', 'startcolumn', 'feedback'];
 
-    /** @const string The answer must be completely correct and must not be accents wrong */
+    /** @var string The answer must be completely correct and must not be accents wrong */
     const ACCENT_GRADING_STRICT = 'strict';
 
-    /** @const string Accents errors are allowed, but points will be deducted. */
+    /** @var string Accents errors are allowed, but points will be deducted. */
     const ACCENT_GRADING_PENALTY = 'penalty';
 
-    /** @const string Accents errors are allowed and the points will not be deducted. */
+    /** @var string Accents errors are allowed and the points will not be deducted. */
     const ACCENT_GRADING_IGNORE = 'ignore';
 
     public function get_question_options($question): bool {

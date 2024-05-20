@@ -28,7 +28,7 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @copyright 2022 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class answer_test extends \advanced_testcase {
+final class answer_test extends \advanced_testcase {
 
     /**
      * Test is_correct function.
