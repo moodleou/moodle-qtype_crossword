@@ -54,6 +54,9 @@ $string['pluginnamesummary'] = 'A simple text-based crossword question. It curre
 $string['preview'] = 'Preview';
 $string['privacy:metadata'] = 'The Crossword plugin does not store any personal data.';
 $string['refresh'] = 'Refresh preview';
+$string['smart_straight_quote_matching'] = 'Smart and straight quote matching';
+$string['smart_straight_quote_matching_relaxed'] = 'Relaxed: ` \' and \' are interchangeable (default)';
+$string['smart_straight_quote_matching_strict'] = 'Strict: ` \' and \' all different';
 $string['startcolumn'] = 'Column index';
 $string['startrow'] = 'Row index';
 $string['updateform'] = 'Update the form';
@@ -61,8 +64,8 @@ $string['wordhdrhelper_help'] = '<p>As the crossword is generated from the word 
 <p>Add your words and clues using the text fields. If you want a specific word fixed on the grid, tick \'Fix word on grid\' and specify its orientation and placement.</p>
 <p>Most characters are supported in this question type, from A-Z, 0-9, diacritics and currency symbols etc. Any curly quotation marks or apostrophes will be converted or interpreted as \'straight\' versions for ease of input and auto-marking.</p>
 <p>Add more words by selecting the \'Blanks for 3 more words\' button. Any blank words will be removed when the question is saved.</p>';
-$string['wordno'] = 'Word {$a}';
 $string['wordlabel'] = 'W{$a->number}{$a->orientation}';
+$string['wordno'] = 'Word {$a}';
 $string['words'] = 'Words';
 $string['words_help'] = 'Please set at least one word and its matching clue, and define its direction and start position. Remember that the words are numbered in the grid according to their order in this section.';
 $string['wrongadjacentcharacter'] = 'Two or more consecutive new word breaks detected. Please use a maximum of one between individual words. Note that this does not limit the number of new words in the answer itself.';

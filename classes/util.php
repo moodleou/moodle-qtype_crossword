@@ -52,7 +52,7 @@ class util {
     /**
      * Remove the work-break characters '-' and ' ' from an answer.
      *
-     * @param string Full answer.
+     * @param string $text Full answer.
      * @return string Answer with just the letters remaining.
      */
     public static function remove_break_characters(string $text): string {

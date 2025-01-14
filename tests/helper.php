@@ -77,9 +77,11 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->numrows = 5;
         $cw->numcolumns = 7;
         $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $cw->quotematching = 0;
         $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $cw->generalfeedback = '';
+        $cw->quotematching = 0;
         $answerslist = [
             (object) [
                 'id' => 1,
@@ -173,6 +175,8 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->numcolumns = 7;
         $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $fromform->accentpenalty = 0;
+        $fromform->questiontext = 0;
+        $fromform->quotematching = 0;
         return $fromform;
     }
 
@@ -231,6 +235,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->numcolumns = 4;
         $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $cw->accentpenalty = 0;
+        $cw->quotematching = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
@@ -325,6 +330,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->numcolumns = 4;
         $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $fromform->accentpenalty = 0;
+        $fromform->quotematching = 0;
         return $fromform;
     }
 
@@ -346,6 +352,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->numrows = 6;
         $cw->numcolumns = 6;
         $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
+        $cw->quotematching = 0;
         $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
@@ -406,6 +413,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
         $fromform->penalty = 1;
         $fromform->defaultmark = 1;
+        $fromform->quotematching = 0;
         $fromform->answer = ['Amélie', 'Amélie'];
         $fromform->clue = [
             [
@@ -496,6 +504,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->numcolumns = 17;
         $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $cw->accentpenalty = 0;
+        $cw->quotematching = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
@@ -590,6 +599,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->numcolumns = 17;
         $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $fromform->accentpenalty = 0;
+        $fromform->quotematching = 0;
         return $fromform;
     }
 
@@ -623,6 +633,7 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->numcolumns = 4;
         $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $cw->accentpenalty = 0;
+        $cw->quotematching = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $answerslist = [
             (object) [
@@ -693,6 +704,7 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'format' => FORMAT_HTML,
             ],
         ];
+        $fromform->quotematching = 0;
         $fromform->orientation = [0, 1];
         $fromform->startrow = [0, 0];
         $fromform->startcolumn = [0, 2];

@@ -36,12 +36,15 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @package qtype_crossword
  * @copyright 2022 The Open University
  * @license  https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @covers \qtype_crossword
  */
 final class question_type_test extends \question_testcase {
     /** @var \qtype_crossword instance of the question type class to test. */
     protected $qtype;
 
     protected function setUp(): void {
+        parent::setUp();
         $this->qtype = \question_bank::get_qtype('crossword');
     }
 
@@ -88,6 +91,7 @@ final class question_type_test extends \question_testcase {
                         'accentgradingtype' => 'penalty',
                         'accentpenalty' => 0.2,
                         'shownumcorrect' => 1,
+                        'quotematching' => 0,
                         'words' => [
                             (object)[
                                 'id' => 1,
@@ -170,6 +174,7 @@ final class question_type_test extends \question_testcase {
     <numcolumns>0</numcolumns>
     <accentgradingtype>penalty</accentgradingtype>
     <accentpenalty>0.2</accentpenalty>
+    <quotematching>0</quotematching>
     <word>
       <answer>AAA</answer>
       <clue format="html">
@@ -238,5 +243,15 @@ final class question_type_test extends \question_testcase {
         }
 
         $this->assertEquals($expectedxml, $xml);
+    }
+
+    public function test_convert_quote_to_straight_quote(): void {
+        $data = [
+            'arrayelement' => ['hasrecursion' => '‘ single smart quote ’ and “ double smart quote ”'],
+            'test' => '&lsquo; HTML entities single quote &rsquo; and &ldquo; HTML entities double quote &rdquo;',
+        ];
+        $result = $this->qtype->convert_quote_to_straight_quote($data);
+        $this->assertEquals($result['arrayelement']['hasrecursion'], "' single smart quote ' and " . '" double smart quote "');
+        $this->assertEquals($result['test'], "' HTML entities single quote ' and " . '" HTML entities double quote "');
     }
 }

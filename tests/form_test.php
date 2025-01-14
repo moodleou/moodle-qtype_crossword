@@ -230,6 +230,7 @@ final class form_test extends \advanced_testcase {
                 'format' => 1,
             ],
             'shownumcorrect' => 1,
+            'quotematching' => 0,
             'incorrectfeedback' => [
                 'text' => 'Your answer is incorrect.',
                 'format' => 1,

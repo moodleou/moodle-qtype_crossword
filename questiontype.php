@@ -50,6 +50,7 @@ class qtype_crossword extends question_type {
     /** @var string Accents errors are allowed and the points will not be deducted. */
     const ACCENT_GRADING_IGNORE = 'ignore';
 
+    #[\Override]
     public function get_question_options($question): bool {
         global $DB;
         parent::get_question_options($question);
@@ -85,6 +86,7 @@ class qtype_crossword extends question_type {
         $options->incorrectfeedback = get_string('incorrectfeedbackdefault', 'question');
         $options->incorrectfeedbackformat = FORMAT_HTML;
         $options->shownumcorrect = 1;
+        $options->quotematching = 0;
         $options->numrows = 10;
         $options->numcolumns = 10;
         $options->accentgradingtype = self::ACCENT_GRADING_STRICT;
@@ -92,6 +94,32 @@ class qtype_crossword extends question_type {
         return $options;
     }
 
+    /**
+     * Convert smart quotes to straight quotes, handling recursion for arrays.
+     *
+     * @param mixed $input Form input data can be a string / number / array.
+     * @return mixed
+     */
+    public function convert_quote_to_straight_quote(mixed $input): mixed {
+        if (is_array($input)) {
+            // If input is an array, process each element recursively.
+            foreach ($input as $key => $subvalue) {
+                $input[$key] = $this->convert_quote_to_straight_quote($subvalue);
+            }
+        } else if (is_string($input)) {
+            // If input is a string, convert quotes.
+            // Replace smart quotes with straight quotes.
+            $input = str_replace(
+                ['&lsquo;', '&rsquo;', '&ldquo;', '&rdquo;', '‘', '’', '“', '”'], // HTML entities and smart quotes.
+                ["'", "'", '"', '"', "'", "'", '"', '"'],                         // Corresponding straight quotes.
+                $input
+            );
+        }
+
+        return $input;
+    }
+
+    #[\Override]
     public function save_question($question, $form) {
         // For MVP version, default mark will be set automatically.
         $marks = 0;
@@ -102,9 +130,17 @@ class qtype_crossword extends question_type {
             $marks++;
         }
         $form->defaultmark = $marks;
+        if (!$form->quotematching) {
+            foreach ($form as $property => $value) {
+                if (isset($value)) {
+                    $form->{$property} = $this->convert_quote_to_straight_quote($value);
+                }
+            }
+        }
         return parent::save_question($question, $form);
     }
 
+    #[\Override]
     public function save_question_options($question) {
         global $DB;
         $context = $question->context;
@@ -183,6 +219,7 @@ class qtype_crossword extends question_type {
             $options->correctfeedback = '';
             $options->partiallycorrectfeedback = '';
             $options->incorrectfeedback = '';
+            $options->quotematching = 0;
             $options->numrows = 10;
             $options->numcolumns = 10;
             $options->accentgradingtype = self::ACCENT_GRADING_STRICT;
@@ -190,6 +227,7 @@ class qtype_crossword extends question_type {
             $options->id = $DB->insert_record('qtype_crossword_options', $options);
         }
 
+        $options->quotematching = $question->quotematching;
         $options->numrows = $question->numrows;
         $options->numcolumns = $question->numcolumns;
         $options->accentgradingtype = $question->accentgradingtype;
@@ -199,6 +237,7 @@ class qtype_crossword extends question_type {
         $this->save_hints($question, true);
     }
 
+    #[\Override]
     public function delete_question($questionid, $contextid) {
         global $DB;
         $DB->delete_records('qtype_crossword_options', ['questionid' => $questionid]);
@@ -206,10 +245,12 @@ class qtype_crossword extends question_type {
         parent::delete_question($questionid, $contextid);
     }
 
+    #[\Override]
     protected function make_hint($hint) {
         return question_hint_with_parts::load_from_record($hint);
     }
 
+    #[\Override]
     protected function initialise_question_instance($question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
         $this->initialise_combined_feedback($question, $questiondata, true);
@@ -233,12 +274,14 @@ class qtype_crossword extends question_type {
         // Based on the given list of answers, we will create list of answer objects,
         // each containing an 'answer number'.
         $question->answers = util::update_answer_list($answers);
+        $question->quotematching = $questiondata->options->quotematching;
         $question->numrows = (int) $questiondata->options->numrows;
         $question->numcolumns = (int) $questiondata->options->numcolumns;
         $question->accentgradingtype = $questiondata->options->accentgradingtype;
         $question->accentpenalty = (float) $questiondata->options->accentpenalty;
     }
 
+    #[\Override]
     public function export_to_xml($question, qformat_xml $format, $extra = null): string {
         $expout = parent::export_to_xml($question, $format, $extra);
         $expout .= '    <numrows>' . $format->xml_escape($question->options->numrows) . "</numrows>\n";
@@ -247,6 +290,8 @@ class qtype_crossword extends question_type {
             . "</accentgradingtype>\n";
         $expout .= '    <accentpenalty>' . $format->xml_escape($question->options->accentpenalty)
             . "</accentpenalty>\n";
+        $expout .= '    <quotematching>' . $format->xml_escape($question->options->quotematching)
+            . "</quotematching>\n";
         $fs = get_file_storage();
         foreach ($question->options->words as $word => $value) {
             $expout .= "    <word>\n";
@@ -275,6 +320,7 @@ class qtype_crossword extends question_type {
         return $expout;
     }
 
+    #[\Override]
     public function import_from_xml($data, $question, qformat_xml $format, $extra = null): ?object {
         if (!isset($data['#']['word'])) {
             return null;
@@ -285,6 +331,7 @@ class qtype_crossword extends question_type {
         $question->numcolumns = $format->getpath($data, ['#', 'numcolumns', 0, '#'], '', true);
         $question->accentgradingtype = $format->getpath($data, ['#', 'accentgradingtype', 0, '#'], '', true);
         $question->accentpenalty = $format->getpath($data, ['#', 'accentpenalty', 0, '#'], '', true);
+        $question->quotematching = $format->getpath($data, ['#', 'quotematching', 0, '#'], '', true);
         foreach ($data['#']['word'] as $word) {
             foreach (self::WORD_FIELDS as $field) {
                 if ($field === 'clue' || $field === 'feedback') {
@@ -302,6 +349,7 @@ class qtype_crossword extends question_type {
         return $question;
     }
 
+    #[\Override]
     public function move_files($questionid, $oldcontextid, $newcontextid) {
         global $DB;
         $fs = get_file_storage();
@@ -321,6 +369,7 @@ class qtype_crossword extends question_type {
         $this->move_files_in_hints($questionid, $oldcontextid, $newcontextid);
     }
 
+    #[\Override]
     protected function delete_files($questionid, $contextid) {
         global $DB;
         $fs = get_file_storage();

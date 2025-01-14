@@ -39,6 +39,7 @@ class qtype_crossword_edit_form extends question_edit_form {
     /** @var array The grid options. */
     protected $gridoptions;
 
+    #[\Override]
     protected function definition_inner($mform): void {
         // Set grid options.
         $this->gridoptions = range(3, 30);
@@ -69,6 +70,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         $this->add_interactive_settings(true, true);
     }
 
+    #[\Override]
     protected function get_per_answer_fields($mform, $label, $gradeoptions,
             &$repeatedoptions, &$wordsoptions): array {
         $repeated = [];
@@ -110,6 +112,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         return $repeated;
     }
 
+    #[\Override]
     protected function add_per_answer_fields(&$mform, $label, $gradeoptions,
         $minoptions = QUESTION_NUMANS_START, $addoptions = QUESTION_NUMANS_ADD) {
         $mform->addElement('header', 'words',
@@ -131,6 +134,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             $this->get_more_choices_string(), true);
     }
 
+    #[\Override]
     protected function get_more_choices_string() {
         return get_string('addmorewordblanks', 'qtype_crossword');
     }
@@ -189,6 +193,13 @@ class qtype_crossword_edit_form extends question_edit_form {
             $optionsaccented);
         $mform->setDefault('accentgradingtype', $this->get_default_value('accentgradingtype',
             qtype_crossword::ACCENT_GRADING_STRICT));
+
+        $mform->addElement('select', 'quotematching', get_string('smart_straight_quote_matching', 'qtype_crossword'), [
+            get_string('smart_straight_quote_matching_relaxed', 'qtype_crossword'),
+            get_string('smart_straight_quote_matching_strict', 'qtype_crossword'),
+        ]);
+        $mform->setDefault('quotematching', 0);
+
         $penaltyoptions = question_bank::fraction_options();
         // Remove None and 100%.
         unset($penaltyoptions['0.0']);
@@ -234,6 +245,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         return $repeated;
     }
 
+    #[\Override]
     protected function data_preprocessing($question): stdClass {
         $question = parent::data_preprocessing($question);
         $question = $this->data_preprocessing_combined_feedback($question, true);
@@ -313,6 +325,7 @@ class qtype_crossword_edit_form extends question_edit_form {
         return $question;
     }
 
+    #[\Override]
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
         $answercount = 0;

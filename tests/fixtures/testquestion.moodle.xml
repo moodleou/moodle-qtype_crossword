@@ -19,6 +19,7 @@
         <numcolumns>0</numcolumns>
         <accentgradingtype>penalty</accentgradingtype>
         <accentpenalty>0.2</accentpenalty>
+        <quotematching>0</quotematching>
         <word>
             <answer>AAA</answer>
             <clue format="html">

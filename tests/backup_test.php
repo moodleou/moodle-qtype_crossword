@@ -42,6 +42,7 @@ final class backup_test extends \restore_date_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
         require_once("{$CFG->dirroot}/backup/util/includes/restore_includes.php");
+        parent::setUpBeforeClass();
     }
 
     /**
