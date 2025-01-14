@@ -134,5 +134,20 @@ function xmldb_qtype_crossword_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023032901, 'qtype', 'crossword');
     }
 
+    if ($oldversion < 2025010700) {
+
+        // Define field quotematching to be added to qtype_crossword_options.
+        $table = new xmldb_table('qtype_crossword_options');
+        $field = new xmldb_field('quotematching', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'shownumcorrect');
+
+        // Conditionally launch add field quotematching.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2025010700, 'qtype', 'crossword');
+    }
+
     return true;
 }

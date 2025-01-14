@@ -66,6 +66,9 @@ class qtype_crossword_question extends question_graded_automatically {
     /** @var int format of $incorrectfeedback. */
     public $incorrectfeedbackformat;
 
+    /** @var bool Whether smart and straight quotes are matched strictly or relaxed. */
+    public $quotematching;
+
     /**
      * Answer field name.
      *
@@ -76,6 +79,7 @@ class qtype_crossword_question extends question_graded_automatically {
         return 'sub' . $key;
     }
 
+    #[\Override]
     public function get_expected_data(): array {
         $response = [];
         for ($i = 0; $i < count($this->answers); $i++) {
@@ -84,6 +88,7 @@ class qtype_crossword_question extends question_graded_automatically {
         return $response;
     }
 
+    #[\Override]
     public function get_correct_response(): ?array {
         $response = [];
         foreach ($this->answers as $key => $answer) {
@@ -92,6 +97,7 @@ class qtype_crossword_question extends question_graded_automatically {
         return $response;
     }
 
+    #[\Override]
     public function summarise_response(array $response): ?string {
         $responsewords = [];
         foreach ($this->answers as $key => $answer) {
@@ -110,16 +116,19 @@ class qtype_crossword_question extends question_graded_automatically {
         return implode('; ', $responsewords);
     }
 
+    #[\Override]
     public function is_complete_response(array $response): bool {
         $filteredresponse = $this->remove_blank_words_from_response($response);
         return count($this->answers) === count($filteredresponse);
     }
 
+    #[\Override]
     public function is_gradable_response(array $response): bool {
         $filteredresponse = $this->remove_blank_words_from_response($response);
         return count($filteredresponse) > 0;
     }
 
+    #[\Override]
     public function get_validation_error(array $response): string {
         if ($this->is_complete_response($response)) {
             return '';
@@ -127,6 +136,7 @@ class qtype_crossword_question extends question_graded_automatically {
         return get_string('pleaseananswerallparts', 'qtype_crossword');
     }
 
+    #[\Override]
     public function is_same_response(array $prevresponse, array $newresponse): bool {
         foreach ($this->answers as $key => $notused) {
             $fieldname = $this->field($key);
@@ -138,6 +148,7 @@ class qtype_crossword_question extends question_graded_automatically {
         return true;
     }
 
+    #[\Override]
     public function grade_response(array $response): array {
         // Retrieve a number of right answers and total answers.
         [$numrightparts, $total] = $this->get_num_parts_right($response);
@@ -150,6 +161,7 @@ class qtype_crossword_question extends question_graded_automatically {
         return [$fraction, question_state::graded_state_for_fraction($fraction)];
     }
 
+    #[\Override]
     public function get_num_parts_right(array $response): array {
         $numright = 0;
         foreach ($this->answers as $key => $answer) {
@@ -177,6 +189,7 @@ class qtype_crossword_question extends question_graded_automatically {
         return $numpartial;
     }
 
+    #[\Override]
     public function clear_wrong_from_response(array $response): array {
         foreach ($this->answers as $key => $answer) {
             if (isset($response[$this->field($key)]) && !$this->is_full_fraction($answer, $response[$this->field($key)])) {
@@ -249,6 +262,7 @@ class qtype_crossword_question extends question_graded_automatically {
         });
     }
 
+    #[\Override]
     public function check_file_access($qa, $options, $component, $filearea,
         $args, $forcedownload) {
 

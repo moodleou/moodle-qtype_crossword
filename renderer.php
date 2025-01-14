@@ -31,6 +31,7 @@
  */
 class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
 
+    #[\Override]
     public function formulation_and_controls(question_attempt $qa,
         question_display_options $options): string {
         /** @var qtype_crossword_question $question */
@@ -125,10 +126,12 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
         return $result;
     }
 
+    #[\Override]
     public function specific_feedback(question_attempt $qa): string {
         return $this->combined_feedback($qa);
     }
 
+    #[\Override]
     public function correct_response(question_attempt $qa): string {
         /** @var qtype_crossword_question $question */
         $question = $qa->get_question();
@@ -136,6 +139,7 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $question->summarise_response($question->get_correct_response()));
     }
 
+    #[\Override]
     protected function num_parts_correct(question_attempt $qa): ?string {
         $a = new stdClass();
         [$a->num, $a->outof] = $qa->get_question()->get_num_parts_right($qa->get_last_qt_data());
