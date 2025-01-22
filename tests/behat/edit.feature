@@ -23,6 +23,9 @@ Feature: Test editing a Crossword question
 
   Scenario: Edit a Crossword question
     When I am on the "crossword-001" "core_question > edit" page logged in as teacher
+    And the following fields match these values:
+      | Question name | crossword-001           |
+      | Question text | Crossword question text |
     And I set the following fields to these values:
       | Question name |  |
     And I press "id_submitbutton"

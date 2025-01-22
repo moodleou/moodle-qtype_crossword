@@ -77,7 +77,6 @@ class qtype_crossword_test_helper extends question_test_helper {
         $cw->numrows = 5;
         $cw->numcolumns = 7;
         $cw->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
-        $cw->quotematching = 0;
         $cw->accentpenalty = 0;
         $cw->qtype = question_bank::get_qtype('crossword');
         $cw->generalfeedback = '';
@@ -175,7 +174,6 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->numcolumns = 7;
         $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $fromform->accentpenalty = 0;
-        $fromform->questiontext = 0;
         $fromform->quotematching = 0;
         return $fromform;
     }
