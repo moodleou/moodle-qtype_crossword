@@ -44,12 +44,13 @@ Feature: Test editing a Crossword question
     Then the following fields match these values:
       | Accented letters | strict |
 
+  @javascript
   Scenario: Editing Crossword question will change the accented setting to accept wrong accent but subtracts points.
     When I am on the "crossword-001" "core_question > edit" page logged in as teacher
     And I set the following fields to these values:
       | Accented letters                         | penalty                                          |
       | Grade for answers with incorrect accents | 0.5                                              |
-      | Smart and straight quote matching        | Relaxed: ` ' and ' are interchangeable (default) |
+      | Quote/apostrophe matching                | Relaxed: ` ' and ' are interchangeable (default) |
       | For any correct response                 | “Correct feedback”                               |
       | For any partially correct response       | ‘Partially correct feedback.’                    |
     And I press "id_submitbutton"
@@ -57,9 +58,11 @@ Feature: Test editing a Crossword question
     Then the following fields match these values:
       | Accented letters                         | penalty                                          |
       | Grade for answers with incorrect accents | 0.5                                              |
-      | Smart and straight quote matching        | Relaxed: ` ' and ' are interchangeable (default) |
+      | Quote/apostrophe matching                | Relaxed: ` ' and ' are interchangeable (default) |
       | For any correct response                 | "Correct feedback"                               |
       | For any partially correct response       | 'Partially correct feedback.'                    |
+    And I click on "Quote/apostrophe matching" "icon"
+    And I should see "If the \"Relaxed\" option is enabled"
 
   Scenario: Editing Crossword question will change the accented setting to accept wrong accent.
     When I am on the "crossword-001" "core_question > edit" page logged in as teacher
