@@ -817,4 +817,18 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->hintoptions = [1, 1];
         return $fromform;
     }
+
+    /**
+     * Checks if given plugin is installed.
+     *
+     * @param string $plugin frankenstyle plugin name, e.g. 'mod_qbank'.
+     * @return bool
+     */
+    public static function plugin_is_installed(string $plugin): bool {
+        $path = core_component::get_component_directory($plugin);
+        if (!is_readable($path . '/version.php')) {
+            return false;
+        }
+        return true;
+    }
 }

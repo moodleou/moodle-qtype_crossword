@@ -421,7 +421,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_STRICT,
                     'accentpenalty' => 0,
                 ],
-                'fraction' => [1, 1],
+                'expectedfractions' => [1, 1],
             ],
             'Wrong accents are not accepted and 1 correct answer and 1 wrong accents answer.' => [
                 'inputoptions' => [
@@ -429,7 +429,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_STRICT,
                     'accentpenalty' => 0,
                 ],
-                'fraction' => [0, 1],
+                'expectedfractions' => [0, 1],
             ],
             'Wrong accents are not accepted and both answer are wrong accents.' => [
                 'inputoptions' => [
@@ -437,7 +437,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_STRICT,
                     'accentpenalty' => 0,
                 ],
-                'fraction' => [0, 0],
+                'expectedfractions' => [0, 0],
             ],
             'Wrong accents are not accepted and both answers are wrong.' => [
                 'inputoptions' => [
@@ -445,7 +445,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_STRICT,
                     'accentpenalty' => 0,
                 ],
-                'fraction' => [0, 0],
+                'expectedfractions' => [0, 0],
             ],
             'Accept wrong accents but points will be deducted and answers are absolutely correct.' => [
                 'inputoptions' => [
@@ -453,7 +453,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_PENALTY,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [1, 1],
+                'expectedfractions' => [1, 1],
             ],
             'Accept wrong accents but points will be deducted and one answer is wrong accents.' => [
                 'inputoptions' => [
@@ -461,7 +461,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_PENALTY,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [0.5, 1],
+                'expectedfractions' => [0.5, 1],
             ],
             'Accept wrong accents but points will be deducted and both answer are wrong accents.' => [
                 'inputoptions' => [
@@ -469,7 +469,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_PENALTY,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [0.5, 0.5],
+                'expectedfractions' => [0.5, 0.5],
             ],
             'Accept wrong accents but points will be deducted and both answer are wrong' => [
                 'inputoptions' => [
@@ -477,7 +477,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_PENALTY,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [0, 0],
+                'expectedfractions' => [0, 0],
             ],
             'Accept wrong accents and answers are absolutely correct.' => [
                 'inputoptions' => [
@@ -485,7 +485,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_IGNORE,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [1, 1],
+                'expectedfractions' => [1, 1],
             ],
             'Accept wrong accents and one answer is wrong accents.' => [
                 'inputoptions' => [
@@ -493,7 +493,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_IGNORE,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [1, 1],
+                'expectedfractions' => [1, 1],
             ],
             'Accept wrong accents and both answer are wrong accents.' => [
                 'inputoptions' => [
@@ -501,7 +501,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_IGNORE,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [1, 1],
+                'expectedfractions' => [1, 1],
             ],
             'Accept wrong accents and both answer are wrong' => [
                 'inputoptions' => [
@@ -509,7 +509,7 @@ final class question_test extends \advanced_testcase {
                     'accentoption' => \qtype_crossword::ACCENT_GRADING_IGNORE,
                     'accentpenalty' => 0.5,
                 ],
-                'fraction' => [0, 0],
+                'expectedfractions' => [0, 0],
             ],
         ];
     }
