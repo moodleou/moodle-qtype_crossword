@@ -86,7 +86,7 @@ final class backup_test extends \restore_date_testcase {
                 'coursefullname' => 'before upgrade feedback column',
                 'courseshortname' => 'bufc',
                 'questionname' => 'crossword-001',
-                'words' => [
+                'expectedwords' => [
                     [
                         'clue' => 'where is the Christ the Redeemer statue located in?',
                         'clueformat' => FORMAT_HTML,
@@ -116,7 +116,7 @@ final class backup_test extends \restore_date_testcase {
                 'coursefullname' => 'after upgrade feedback column',
                 'courseshortname' => 'aufc',
                 'questionname' => 'crossword-001',
-                'words' => [
+                'expectedwords' => [
                     [
                         'clue' => '<p>where is the Christ the Redeemer statue located in?</p>',
                         'clueformat' => FORMAT_HTML,
@@ -146,7 +146,7 @@ final class backup_test extends \restore_date_testcase {
                 'coursefullname' => 'before upgrade feedback column 3.11',
                 'courseshortname' => 'bufc311',
                 'questionname' => 'crossword-001',
-                'words' => [
+                'expectedwords' => [
                     [
                         'clue' => 'where is the Christ the Redeemer statue located in?',
                         'clueformat' => FORMAT_HTML,
@@ -176,7 +176,7 @@ final class backup_test extends \restore_date_testcase {
                 'coursefullname' => 'Crossword in Quiz with image files in editor fields',
                 'courseshortname' => 'cwwf',
                 'questionname' => 'Crossword with image files',
-                'words' => [
+                'expectedwords' => [
                     [
                         'clue' => 'Clue with image',
                         'clueformat' => FORMAT_HTML,
@@ -302,16 +302,16 @@ final class backup_test extends \restore_date_testcase {
 
         return [
             'Normal crossword' => [
-                'template' => 'normal',
+                'crosswordtemplate' => 'normal',
             ],
             'Crossword with accent grade type is strict' => [
-                'template' => 'not_accept_wrong_accents',
+                'crosswordtemplate' => 'not_accept_wrong_accents',
             ],
             'Crossword with accent grade type is penalty' => [
-                'template' => 'accept_wrong_accents_but_subtract_point',
+                'crosswordtemplate' => 'accept_wrong_accents_but_subtract_point',
             ],
             'Crossword with accent grade type is ignore' => [
-                'template' => 'accept_wrong_accents_but_not_subtract_point',
+                'crosswordtemplate' => 'accept_wrong_accents_but_not_subtract_point',
             ],
         ];
     }
