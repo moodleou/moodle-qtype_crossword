@@ -198,6 +198,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             get_string('smart_straight_quote_matching_relaxed', 'qtype_crossword'),
             get_string('smart_straight_quote_matching_strict', 'qtype_crossword'),
         ]);
+        $mform->addHelpButton('quotematching', 'smart_straight_quote_matching', 'qtype_crossword');
         $mform->setDefault('quotematching', 0);
 
         $penaltyoptions = question_bank::fraction_options();
