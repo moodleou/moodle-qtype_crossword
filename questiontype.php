@@ -94,31 +94,6 @@ class qtype_crossword extends question_type {
         return $options;
     }
 
-    /**
-     * Convert smart quotes to straight quotes, handling recursion for arrays.
-     *
-     * @param mixed $input Form input data can be a string / number / array.
-     * @return mixed
-     */
-    public function convert_quote_to_straight_quote(mixed $input): mixed {
-        if (is_array($input)) {
-            // If input is an array, process each element recursively.
-            foreach ($input as $key => $subvalue) {
-                $input[$key] = $this->convert_quote_to_straight_quote($subvalue);
-            }
-        } else if (is_string($input)) {
-            // If input is a string, convert quotes.
-            // Replace smart quotes with straight quotes.
-            $input = str_replace(
-                ['&lsquo;', '&rsquo;', '&ldquo;', '&rdquo;', '‘', '’', '“', '”'], // HTML entities and smart quotes.
-                ["'", "'", '"', '"', "'", "'", '"', '"'],                         // Corresponding straight quotes.
-                $input
-            );
-        }
-
-        return $input;
-    }
-
     #[\Override]
     public function save_question($question, $form) {
         // For MVP version, default mark will be set automatically.
@@ -133,7 +108,7 @@ class qtype_crossword extends question_type {
         if (!$form->quotematching) {
             foreach ($form as $property => $value) {
                 if (isset($value)) {
-                    $form->{$property} = $this->convert_quote_to_straight_quote($value);
+                    $form->{$property} = util::convert_quote_to_straight_quote($value);
                 }
             }
         }

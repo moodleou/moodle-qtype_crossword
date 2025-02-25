@@ -315,6 +315,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             $question->numrows = $question->options->numrows;
             $question->numcolumns = $question->options->numcolumns;
             $question->accentgradingtype = $question->options->accentgradingtype;
+            $question->quotematching = $question->options->quotematching;
             $question->accentpenalty = $question->options->accentpenalty;
         }
         $question->answer = $answer;
@@ -332,8 +333,11 @@ class qtype_crossword_edit_form extends question_edit_form {
         $answercount = 0;
         $answers = $data['answer'];
         $clues = $data['clue'];
+        if (isset($data['quotematching']) && $data['quotematching'] == 0) {
+            $data = util::convert_quote_to_straight_quote($data);
+        }
         // phpcs:ignore
-        $regex = '/([^\p{L}\p{N}\-\s]+)/u';
+        $regex = '/([^\p{L}\p{N}\s\-‘’\']+)/u';
         $except = [];
         for ($i = 0; $i < count($answers); $i++) {
             // Skip the invalid word.

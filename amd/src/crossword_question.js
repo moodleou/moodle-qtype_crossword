@@ -78,7 +78,13 @@ export class CrosswordQuestion {
             coordinates: '',
             maxSizeCell: 50,
             minSizeCell: 30,
-            specialCharacters: {hyphen: '-', space: ' '},
+            specialCharacters: {
+                hyphen: '-',
+                space: ' ',
+                straightsinglequote: '\'',
+                openingsinglequote: '‘',
+                closingsinglequote: '’',
+            },
         };
         // Merge options.
         defaultOption = {...defaultOption, ...options};
@@ -220,7 +226,7 @@ export class CrosswordQuestion {
      * Calculate and retreive the letter index.
      *
      * @param {Number} letterIndex The current letter index.
-     * @param {Array} ignoreList The ignore list; If the letter contains space or hyphen
+     * @param {Array} ignoreList The ignore list; If the letter contains space or hyphen or apostrophes.
      * @param {Number} wordLength The word length.
      * characters. We have to ignore it.
      * @return {Number} The new letter index.

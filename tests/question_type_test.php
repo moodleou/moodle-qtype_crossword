@@ -250,7 +250,7 @@ final class question_type_test extends \question_testcase {
             'arrayelement' => ['hasrecursion' => '‘ single smart quote ’ and “ double smart quote ”'],
             'test' => '&lsquo; HTML entities single quote &rsquo; and &ldquo; HTML entities double quote &rdquo;',
         ];
-        $result = $this->qtype->convert_quote_to_straight_quote($data);
+        $result = util::convert_quote_to_straight_quote($data);
         $this->assertEquals($result['arrayelement']['hasrecursion'], "' single smart quote ' and " . '" double smart quote "');
         $this->assertEquals($result['test'], "' HTML entities single quote ' and " . '" HTML entities double quote "');
     }

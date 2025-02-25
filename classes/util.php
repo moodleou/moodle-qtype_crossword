@@ -50,14 +50,14 @@ class util {
     }
 
     /**
-     * Remove the work-break characters '-' and ' ' from an answer.
+     * Remove the work-break characters '-' and ' ' and apostrophes from an answer.
      *
      * @param string $text Full answer.
      * @return string Answer with just the letters remaining.
      */
     public static function remove_break_characters(string $text): string {
-        // Remove hyphen and space from text.
-        return preg_replace('/-|\s/', '', $text);
+        // Remove hyphen, space and apostrophes from text.
+        return preg_replace('/-|\s|\'|‘|’/', '', $text);
     }
 
     /**
@@ -134,5 +134,30 @@ class util {
         }
 
         return $answerresponse;
+    }
+
+    /**
+     * Convert smart quotes to straight quotes, handling recursion for arrays.
+     *
+     * @param mixed $input Form input data can be a string / number / array.
+     * @return mixed
+     */
+    public static function convert_quote_to_straight_quote(mixed $input): mixed {
+        if (is_array($input)) {
+            // If input is an array, process each element recursively.
+            foreach ($input as $key => $subvalue) {
+                $input[$key] = self::convert_quote_to_straight_quote($subvalue);
+            }
+        } else if (is_string($input)) {
+            // If input is a string, convert quotes.
+            // Replace smart quotes with straight quotes.
+            $input = str_replace(
+                ['&lsquo;', '&rsquo;', '&ldquo;', '&rdquo;', '‘', '’', '“', '”'], // HTML entities and smart quotes.
+                ["'", "'", '"', '"', "'", "'", '"', '"'],                         // Corresponding straight quotes.
+                $input
+            );
+        }
+
+        return $input;
     }
 }

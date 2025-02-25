@@ -38,7 +38,7 @@ final class answer_test extends \advanced_testcase {
      */
     public function test_is_correct(array $answerdata): void {
         // Create a normal crossword question.
-        $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_and_space');
+        $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_space_and_apostrophes');
         foreach ($q->answers as $key => $answer) {
             $this->assertTrue($answer->is_correct($answerdata[$key]));
         }
@@ -52,10 +52,10 @@ final class answer_test extends \advanced_testcase {
     public static function is_correct_test_provider(): array {
         return [
             'Normal case' => [
-                ['TIM BERNERS-LEE', 'GORDON BROWN', 'DAVID ATTENBOROUGH'],
+                ['TIM BERNERS-LEE', 'GORDON BROWN', 'DAVID ATTENBOROUGH', "ALBERT EINSTEIN'S THEORY"],
             ],
             'With Underscore' => [
-                ['TIM_BERNERS-LEE', 'GORDON_BROWN', 'DAVID_ATTENBOROUGH'],
+                ['TIM_BERNERS-LEE', 'GORDON_BROWN', 'DAVID_ATTENBOROUGH', "ALBERT_EINSTEIN'S_THEORY"],
             ],
         ];
     }
@@ -67,11 +67,12 @@ final class answer_test extends \advanced_testcase {
      */
     public function test_generate_answer_hint(): void {
         // Create a normal crossword question.
-        $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_and_space');
+        $q = \test_question_maker::make_question('crossword', 'normal_with_hyphen_space_and_apostrophes');
         $expecteddata = [
             ['3, 7-3', ['space' => [3], 'hyphen' => [11]]],
             ['6, 5', ['space' => [6]]],
             ['5, 12', ['space' => [5]]],
+            ['6, 8\'1, 6', ['space' => [6, 17], 'straightsinglequote' => [15]]],
         ];
         foreach ($q->answers as $key => $answer) {
             $this->assertEquals($expecteddata[$key], $answer->generate_answer_hint());
