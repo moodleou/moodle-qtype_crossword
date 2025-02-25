@@ -123,8 +123,14 @@ class answer {
         $count = 0;
         $answerhint = '';
         $ignorecharcterindex = [];
-        // Allow space and hyphen only.
-        $listspecialcharacters = ['space' => ' ', 'hyphen' => '-'];
+        // Allow space, hyphen and apostrophes only.
+        $listspecialcharacters = [
+            'space' => ' ',
+            'hyphen' => '-',
+            'straightsinglequote' => '\'',
+            'openingsinglequote' => '‘',
+            'closingsinglequote' => '’',
+        ];
         // Retrieve the answer length (answers that still contain spaces and hyphens).
         $length = \core_text::strlen($this->answer);
         // Loop the answer by letter.
@@ -134,14 +140,14 @@ class answer {
             // In case the character is a space or a hyphen, we need to handle it further.
             if (in_array($letter, array_values($listspecialcharacters))) {
                 // Get type of the special character.
-                // It should return 'space' or 'hyphen'.
+                // It should return 'space' or 'hyphen' or 'apostrophes'.
                 $character = array_search($letter, $listspecialcharacters);
                 if ($character < -1) {
                     continue;
                 }
                 // Store index of special character.
                 $ignorecharcterindex[$character][] = $index;
-                // Prevents the value 0 when double spaces/hyphen exist.
+                // Prevents the value 0 when double spaces/hyphen/apostrophes exist.
                 // E.g: The result should be 1, 2 instead of 1, 0, 2.
                 if ($count > 0) {
                     // Generate answer hint.

@@ -45,7 +45,7 @@ class qtype_crossword_test_helper extends question_test_helper {
     public function get_test_questions(): array {
         // phpcs:disable NormalizedArrays.Arrays.CommaAfterLast.MissingMultiLine
         return ['normal', 'unicode', 'different_codepoint', 'sampleimage',
-            'clear_incorrect_response', 'normal_with_hyphen_and_space',
+            'clear_incorrect_response', 'normal_with_hyphen_space_and_apostrophes',
             'not_accept_wrong_accents', 'accept_wrong_accents_but_subtract_point',
             'accept_wrong_accents_but_not_subtract_point'];
         // phpcs:enable
@@ -488,7 +488,7 @@ class qtype_crossword_test_helper extends question_test_helper {
      *
      * @return qtype_crossword_question
      */
-    public function make_crossword_question_normal_with_hyphen_and_space() {
+    public function make_crossword_question_normal_with_hyphen_space_and_apostrophes() {
         question_bank::load_question_definition_classes('crossword');
         $cw = new qtype_crossword_question();
         test_question_maker::initialise_a_question($cw);
@@ -544,6 +544,19 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'feedbackformat' => FORMAT_HTML,
                 'answernumber' => 3,
             ],
+            (object) [
+                'id' => 4,
+                'questionid' => 1,
+                'clue' => "Famous physicist known for his theory of relativity?",
+                'clueformat' => FORMAT_HTML,
+                'answer' => "ALBERT EINSTEIN'S THEORY",
+                'startcolumn' => 5,
+                'startrow' => 2,
+                'orientation' => 1,
+                'feedback' => '',
+                'feedbackformat' => FORMAT_HTML,
+                'answernumber' => 4,
+            ],
         ];
 
         foreach ($answerslist as $answer) {
@@ -566,7 +579,7 @@ class qtype_crossword_test_helper extends question_test_helper {
     /**
      * Makes a normal crossword question with answer contains hyphen and space.
      */
-    public function get_crossword_question_form_data_normal_with_hyphen_and_space() {
+    public function get_crossword_question_form_data_normal_with_hyphen_space_and_apostrophes() {
         $fromform = new stdClass();
         $fromform->name = 'Cross word question';
         $fromform->questiontext = ['text' => 'Crossword question text', 'format' => FORMAT_HTML];
@@ -575,7 +588,13 @@ class qtype_crossword_test_helper extends question_test_helper {
         $fromform->incorrectfeedback = ['text' => 'Incorrect feedback.', 'format' => FORMAT_HTML];
         $fromform->penalty = 1;
         $fromform->defaultmark = 1;
-        $fromform->answer = ['TIM BERNERS-LEE', 'GORDON BROWN', 'DAVID ATTENBOROUGH'];
+        $fromform->answer = [
+            'TIM BERNERS-LEE',
+            'GORDON BROWN',
+            'DAVID ATTENBOROUGH',
+            'ALBERT EINSTEIN\'S THEORY',
+            'STEPHEN HAWKING’S WORK',
+        ];
         $fromform->clue = [
             [
                 'text' => 'Engineer, computer scientist and inventor of the World Wide Web?',
@@ -589,15 +608,23 @@ class qtype_crossword_test_helper extends question_test_helper {
                 'text' => 'British broadcaster and naturalist, famous for his voice-overs of nature programmes?',
                 'format' => FORMAT_HTML,
             ],
+            [
+                'text' => 'Famous physicist known for his theory of relativity?',
+                'format' => FORMAT_HTML,
+            ],
+            [
+                'text' => 'Physicist known for black hole research and author of "A Brief History of Time"?',
+                'format' => FORMAT_HTML,
+            ],
         ];
-        $fromform->orientation = [1, 1, 0];
-        $fromform->startrow = [0, 0, 1];
-        $fromform->startcolumn = [3, 11, 0];
+        $fromform->orientation = [1, 1, 0, 1, 1];
+        $fromform->startrow = [0, 0, 1, 2, 2];
+        $fromform->startcolumn = [3, 11, 0, 5, 2];
         $fromform->numrows = 13;
         $fromform->numcolumns = 17;
         $fromform->accentgradingtype = qtype_crossword::ACCENT_GRADING_STRICT;
         $fromform->accentpenalty = 0;
-        $fromform->quotematching = 0;
+        $fromform->quotematching = 1;
         return $fromform;
     }
 

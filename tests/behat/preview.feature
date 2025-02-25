@@ -24,7 +24,7 @@ Feature: Preview a Crossword question
       | Test questions   | crossword | crossword-003 | different_codepoint                         |
       | Test questions   | crossword | crossword-004 | sampleimage                                 |
       | Test questions   | crossword | crossword-005 | clear_incorrect_response                    |
-      | Test questions   | crossword | crossword-006 | normal_with_hyphen_and_space                |
+      | Test questions   | crossword | crossword-006 | normal_with_hyphen_space_and_apostrophes    |
       | Test questions   | crossword | crossword-007 | accept_wrong_accents_but_subtract_point     |
       | Test questions   | crossword | crossword-008 | accept_wrong_accents_but_not_subtract_point |
       | Test questions   | crossword | crossword-009 | not_accept_wrong_accents                    |
@@ -226,7 +226,7 @@ Feature: Preview a Crossword question
     And the field "3 Across. Where is the Leaning Tower of Pisa? Answer length 5" matches value "ITALY"
 
   @javascript
-  Scenario: For answers that contain spaces or hyphens, the answer hint will not count those characters.
+  Scenario: For answers that contain spaces or hyphens or apostrophes, the answer hint will not count those characters.
     When I am on the "crossword-006" "core_question > preview" page logged in as teacher
     And I expand all fieldsets
     And I set the field "How questions behave" to "Interactive with multiple tries"
@@ -234,6 +234,8 @@ Feature: Preview a Crossword question
     Then I should see "(5, 12)"
     And I should see "(6, 5)"
     And I should see "(3, 7-3)"
+    And I should see "(6, 8'1, 6)"
+    And I should see "(7, 7’1, 4)"
 
   @javascript
   Scenario: Preview a Crossword question and submit a correct response with mobile input.
@@ -329,6 +331,11 @@ Feature: Preview a Crossword question
     And I set the field "1 Down. Engineer, computer scientist and inventor of the World Wide Web? Answer length 3, 7-3" to "TIMBERNERSLEE"
     And I set the field "2 Down. Former Prime Minister of the United Kingdom? Answer length 6, 5" to "GORDONBROWN"
     And I set the field "3 Across. British broadcaster and naturalist, famous for his voice-overs of nature programmes? Answer length 5, 12" to "DAVIDATTENBOROUGH"
+    And I set the field "3 Across. British broadcaster and naturalist, famous for his voice-overs of nature programmes? Answer length 5, 12" to "DAVIDATTENBOROUGH"
+    And I set the field "4 Down. Physicist known for black hole research and author of \"A Brief History of Time\"? Answer length 7, 7’1, 4" to "STEPHENHAWKINGSWORK"
+    And I set the field "5 Down. Famous physicist known for his theory of relativity? Answer length 6, 8'1, 6" to "ALBERTEINSTEINSTHEORY"
     Then the field "1 Down. Engineer, computer scientist and inventor of the World Wide Web? Answer length 3, 7-3" matches value "TIM BERNERS-LEE"
     And the field "2 Down. Former Prime Minister of the United Kingdom? Answer length 6, 5" matches value "GORDON BROWN"
     And the field "3 Across. British broadcaster and naturalist, famous for his voice-overs of nature programmes? Answer length 5, 12" matches value "DAVID ATTENBOROUGH"
+    And the field "4 Down. Physicist known for black hole research and author of \"A Brief History of Time\"? Answer length 7, 7’1, 4" matches value "STEPHEN HAWKING’S WORK"
+    And the field "5 Down. Famous physicist known for his theory of relativity? Answer length 6, 8'1, 6" matches value "ALBERT EINSTEIN'S THEORY"

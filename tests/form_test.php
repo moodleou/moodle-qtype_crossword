@@ -115,7 +115,7 @@ final class form_test extends \advanced_testcase {
                     'answer[0]' => get_string('overflowposition', 'qtype_crossword'),
                 ],
             ],
-            'The answer must be alphanumeric characters only' => [
+            'The answer must contain alphanumeric characters' => [
                 [
                     'noanswers' => 3,
                     'answer' => ['Speci@al char*', 'BBB', 'CCC'],
