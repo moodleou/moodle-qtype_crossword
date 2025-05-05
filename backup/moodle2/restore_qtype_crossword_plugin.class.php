@@ -44,6 +44,32 @@ class restore_qtype_crossword_plugin extends restore_qtype_plugin {
         return $paths; // And we return the interesting paths.
     }
 
+    #[\Override]
+    public static function convert_backup_to_questiondata(array $backupdata): \stdClass {
+
+        $questiondata = parent::convert_backup_to_questiondata($backupdata);
+        $qtype = $questiondata->qtype;
+        if (isset($backupdata["plugin_qtype_{$qtype}_question"]['crossword'])) {
+            $questiondata->options = (object) array_merge(
+                (array) $questiondata->options,
+                $backupdata["plugin_qtype_{$qtype}_question"]['crossword'][0],
+            );
+        }
+        $questiondata->options->words = [];
+        foreach ($backupdata["plugin_qtype_{$qtype}_question"]['words']['word'] as $word) {
+            $questiondata->options->words[] = (object) $word;
+        }
+        return $questiondata;
+    }
+
+    #[\Override]
+    protected function define_excluded_identity_hash_fields(): array {
+        return [
+            'options/words/id',
+            'options/words/questionid',
+        ];
+    }
+
     /**
      *
      * Process the qtype_crossword element.
