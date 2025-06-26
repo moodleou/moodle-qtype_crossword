@@ -33,6 +33,7 @@ final class answer_test extends \advanced_testcase {
     /**
      * Test is_correct function.
      *
+     * @param array $answerdata The answer data.
      * @dataProvider is_correct_test_provider
      * @covers \qtype_crossword_question::is_correct
      */
