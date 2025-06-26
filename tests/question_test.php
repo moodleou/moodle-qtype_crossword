@@ -174,7 +174,7 @@ final class question_test extends \advanced_testcase {
      * Test function filter_answer.
      *
      * @param array $response Data for a response.
-     * @param int $expected Expected data.
+     * @param int $expectednumberofwords Expected data.
      *
      * @covers \qtype_crossword_question::filter_answers
      * @dataProvider remove_blank_words_from_response_testcases

@@ -38,6 +38,9 @@ class behat_qtype_crossword extends behat_base {
     /**
      * Select characters from input.
      *
+     * @param int $length The length of characters.
+     * @param int $position The position.
+     * @param string $input The text of the label element.
      * @When I select :length characters from position :position in the :input
      */
     public function i_select_characters_from_position_in_the(int $length, int $position, string $input): void {
@@ -61,6 +64,8 @@ EOF;
     /**
      * Enter unicode characters from input.
      *
+     * @param string $characters The unicode characters to enter.
+     * @param string $input The text of the label element.
      * @When I enter unicode character :characters in the crossword clue :input
      */
     public function i_enter_unicode_characters_in_the_crossword_clue(string $characters, string $input): void {
