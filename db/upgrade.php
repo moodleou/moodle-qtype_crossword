@@ -149,5 +149,15 @@ function xmldb_qtype_crossword_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025010700, 'qtype', 'crossword');
     }
 
+    if ($oldversion < 2025082800) {
+        // Just to prevent wrong plugin error if an old version of the plugin is installed over this one.
+        $table = new xmldb_table('qtype_crossword_subquestions');
+        if ($dbman->table_exists($table)) {
+            throw \moodle_exception('wrongplugin', 'qtype_crossword');
+        }
+        // Crossword savepoint reached.
+        upgrade_plugin_savepoint(true, 2025082800, 'qtype', 'crossword');
+    }
+
     return true;
 }

@@ -72,6 +72,7 @@ $string['words_help'] = 'Please set at least one word and its matching clue, and
 $string['wrongadjacentcharacter'] = 'Two or more consecutive new word breaks detected. Please use a maximum of one between individual words. Note that this does not limit the number of new words in the answer itself.';
 $string['wrongintersection'] = 'The letter at the intersection of two words do not match. The word cannot be placed here.';
 $string['wrongoverlappingwords'] = 'There cannot be two words starting in the same place, in the same direction. This clue starts in the same place as "{$a}" above.';
+$string['wrongplugin'] = 'This plugin is different from the existing qtype_crossword plugin. Please uninstall the existing plugin before installing this one.';
 $string['wrongpositionhyphencharacter'] = 'Please do not add a hyphen before or after the last alphanumeric character.';
 $string['wrongpositionspacecharacter'] = 'Please do not add a space before or after the last alphanumeric character.';
 $string['yougot1right'] = '1 of your answers is correct.';
