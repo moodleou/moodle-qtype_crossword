@@ -30,10 +30,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
-
     #[\Override]
-    public function formulation_and_controls(question_attempt $qa,
-        question_display_options $options): string {
+    public function formulation_and_controls(question_attempt $qa, question_display_options $options): string {
         /** @var qtype_crossword_question $question */
         $question = $qa->get_question();
         $response = $qa->get_last_qt_data();
@@ -61,8 +59,14 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
             $number = $key + 1;
             $feedback = '';
             if ($options->generalfeedback) {
-                $feedback = $question->format_text($answer->feedback, $answer->feedbackformat,
-                    $qa, 'qtype_crossword', 'feedback', $answer->answerid);
+                $feedback = $question->format_text(
+                    $answer->feedback,
+                    $answer->feedbackformat,
+                    $qa,
+                    'qtype_crossword',
+                    'feedback',
+                    $answer->answerid
+                );
             }
             $clue = $question->format_text($answer->clue, $answer->clueformat, $qa, 'qtype_crossword', 'clue', $answer->answerid);
             $label = get_string(
@@ -135,8 +139,11 @@ class qtype_crossword_renderer extends qtype_with_combined_feedback_renderer {
     public function correct_response(question_attempt $qa): string {
         /** @var qtype_crossword_question $question */
         $question = $qa->get_question();
-        return get_string('correctanswer', 'qtype_crossword',
-            $question->summarise_response($question->get_correct_response()));
+        return get_string(
+            'correctanswer',
+            'qtype_crossword',
+            $question->summarise_response($question->get_correct_response())
+        );
     }
 
     #[\Override]

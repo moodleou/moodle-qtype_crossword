@@ -26,7 +26,6 @@ use Normalizer;
  * @copyright 2022, The Open University
  */
 class util {
-
     /**
      * Normalise a UTF-8 string to FORM_C, avoiding the pitfalls in PHP's
      * normalizer_normalize function.
@@ -84,7 +83,7 @@ class util {
         // [startRowIndex, startColumnIndex]: A[2, 3], B[1, 3], C[0, 1], D[0, 0].
         // The result will be arranged in a position top-to-bottom and left-to-right order:
         // D[0, 0], C[0, 1], B[1, 3], A[2, 3].
-        usort($answers, function($preanswer, $nextanswer) {
+        usort($answers, function ($preanswer, $nextanswer) {
             $rowdifference = $preanswer['startrow'] - $nextanswer['startrow'];
             if ($rowdifference !== 0) {
                 return $rowdifference;
@@ -153,7 +152,7 @@ class util {
             // Replace smart quotes with straight quotes.
             $input = str_replace(
                 ['&lsquo;', '&rsquo;', '&ldquo;', '&rdquo;', '‘', '’', '“', '”'], // HTML entities and smart quotes.
-                ["'", "'", '"', '"', "'", "'", '"', '"'],                         // Corresponding straight quotes.
+                ["'", "'", '"', '"', "'", "'", '"', '"'], // Corresponding straight quotes.
                 $input
             );
         }

@@ -34,7 +34,6 @@ require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_qtype_crossword extends behat_base {
-
     /**
      * Select characters from input.
      *
@@ -95,8 +94,11 @@ EOF;
      * @param string $input the text of the label element.
      * @param int $position the position we want insert the character.
      */
-    public function i_enter_character_in_the_crossword_clue_using_mobile_input(string $character,
-        string $input, int $position): void {
+    public function i_enter_character_in_the_crossword_clue_using_mobile_input(
+        string $character,
+        string $input,
+        int $position
+    ): void {
         if (!$this->running_javascript()) {
             throw new ErrorException('Enter mobile device keyboard requires JavaScript');
         }

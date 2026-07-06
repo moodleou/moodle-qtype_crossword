@@ -31,7 +31,6 @@ use qtype_crossword\util;
  * /question/type/edit_question_form.php.
  */
 class qtype_crossword_edit_form extends question_edit_form {
-
     /** @var int Number of rows. */
     protected $numrows;
     /** @var int Number of columns. */
@@ -44,14 +43,24 @@ class qtype_crossword_edit_form extends question_edit_form {
         // Set grid options.
         $this->gridoptions = range(3, 30);
         // Add grid height field.
-        $mform->addElement('select', 'numrows',
-            get_string('numberofrows', 'qtype_crossword'), $this->gridoptions, null);
+        $mform->addElement(
+            'select',
+            'numrows',
+            get_string('numberofrows', 'qtype_crossword'),
+            $this->gridoptions,
+            null
+        );
         $mform->addRule('numrows', null, 'required', null, 'client');
         $mform->setDefault('numrows', 4);
 
         // Add grid width field.
-        $mform->addElement('select', 'numcolumns',
-            get_string('numberofcolumns', 'qtype_crossword'), $this->gridoptions, null);
+        $mform->addElement(
+            'select',
+            'numcolumns',
+            get_string('numberofcolumns', 'qtype_crossword'),
+            $this->gridoptions,
+            null
+        );
         $mform->addRule('numcolumns', null, 'required', null, 'client');
         $mform->setDefault('numcolumns', 4);
         // Add update field.
@@ -71,8 +80,13 @@ class qtype_crossword_edit_form extends question_edit_form {
     }
 
     #[\Override]
-    protected function get_per_answer_fields($mform, $label, $gradeoptions,
-            &$repeatedoptions, &$wordsoptions): array {
+    protected function get_per_answer_fields(
+        $mform,
+        $label,
+        $gradeoptions,
+        &$repeatedoptions,
+        &$wordsoptions
+    ): array {
         $repeated = [];
         $coordinatesoptions = [];
 
@@ -90,22 +104,42 @@ class qtype_crossword_edit_form extends question_edit_form {
         $coordinatesoptions = array_merge($coordinatesoptions, $this->add_coordinates_input($mform));
         $mform->setType('orientation', PARAM_INT);
 
-        $repeated[] = $mform->createElement('group', 'coodinateoptions',
-            $label, $coordinatesoptions, null, false);
+        $repeated[] = $mform->createElement(
+            'group',
+            'coodinateoptions',
+            $label,
+            $coordinatesoptions,
+            null,
+            false
+        );
 
         // Add answer field.
-        $repeated[] = $mform->createElement('text', 'answer',
-            get_string('answer', 'qtype_crossword'), ['size' => 20, 'maxlength' => 99, 'class' => 'answer-clue']);
+        $repeated[] = $mform->createElement(
+            'text',
+            'answer',
+            get_string('answer', 'qtype_crossword'),
+            ['size' => 20, 'maxlength' => 99, 'class' => 'answer-clue']
+        );
         $mform->setType('answer', PARAM_RAW);
 
         // Add clue field.
-        $repeated[] = $mform->createElement('editor', 'clue',
-            get_string('clue', 'qtype_crossword'), ['rows' => 2], $this->editoroptions);
+        $repeated[] = $mform->createElement(
+            'editor',
+            'clue',
+            get_string('clue', 'qtype_crossword'),
+            ['rows' => 2],
+            $this->editoroptions
+        );
         $mform->setType('clue', PARAM_RAW);
 
         // Add feedback field.
-        $repeated[] = $mform->createElement('editor', 'feedback',
-            get_string('feedback', 'question'), ['rows' => 2], $this->editoroptions);
+        $repeated[] = $mform->createElement(
+            'editor',
+            'feedback',
+            get_string('feedback', 'question'),
+            ['rows' => 2],
+            $this->editoroptions
+        );
         $mform->setType('feedback', PARAM_RAW);
 
         $wordsoptions = 'words';
@@ -113,15 +147,24 @@ class qtype_crossword_edit_form extends question_edit_form {
     }
 
     #[\Override]
-    protected function add_per_answer_fields(&$mform, $label, $gradeoptions,
-        $minoptions = QUESTION_NUMANS_START, $addoptions = QUESTION_NUMANS_ADD) {
-        $mform->addElement('header', 'words',
-            get_string('words', 'qtype_crossword'), '');
+    protected function add_per_answer_fields(
+        &$mform,
+        $label,
+        $gradeoptions,
+        $minoptions = QUESTION_NUMANS_START,
+        $addoptions = QUESTION_NUMANS_ADD
+    ) {
+        $mform->addElement('header', 'words', get_string('words', 'qtype_crossword'), '');
 
         $answersoption = '';
         $repeatedoptions = [];
-        $repeated = $this->get_per_answer_fields($mform, $label, $gradeoptions,
-            $repeatedoptions, $answersoption);
+        $repeated = $this->get_per_answer_fields(
+            $mform,
+            $label,
+            $gradeoptions,
+            $repeatedoptions,
+            $answersoption
+        );
 
         if (isset($this->question->options)) {
             $repeatsatstart = count($this->question->options->$answersoption);
@@ -129,9 +172,16 @@ class qtype_crossword_edit_form extends question_edit_form {
             $repeatsatstart = $minoptions;
         }
 
-        $this->repeat_elements($repeated, $repeatsatstart, $repeatedoptions,
-            'noanswers', 'addanswers', $addoptions,
-            $this->get_more_choices_string(), true);
+        $this->repeat_elements(
+            $repeated,
+            $repeatsatstart,
+            $repeatedoptions,
+            'noanswers',
+            'addanswers',
+            $addoptions,
+            $this->get_more_choices_string(),
+            true
+        );
     }
 
     #[\Override]
@@ -189,10 +239,16 @@ class qtype_crossword_edit_form extends question_edit_form {
             qtype_crossword::ACCENT_GRADING_PENALTY => get_string('accentgradingpenalty', 'qtype_crossword'),
             qtype_crossword::ACCENT_GRADING_IGNORE => get_string('accentgradingignore', 'qtype_crossword'),
         ];
-        $mform->addElement('select', 'accentgradingtype', get_string('accentletters', 'qtype_crossword'),
-            $optionsaccented);
-        $mform->setDefault('accentgradingtype', $this->get_default_value('accentgradingtype',
-            qtype_crossword::ACCENT_GRADING_STRICT));
+        $mform->addElement(
+            'select',
+            'accentgradingtype',
+            get_string('accentletters', 'qtype_crossword'),
+            $optionsaccented
+        );
+        $mform->setDefault(
+            'accentgradingtype',
+            $this->get_default_value('accentgradingtype', qtype_crossword::ACCENT_GRADING_STRICT)
+        );
 
         $mform->addElement('select', 'quotematching', get_string('smart_straight_quote_matching', 'qtype_crossword'), [
             get_string('smart_straight_quote_matching_relaxed', 'qtype_crossword'),
@@ -205,9 +261,13 @@ class qtype_crossword_edit_form extends question_edit_form {
         // Remove None and 100%.
         unset($penaltyoptions['0.0']);
         unset($penaltyoptions['1.0']);
-        $mform->addElement('select', 'accentpenalty',
-            get_string('accentpenalty', 'qtype_crossword'), $penaltyoptions);
-        $mform->setDefault('accentpenalty', $this->get_default_value('accentpenalty',  0.5));
+        $mform->addElement(
+            'select',
+            'accentpenalty',
+            get_string('accentpenalty', 'qtype_crossword'),
+            $penaltyoptions
+        );
+        $mform->setDefault('accentpenalty', $this->get_default_value('accentpenalty', 0.5));
         $mform->hideIf('accentpenalty', 'accentgradingtype', 'noteq', qtype_crossword::ACCENT_GRADING_PENALTY);
 
         // Call js to render preview section.
@@ -217,8 +277,11 @@ class qtype_crossword_edit_form extends question_edit_form {
         $options->isPreview = true;
         $PAGE->requires->js_call_amd('qtype_crossword/crossword', 'preview', [$options]);
 
-        $this->add_per_answer_fields($mform, get_string('wordno', 'qtype_crossword', '{no}'),
-            question_bank::fraction_options());
+        $this->add_per_answer_fields(
+            $mform,
+            get_string('wordno', 'qtype_crossword', '{no}'),
+            question_bank::fraction_options()
+        );
         $mform->addHelpButton('words', 'words', 'qtype_crossword');
     }
 
@@ -273,7 +336,7 @@ class qtype_crossword_edit_form extends question_edit_form {
             foreach ($question->options->words as $index => $answerdata) {
                 // Prepare the clue editor to display files in draft area.
                 $answer[] = $answerdata->answer;
-                $cluedraftitemid = file_get_submitted_draft_itemid('clue['.$key.']');
+                $cluedraftitemid = file_get_submitted_draft_itemid('clue[' . $key . ']');
                 $itemid = (int)$answerdata->id ?? null;
                 $clue[$key]['text'] = file_prepare_draft_area(
                     $cluedraftitemid,
@@ -290,7 +353,7 @@ class qtype_crossword_edit_form extends question_edit_form {
                 $question->options->words[$index]->clue = $clue[$key]['text'];
 
                 // Prepare the feedback editor to display files in draft area.
-                $feedbackdraftitemid = file_get_submitted_draft_itemid('feedback['.$key.']');
+                $feedbackdraftitemid = file_get_submitted_draft_itemid('feedback[' . $key . ']');
                 $feedback[$key]['text'] = file_prepare_draft_area(
                     $feedbackdraftitemid,
                     $this->context->id,
@@ -386,8 +449,11 @@ class qtype_crossword_edit_form extends question_edit_form {
             if (!isset($errors["answer[$i]"]) && $clues[$i]['text'] !== '') {
                 $clashingclueindex = $this->find_earlier_overlapping_words($data, $i);
                 if ($clashingclueindex !== null) {
-                    $errors["answer[$i]"] = get_string('wrongoverlappingwords', 'qtype_crossword',
-                            s($answers[$clashingclueindex]));
+                    $errors["answer[$i]"] = get_string(
+                        'wrongoverlappingwords',
+                        'qtype_crossword',
+                        s($answers[$clashingclueindex])
+                    );
                 }
             }
         }
@@ -408,7 +474,8 @@ class qtype_crossword_edit_form extends question_edit_form {
      */
     protected function find_earlier_overlapping_words(array $data, int $index): ?int {
         for ($i = 0; $i < $index; $i++) {
-            if ($data['startrow'][$index] === $data['startrow'][$i] &&
+            if (
+                $data['startrow'][$index] === $data['startrow'][$i] &&
                 $data['startcolumn'][$index] === $data['startcolumn'][$i] &&
                 $data['orientation'][$index] === $data['orientation'][$i]
             ) {
@@ -573,7 +640,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @return array The list intersection points.
      */
     protected function get_intersect_points(array $lines, string $orientation): array {
-        list ($x1, $y1, $x2, $y2, $x3, $y3, $x4, $y4) = $lines;
+        [$x1, $y1, $x2, $y2, $x3, $y3, $x4, $y4] = $lines;
 
         // Check if the first coordinate is the point.
         if ($x1 === $x2 && $y1 === $y2) {
@@ -631,7 +698,7 @@ class qtype_crossword_edit_form extends question_edit_form {
      * @return array The list intersection points.
      */
     protected function find_multi_intersect_points(array $lines, string $orientation): array {
-        list ($x1, $y1, $x2, $y2, $x3, $y3, $x4, $y4) = $lines;
+        [$x1, $y1, $x2, $y2, $x3, $y3, $x4, $y4] = $lines;
         // Lines are coincident.
         $points = [];
         if ($orientation) {
@@ -695,8 +762,11 @@ class qtype_crossword_edit_form extends question_edit_form {
         }
 
         // If there exists more than 1 contiguous space or hyphen, or a combination of them.
-        if (preg_match('/\s{2}/', $answer) || preg_match('/\-{2}/', $answer) ||
-            preg_match('/\s-|-\s/', $answer)) {
+        if (
+            preg_match('/\s{2}/', $answer) ||
+            preg_match('/\-{2}/', $answer) ||
+            preg_match('/\s-|-\s/', $answer)
+        ) {
             return get_string('wrongadjacentcharacter', 'qtype_crossword');
         }
 

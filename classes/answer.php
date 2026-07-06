@@ -24,7 +24,6 @@ namespace qtype_crossword;
  * @copyright 2021, The Open University
  */
 class answer {
-
     // Class properties.
 
     /** @var int The answers id value. */
@@ -70,8 +69,18 @@ class answer {
      * @param null|int $feedbackformat
      * @param int $answernumber
      */
-    public function __construct(int $answerid, string $answer, string $clue, int $clueformat, string $orientation,
-        string $startrow, string $startcolumn, ?string $feedback, ?int $feedbackformat, int $answernumber) {
+    public function __construct(
+        int $answerid,
+        string $answer,
+        string $clue,
+        int $clueformat,
+        string $orientation,
+        string $startrow,
+        string $startcolumn,
+        ?string $feedback,
+        ?int $feedbackformat,
+        int $answernumber
+    ) {
         $this->answerid = $answerid;
         $this->answer = util::safe_normalize($answer);
         $this->clue = $clue;

@@ -32,7 +32,6 @@ use qtype_crossword\answer;
  * Class that represents a crossword question.
  */
 class qtype_crossword_question extends question_graded_automatically {
-
     /** @var answer[] The answers object. */
     public $answers;
 
@@ -140,8 +139,7 @@ class qtype_crossword_question extends question_graded_automatically {
     public function is_same_response(array $prevresponse, array $newresponse): bool {
         foreach ($this->answers as $key => $notused) {
             $fieldname = $this->field($key);
-            if (!question_utils::arrays_same_at_key(
-                $prevresponse, $newresponse, $fieldname)) {
+            if (!question_utils::arrays_same_at_key($prevresponse, $newresponse, $fieldname)) {
                 return false;
             }
         }
@@ -257,23 +255,49 @@ class qtype_crossword_question extends question_graded_automatically {
      * @return array The filtered list.
      */
     private function remove_blank_words_from_response(array $response): array {
-        return array_filter($response, function(string $responseword) {
+        return array_filter($response, function (string $responseword) {
             return core_text::strlen(trim(str_replace('_', '', $responseword))) > 0;
         });
     }
 
     #[\Override]
-    public function check_file_access($qa, $options, $component, $filearea,
-        $args, $forcedownload) {
+    public function validate_can_regrade_with_other_version(question_definition $otherversion): ?string {
+        $basemessage = parent::validate_can_regrade_with_other_version($otherversion);
+        if ($basemessage) {
+            return $basemessage;
+        }
+        if (
+            (int) $this->numrows !== (int) $otherversion->numrows ||
+            (int) $this->numcolumns !== (int) $otherversion->numcolumns ||
+            count($this->answers) !== count($otherversion->answers)
+        ) {
+            return get_string('regradeissuestructurechanged', 'qtype_crossword');
+        }
+        foreach ($this->answers as $index => $answer) {
+            $otheranswer = $otherversion->answers[$index];
+            if (
+                (int) $answer->startrow !== (int) $otheranswer->startrow ||
+                (int) $answer->startcolumn !== (int) $otheranswer->startcolumn ||
+                (bool) $answer->orientation !== (bool) $otheranswer->orientation
+            ) {
+                return get_string('regradeissuestructurechanged', 'qtype_crossword');
+            }
+        }
+        return null;
+    }
 
+    #[\Override]
+    public function check_file_access($qa, $options, $component, $filearea, $args, $forcedownload) {
         if ($component === 'qtype_crossword' && ($filearea === 'clue' || $filearea === 'feedback')) {
             foreach ($qa->get_question(false)->answers as $answer) {
                 if ((int)$answer->answerid === (int)$args[0]) {
                     return true;
                 }
             }
-        } else if ($component === 'question' && in_array($filearea,
-                ['correctfeedback', 'partiallycorrectfeedback', 'incorrectfeedback'])) {
+        } else if (
+            $component === 'question' &&
+            in_array($filearea, ['correctfeedback', 'partiallycorrectfeedback', 'incorrectfeedback'])
+        ) {
             return $this->check_combined_feedback_file_access($qa, $options, $filearea, $args);
         } else if ($component === 'question' && $filearea === 'hint') {
             return $this->check_hint_file_access($qa, $options, $args);

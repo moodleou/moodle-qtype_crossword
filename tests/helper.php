@@ -36,7 +36,6 @@ require_once($CFG->dirroot . '/question/type/crossword/questiontype.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_crossword_test_helper extends question_test_helper {
-
     /**
      * Get test question function.
      *

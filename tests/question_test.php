@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class question_test extends \advanced_testcase {
-
     /**
      * Test is_complete_response function.
      *
@@ -523,11 +522,157 @@ final class question_test extends \advanced_testcase {
         $question = \test_question_maker::make_question('crossword');
         $question->start_attempt(new question_attempt_step(), 1);
 
-        $this->assertEquals('1 Down: PARIS; 2 Across: -; 3 Across: ITALY', $question->summarise_response(
-            ['sub0' => 'PARIS', 'sub2' => 'ITALY'])
+        $this->assertEquals(
+            '1 Down: PARIS; 2 Across: -; 3 Across: ITALY',
+            $question->summarise_response(['sub0' => 'PARIS', 'sub2' => 'ITALY'])
         );
-        $this->assertEquals('1 Down: PARIS; 2 Across: -; 3 Across: -', $question->summarise_response(
-            ['sub0' => 'PARIS', 'sub1' => '', 'sub2' => '__'])
+        $this->assertEquals(
+            '1 Down: PARIS; 2 Across: -; 3 Across: -',
+            $question->summarise_response(['sub0' => 'PARIS', 'sub1' => '', 'sub2' => '__'])
         );
+    }
+
+    /**
+     * Data provider for {@see test_validate_can_regrade_with_other_version}.
+     *
+     * Each case describes optional mutations to apply to the "other version" question
+     * and the expected outcome (null = regradeable, lang-string key = blocked).
+     *
+     * @return array[]
+     */
+    public static function validate_can_regrade_with_other_version_provider(): array {
+        return [
+            'no changes — regradeable' => [
+                'change'       => [],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => null,
+            ],
+            'numrows increased — not regradeable' => [
+                'change'       => ['numrows' => 6],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => 'regradeissuestructurechanged',
+            ],
+            'numcolumns decreased — not regradeable' => [
+                'change'       => ['numcolumns' => 5],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => 'regradeissuestructurechanged',
+            ],
+            'answer added — not regradeable' => [
+                'change'       => [],
+                'addanswer'    => true,
+                'removeanswer' => false,
+                'expected'     => 'regradeissuestructurechanged',
+            ],
+            'answer removed — not regradeable' => [
+                'change'       => [],
+                'addanswer'    => false,
+                'removeanswer' => true,
+                'expected'     => 'regradeissuestructurechanged',
+            ],
+            'answer[0] startrow changed — not regradeable' => [
+                'change'       => ['answers.0.startrow' => 2],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => 'regradeissuestructurechanged',
+            ],
+            'answer[0] startcolumn changed — not regradeable' => [
+                'change'       => ['answers.0.startcolumn' => 3],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => 'regradeissuestructurechanged',
+            ],
+            'answer[0] orientation changed — not regradeable' => [
+                'change'       => ['answers.0.orientation' => false],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => 'regradeissuestructurechanged',
+            ],
+            'answer text typo fix — regradeable' => [
+                'change'       => ['answers.0.answer' => 'PARYS'],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => null,
+            ],
+            'answer text character count changed (e.g. plural suffix) — regradeable' => [
+                'change'       => ['answers.0.answer' => 'PARISIAN'],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => null,
+            ],
+            'clue text changed — regradeable' => [
+                'change'       => ['answers.0.clue' => 'Updated clue text'],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => null,
+            ],
+            'feedback text changed — regradeable' => [
+                'change'       => ['answers.1.feedback' => 'Updated feedback'],
+                'addanswer'    => false,
+                'removeanswer' => false,
+                'expected'     => null,
+            ],
+        ];
+    }
+
+    /**
+     * Test validate_can_regrade_with_other_version for structural and editorial mutations.
+     *
+     * @dataProvider      validate_can_regrade_with_other_version_provider
+     * @covers            \qtype_crossword_question::validate_can_regrade_with_other_version
+     * @param array       $change        Dot-path => value mutations applied to the other version.
+     * @param bool        $addanswer     Add an extra answer to the other version.
+     * @param bool        $removeanswer  Remove the last answer from the other version.
+     * @param string|null $expected      Lang-string key for the expected error, or null if regradeable.
+     */
+    public function test_validate_can_regrade_with_other_version(
+        array $change,
+        bool $addanswer,
+        bool $removeanswer,
+        ?string $expected,
+    ): void {
+        $question = \test_question_maker::make_question('crossword');
+        $question->start_attempt(new question_attempt_step(), 1);
+        $otherversion = \test_question_maker::make_question('crossword');
+        $otherversion->start_attempt(new question_attempt_step(), 1);
+
+        // Apply mutations expressed as dot-path => value.
+        // Supported: 'answers.<index>.<property>' and top-level '<property>'.
+        foreach ($change as $path => $value) {
+            $parts = explode('.', $path);
+            if ($parts[0] === 'answers' && isset($parts[1], $parts[2])) {
+                $otherversion->answers[(int) $parts[1]]->{$parts[2]} = $value;
+            } else {
+                $otherversion->{$parts[0]} = $value;
+            }
+        }
+
+        if ($addanswer) {
+            $otherversion->answers[] = new answer(
+                99,
+                'FRANCE',
+                'A country in Europe',
+                FORMAT_HTML,
+                0,
+                4,
+                0,
+                '',
+                FORMAT_HTML,
+                4,
+            );
+        }
+
+        if ($removeanswer) {
+            array_pop($otherversion->answers);
+        }
+
+        $result = $question->validate_can_regrade_with_other_version($otherversion);
+        if ($expected === null) {
+            $this->assertNull($result);
+        } else {
+            $this->assertEquals(get_string($expected, 'qtype_crossword'), $result);
+        }
     }
 }

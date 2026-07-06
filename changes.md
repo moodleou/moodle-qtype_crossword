@@ -1,5 +1,10 @@
 # Change log for the crossword question type
 
+## Changes in 1.2
+
+* This version works with Moodle 5.2+.
+* Allow regrading after question modification
+
 ## Changes in 1.1
 
 * This version is compatible with Moodle 5.0.
