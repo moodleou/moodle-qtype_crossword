@@ -40,7 +40,6 @@ require_once($CFG->dirroot . '/question/type/crossword/tests/helper.php');
  * @covers \qtype_crossword_edit_form
  */
 final class form_test extends \advanced_testcase {
-
     /**
      * Data provider for test_form_validation() test cases.
      *
@@ -218,7 +217,7 @@ final class form_test extends \advanced_testcase {
      */
     public function test_form_validation(array $sampledata, array $expectederror): void {
 
-        list ($mform, $course) = $this->prepare_test_data();
+        [$mform, $course] = $this->prepare_test_data();
         $fromform = [
             'category' => 1,
             'name' => 'Test combined with varnumeric',
@@ -272,10 +271,12 @@ final class form_test extends \advanced_testcase {
      * @dataProvider generate_alphabet_list_testcases
      */
     public function test_generate_alphabet_list(array $option, array $expected): void {
-        list ($mform) = $this->prepare_test_data();
-        list ($start, $end) = $option;
-        $method = new \ReflectionMethod(\qtype_crossword_edit_form::class,
-            'generate_alphabet_list');
+        [$mform] = $this->prepare_test_data();
+        [$start, $end] = $option;
+        $method = new \ReflectionMethod(
+            \qtype_crossword_edit_form::class,
+            'generate_alphabet_list'
+        );
         $method->setAccessible(true);
         $result = $method->invoke($mform, $start, $end);
         $this->assertEquals($expected, $result);
@@ -310,9 +311,8 @@ final class form_test extends \advanced_testcase {
      * @dataProvider validate_answer_testcases
      */
     public function test_validate_answer(array $data): void {
-        list ($mform) = $this->prepare_test_data();
-        $method = new \ReflectionMethod(\qtype_crossword_edit_form::class,
-            'validate_answer');
+        [$mform] = $this->prepare_test_data();
+        $method = new \ReflectionMethod(\qtype_crossword_edit_form::class, 'validate_answer');
         $method->setAccessible(true);
         $result = $method->invoke($mform, $data[0]);
         $this->assertEquals($data[1], $result);

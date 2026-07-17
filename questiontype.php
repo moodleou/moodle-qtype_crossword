@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/questionlib.php');
+require_once($CFG->libdir . '/questionlib.php');
 
 use qtype_crossword\util;
 
@@ -37,7 +37,6 @@ use qtype_crossword\util;
  * in various formats.
  */
 class qtype_crossword extends question_type {
-
     /** @var array The word fields list */
     private const WORD_FIELDS = ['answer', 'clue', 'orientation', 'startrow', 'startcolumn', 'feedback'];
 
@@ -62,8 +61,11 @@ class qtype_crossword extends question_type {
 
             $question->options = $this->create_default_options($question);
         }
-        $question->options->words = $DB->get_records('qtype_crossword_words',
-            ['questionid' => $question->id], 'id ASC');
+        $question->options->words = $DB->get_records(
+            'qtype_crossword_words',
+            ['questionid' => $question->id],
+            'id ASC'
+        );
         return true;
     }
 
@@ -81,7 +83,7 @@ class qtype_crossword extends question_type {
         // Get the default strings and just set the format.
         $options->correctfeedback = get_string('correctfeedbackdefault', 'question');
         $options->correctfeedbackformat = FORMAT_HTML;
-        $options->partiallycorrectfeedback = get_string('partiallycorrectfeedbackdefault', 'question');;
+        $options->partiallycorrectfeedback = get_string('partiallycorrectfeedbackdefault', 'question');
         $options->partiallycorrectfeedbackformat = FORMAT_HTML;
         $options->incorrectfeedback = get_string('incorrectfeedbackdefault', 'question');
         $options->incorrectfeedbackformat = FORMAT_HTML;
@@ -122,8 +124,7 @@ class qtype_crossword extends question_type {
         $result = new stdClass();
 
         // Old words.
-        $oldwords = $DB->get_records('qtype_crossword_words',
-            ['questionid' => $question->id], 'id ASC');
+        $oldwords = $DB->get_records('qtype_crossword_words', ['questionid' => $question->id], 'id ASC');
 
         $numwords = count($question->answer);
 
@@ -162,13 +163,23 @@ class qtype_crossword extends question_type {
             }
             $word->answer = trim(mb_strtoupper($question->answer[$i]));
             if (isset($question->feedback[$i])) {
-                $word->feedback = $this->import_or_save_files($question->feedback[$i],
-                    $context, 'qtype_crossword', 'feedback', $word->id);
+                $word->feedback = $this->import_or_save_files(
+                    $question->feedback[$i],
+                    $context,
+                    'qtype_crossword',
+                    'feedback',
+                    $word->id
+                );
                 $word->feedbackformat = $question->feedback[$i]['format'];
             }
             if (isset($question->clue[$i])) {
-                $word->clue = $this->import_or_save_files($question->clue[$i],
-                    $context, 'qtype_crossword', 'clue', $word->id);
+                $word->clue = $this->import_or_save_files(
+                    $question->clue[$i],
+                    $context,
+                    'qtype_crossword',
+                    'clue',
+                    $word->id
+                );
                 $word->clueformat = $question->clue[$i]['format'];
             }
             $word->orientation = $question->orientation[$i];
@@ -179,10 +190,10 @@ class qtype_crossword extends question_type {
         // Remove remain words.
         $fs = get_file_storage();
         if ($oldwords) {
-            $ids = array_map(function($word){
+            $ids = array_map(function ($word) {
                 return $word->id;
             }, $oldwords);
-            list($idssql, $idsparams) = $DB->get_in_or_equal($ids, SQL_PARAMS_QM);
+            [$idssql, $idsparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_QM);
             $fs->delete_area_files_select($context->id, 'qtype_crossword', 'feedback', "id $idssql", $idsparams);
             $fs->delete_area_files_select($context->id, 'qtype_crossword', 'clue', "id $idssql", $idsparams);
             $DB->delete_records_select('qtype_crossword_words', "id $idssql", $idsparams);
@@ -311,8 +322,12 @@ class qtype_crossword extends question_type {
             foreach (self::WORD_FIELDS as $field) {
                 if ($field === 'clue' || $field === 'feedback') {
                     if (isset($word['#'][$field][0])) {
-                        $question->{$field}[] = $format->import_text_with_files($word['#'][$field][0], [], '',
-                            $question->questiontextformat);
+                        $question->{$field}[] = $format->import_text_with_files(
+                            $word['#'][$field][0],
+                            [],
+                            '',
+                            $question->questiontextformat
+                        );
                     }
                 } else {
                     $question->{$field}[] = $format->getpath($word, ['#', $field, 0, '#'], '', true);
@@ -331,13 +346,10 @@ class qtype_crossword extends question_type {
 
         parent::move_files($questionid, $oldcontextid, $newcontextid);
 
-        $words = $DB->get_records_menu('qtype_crossword_words',
-                ['questionid' => $questionid], 'id', 'id,1');
+        $words = $DB->get_records_menu('qtype_crossword_words', ['questionid' => $questionid], 'id', 'id,1');
         foreach ($words as $wordid => $notused) {
-            $fs->move_area_files_to_new_context($oldcontextid,
-                    $newcontextid, 'qtype_crossword', 'clue', $wordid);
-            $fs->move_area_files_to_new_context($oldcontextid,
-                    $newcontextid, 'qtype_crossword', 'feedback', $wordid);
+            $fs->move_area_files_to_new_context($oldcontextid, $newcontextid, 'qtype_crossword', 'clue', $wordid);
+            $fs->move_area_files_to_new_context($oldcontextid, $newcontextid, 'qtype_crossword', 'feedback', $wordid);
         }
 
         $this->move_files_in_combined_feedback($questionid, $oldcontextid, $newcontextid);
@@ -351,8 +363,7 @@ class qtype_crossword extends question_type {
 
         parent::delete_files($questionid, $contextid);
 
-        $words = $DB->get_records_menu('qtype_crossword_words',
-                ['questionid' => $questionid], 'id', 'id,1');
+        $words = $DB->get_records_menu('qtype_crossword_words', ['questionid' => $questionid], 'id', 'id,1');
         foreach ($words as $wordid => $notused) {
             $fs->delete_area_files($contextid, 'qtype_crossword', 'clue', $wordid);
             $fs->delete_area_files($contextid, 'qtype_crossword', 'feedback', $wordid);

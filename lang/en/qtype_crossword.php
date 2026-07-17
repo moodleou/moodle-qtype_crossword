@@ -54,6 +54,7 @@ $string['pluginnamesummary'] = 'A simple text-based crossword question. It curre
 $string['preview'] = 'Preview';
 $string['privacy:metadata'] = 'The Crossword plugin does not store any personal data.';
 $string['refresh'] = 'Refresh preview';
+$string['regradeissuestructurechanged'] = 'The questions or answers structure has been modified since the attempt was made.';
 $string['smart_straight_quote_matching'] = 'Quote/apostrophe matching';
 $string['smart_straight_quote_matching_help'] = 'If the "Relaxed" option is enabled, then any curly (also known as "smart") quotes and apostrophes in the question authoring fields will be converted to the straight equivalent on save.';
 $string['smart_straight_quote_matching_relaxed'] = 'Relaxed: all forms of quotes and apostrophes are interchangeable (default).';

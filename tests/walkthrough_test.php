@@ -38,7 +38,6 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @license  https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
-
     /**
      * Test attempt question with mode deferredfeedback.
      *
@@ -56,7 +55,8 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->check_current_output(
             $this->get_contains_marked_out_of_summary(),
             $this->get_does_not_contain_feedback_expectation(),
-            $this->get_does_not_contain_validation_error_expectation());
+            $this->get_does_not_contain_validation_error_expectation()
+        );
 
         // Save in incomplete answer.
         $this->process_submission(['sub0' => '', 'sub1' => '', 'sub2' => 'ITALY']);
@@ -67,7 +67,8 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->check_current_output(
             $this->get_contains_marked_out_of_summary(),
             $this->get_does_not_contain_feedback_expectation(),
-            $this->get_does_not_contain_validation_error_expectation());
+            $this->get_does_not_contain_validation_error_expectation()
+        );
 
         // Save a correct answer.
         $this->process_submission(['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY']);
@@ -80,7 +81,8 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->check_current_output(
             $this->get_contains_mark_summary(3),
             $this->get_contains_general_feedback_expectation($q),
-            $this->get_does_not_contain_validation_error_expectation());
+            $this->get_does_not_contain_validation_error_expectation()
+        );
     }
 
     /**
@@ -100,7 +102,8 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->check_current_output(
             $this->get_contains_marked_out_of_summary(),
             $this->get_does_not_contain_feedback_expectation(),
-            $this->get_does_not_contain_validation_error_expectation());
+            $this->get_does_not_contain_validation_error_expectation()
+        );
 
         // Save in incomplete answer.
         $this->process_submission(['sub0' => '', 'sub1' => '', 'sub2' => 'ITALY']);
@@ -111,7 +114,8 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->check_current_output(
             $this->get_contains_marked_out_of_summary(),
             $this->get_does_not_contain_feedback_expectation(),
-            $this->get_does_not_contain_validation_error_expectation());
+            $this->get_does_not_contain_validation_error_expectation()
+        );
 
         // Save a correct answer.
         $this->process_submission(['sub0' => 'PARIS', 'sub1' => 'BRAZIL', 'sub2' => 'ITALY']);
@@ -124,6 +128,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->check_current_output(
             $this->get_contains_mark_summary(3),
             $this->get_contains_general_feedback_expectation($q),
-            $this->get_does_not_contain_validation_error_expectation());
+            $this->get_does_not_contain_validation_error_expectation()
+        );
     }
 }

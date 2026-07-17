@@ -38,7 +38,6 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @license  https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class util_test extends \qbehaviour_walkthrough_test_base {
-
     /**
      * Test safe_normalize function.
      *

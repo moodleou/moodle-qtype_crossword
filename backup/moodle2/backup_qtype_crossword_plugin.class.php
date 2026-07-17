@@ -22,7 +22,6 @@
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_qtype_crossword_plugin extends backup_qtype_plugin {
-
     /**
      * Returns the qtype information to attach to question element.
      */
@@ -47,8 +46,11 @@ class backup_qtype_crossword_plugin extends backup_qtype_plugin {
 
         // Define the elements.
         $words = new backup_nested_element('words');
-        $word = new backup_nested_element('word', ['id'],
-            ['answer', 'clue', 'clueformat', 'orientation', 'startrow', 'startcolumn', 'feedback', 'feedbackformat']);
+        $word = new backup_nested_element(
+            'word',
+            ['id'],
+            ['answer', 'clue', 'clueformat', 'orientation', 'startrow', 'startcolumn', 'feedback', 'feedbackformat']
+        );
         $words->add_child($word);
         $pluginwrapper->add_child($crossword);
         $pluginwrapper->add_child($words);

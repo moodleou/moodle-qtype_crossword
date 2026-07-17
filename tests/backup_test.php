@@ -35,7 +35,6 @@ require_once($CFG->dirroot . '/question/type/crossword/tests/helper.php');
  * @covers \backup_qtype_crossword_plugin
  */
 final class backup_test extends \restore_date_testcase {
-
     /**
      * Load required libraries
      */
@@ -53,7 +52,10 @@ final class backup_test extends \restore_date_testcase {
      * @param string $courseshortname course short name to be restored.
      */
     protected function restore_crossword_question_backup_file_to_course_shortname(
-            string $filename, string $coursefullname, string $courseshortname): void {
+        string $filename,
+        string $coursefullname,
+        string $courseshortname
+    ): void {
         global $DB, $USER;
         $testfixture = __DIR__ . '/fixtures/' . $filename;
 
@@ -65,8 +67,14 @@ final class backup_test extends \restore_date_testcase {
         $categoryid = $DB->get_field('course_categories', 'MIN(id)', []);
         $courseid = \restore_dbops::create_new_course($coursefullname, $courseshortname, $categoryid);
 
-        $controller = new \restore_controller($backuptempdir, $courseid, \backup::INTERACTIVE_NO, \backup::MODE_GENERAL, $USER->id,
-            \backup::TARGET_NEW_COURSE);
+        $controller = new \restore_controller(
+            $backuptempdir,
+            $courseid,
+            \backup::INTERACTIVE_NO,
+            \backup::MODE_GENERAL,
+            $USER->id,
+            \backup::TARGET_NEW_COURSE
+        );
 
         $controller->execute_precheck();
         $controller->execute_plan();
@@ -202,8 +210,14 @@ final class backup_test extends \restore_date_testcase {
      * @param array $expectedwords word data to be checked after restore.
      * @param int $version skip the test if backup version higher than current major version.
      */
-    public function test_cw_backup_data(string $filename, string $coursefullname, string $courseshortname,
-        string $questionname, array $expectedwords, int $version): void {
+    public function test_cw_backup_data(
+        string $filename,
+        string $coursefullname,
+        string $courseshortname,
+        string $questionname,
+        array $expectedwords,
+        int $version
+    ): void {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -215,8 +229,7 @@ final class backup_test extends \restore_date_testcase {
         // Check question with question name is not exist before restore.
         $this->assertFalse($DB->record_exists('question', ['name' => $questionname]));
 
-        $this->restore_crossword_question_backup_file_to_course_shortname(
-                $filename, $coursefullname, $courseshortname);
+        $this->restore_crossword_question_backup_file_to_course_shortname($filename, $coursefullname, $courseshortname);
         // Assume there is only one crossword question in the DB after restore.
         $questionid = $DB->get_field('question', 'id', ['qtype' => 'crossword'], MUST_EXIST);
         $q = \question_bank::load_question_data($questionid);
@@ -229,10 +242,14 @@ final class backup_test extends \restore_date_testcase {
                 // Need to use contain since we don't know the expected url of the files.
                 $this->assertStringContainsString($expectedwords[$count]['clue'], $word->clue);
                 $this->assertStringContainsString($expectedwords[$count]['feedback'], $word->feedback);
-                $this->assertInstanceOf('stored_file',
-                    $fs->get_file($q->contextid, 'qtype_crossword', 'clue', $word->id, '/', '200.gif'));
-                $this->assertInstanceOf('stored_file',
-                    $fs->get_file($q->contextid, 'qtype_crossword', 'feedback', $word->id, '/', 'test.PNG'));
+                $this->assertInstanceOf(
+                    'stored_file',
+                    $fs->get_file($q->contextid, 'qtype_crossword', 'clue', $word->id, '/', '200.gif')
+                );
+                $this->assertInstanceOf(
+                    'stored_file',
+                    $fs->get_file($q->contextid, 'qtype_crossword', 'feedback', $word->id, '/', 'test.PNG')
+                );
             } else {
                 $this->assertEquals($expectedwords[$count]['clue'], $word->clue);
                 $this->assertEquals($expectedwords[$count]['feedback'], $word->feedback);
@@ -278,8 +295,11 @@ final class backup_test extends \restore_date_testcase {
         $this->assertEquals($cwquestion->questiontext, $newcwquestion->questiontext);
         $this->assertEquals($cwquestion->correctfeedback, $newcwquestion->correctfeedback);
         $this->assertEquals($crosswordformdata->accentgradingtype, $newcwquestion->accentgradingtype);
-        $this->assertEqualsWithDelta($crosswordformdata->accentpenalty, $newcwquestion->accentpenalty,
-            \question_testcase::GRADE_DELTA);
+        $this->assertEqualsWithDelta(
+            $crosswordformdata->accentpenalty,
+            $newcwquestion->accentpenalty,
+            \question_testcase::GRADE_DELTA
+        );
 
         for ($i = 0; $i < count($newcwquestion->answers); $i++) {
             $this->assertEquals($cwquestion->answers[$i]->answer, $newcwquestion->answers[$i]->answer);
